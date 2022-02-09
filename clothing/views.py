@@ -142,7 +142,6 @@ def employee_update(request, employee_id, card_id):
 
 def norm_list(request):
     f = NormFilter(request.GET, queryset=Norm.objects.all())
-    print(f.form)
     norm_list = f.qs
     norm_form = NormForm()
     return render(request, 'clothing/norms/norm_list.html',

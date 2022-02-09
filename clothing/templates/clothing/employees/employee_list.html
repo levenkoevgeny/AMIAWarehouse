@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+{% block title %}
+    <title>Сотрудники (курсанты)</title>
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="container">
+        <br>
+        <h3>Сотрудники (курсанты)</h3>
+        <br>
+        <form action="{% url 'clothing:employee_list' %}">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        {% render_field filter.form.last_name class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Подразделения</label>
+                        {% render_field filter.form.subdivision class+="form-control my-select2" %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Звания</label>
+                        {% render_field filter.form.rank class+="form-control my-select2" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Тип сотрудника</label>
+                        {% render_field filter.form.kind class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Пол</label>
+                        {% render_field filter.form.sex class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-secondary">Поиск</button>
+            <a href="{% url 'clothing:employee_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+        </form>
+        <br>
+
+        {% if employee_list %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Звание</th>
+                    <th scope="col">Подразделение</th>
+                    <th scope="col">Пол</th>
+                    <th scope="col">Дата рождения</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for employee in employee_list %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.last_name }}</td>
+                        <td>{{ employee.first_name }}</td>
+                        <td>{{ employee.patronymic }}</td>
+                        <td>{{ employee.rank }}</td>
+                        <td>{{ employee.subdivision }}</td>
+                        <td>{{ employee.get_sex }}</td>
+                        <td>{{ employee.date_of_birth }}</td>
+
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        {% else %}
+            <p>Список пуст!</p>
+        {% endif %}
+
+
+    </div>
+{% endblock %}
+
+
+{% block own_js %}{% endblock %}
+

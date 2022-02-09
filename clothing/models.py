@@ -10,6 +10,17 @@ SHOES_DIMENSIONS = [
     (2, '38'),
 ]
 
+SEX = [
+    (1, 'Мужской'),
+    (2, 'Женский'),
+]
+
+EMPLOYEE_KIND = [
+    (1, 'Курсант'),
+    (2, 'Офицер'),
+    (1, 'Гражданский'),
+]
+
 
 class Subdivision(models.Model):
     subdivision_name = models.CharField(verbose_name="Подразделение", max_length=255)
@@ -92,17 +103,6 @@ class Norm(models.Model):
 
 
 class Employee(models.Model):
-    SEX = [
-        (1, 'Мужской'),
-        (2, 'Женский'),
-    ]
-
-    EMPLOYEE_KIND = [
-        (1, 'Курсант'),
-        (2, 'Офицер'),
-        (1, 'Гражданский'),
-    ]
-
     last_name = models.CharField(verbose_name="Фамилия", max_length=30)
     first_name = models.CharField(verbose_name="Имя", max_length=30, blank=True, null=True)
     patronymic = models.CharField(verbose_name="Отчество", max_length=30, blank=True, null=True)
@@ -121,6 +121,13 @@ class Employee(models.Model):
     @property
     def get_full_name(self):
         return self.last_name + ' ' + self.first_name + ' ' + self.patronymic
+
+    @property
+    def get_sex(self):
+        if self.sex:
+            return SEX[self.sex - 1][1]
+        else:
+            return None
 
     class Meta:
         ordering = ('last_name',)

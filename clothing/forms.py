@@ -1,6 +1,15 @@
 from django.forms import ModelForm
-from .models import Card, Norm, Clothes
+from .models import Card, Norm, Clothes, Employee
 from django import forms
+
+myDateInput = forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
+
+
+class EmployeeForm(ModelForm):
+    class Meta:
+        model = Employee
+        fields = '__all__'
+        widgets = {'date_of_birth': myDateInput}
 
 
 class CardForm(ModelForm):

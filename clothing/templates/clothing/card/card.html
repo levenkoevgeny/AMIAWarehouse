@@ -17,7 +17,7 @@
 
     <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <form action="{% url '' %}" method="POST">{% csrf_token %}
+            <form action="{% url 'clothing:card_update' card_id=card.id %}" method="POST">{% csrf_token %}
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
@@ -29,7 +29,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Норма</label><br>
-                                    {% render_field form.norm class+="form-select my-select2" style="width: 100%" %}
+                                    {% render_field card_form.norm class+="form-select my-select2" style="width: 100%" %}
                                 </div>
                             </div>
                         </div>
@@ -38,28 +38,28 @@
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Рост</label>
-                                    {% render_field form.growth class+="form-control" %}
+                                    {% render_field card_form.growth class+="form-control" %}
 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Обхват груди</label>
-                                    {% render_field form.bust class+="form-control" %}
+                                    {% render_field card_form.bust class+="form-control" %}
 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Куртка</label>
-                                    {% render_field form.jacket class+="form-control" %}
+                                    {% render_field card_form.jacket class+="form-control" %}
 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Обувь</label>
-                                    {% render_field form.shoes class+="form-control" %}
+                                    {% render_field card_form.shoes class+="form-control" %}
 
                                 </div>
                             </div>
@@ -69,14 +69,14 @@
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Фуражка</label>
-                                    {% render_field form.cap class+="form-control" %}
+                                    {% render_field card_form.cap class+="form-control" %}
 
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Воторничек</label>
-                                    {% render_field form.collar class+="form-control" %}
+                                    {% render_field card_form.collar class+="form-control" %}
 
                                 </div>
                             </div>
@@ -93,13 +93,100 @@
         </div>
     </div>
 
+    <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}" method="POST">{% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Фамилия</label><br>
+                                    {% render_field employee_form.last_name class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Имя</label><br>
+                                    {% render_field employee_form.first_name class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Отчество</label><br>
+                                    {% render_field employee_form.patronymic class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Подразделение</label><br>
+                                    {% render_field employee_form.subdivision class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Звание</label><br>
+                                    {% render_field employee_form.rank class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Тип записи</label><br>
+                                    {% render_field employee_form.kind class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Должность</label><br>
+                                    {% render_field employee_form.position class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Пол</label><br>
+                                    {% render_field employee_form.sex class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Дата рождения</label><br>
+                                    {% render_field employee_form.date_of_birth class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
 
     <br>
 
     <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.id }}</h2>
 
     <div class="row">
-        <h4 class="card-title mb-3"><a href="#card_data_form" data-bs-toggle="modal"
+        <h4 class="card-title mb-3"><a href="#employee_data_form" data-bs-toggle="modal"
                                        class="link-secondary">{{ card.employee.get_full_name }}</a></h4>
         <div class="col-xl-6 my-2">
             <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
@@ -239,7 +326,7 @@
             },
             body: JSON.stringify(new_obj)
 
-        }).then(() => window.location.href = window.location.href)
+        }).then(() => window.location.href = window.location.href).catch(() => alert("Ошибка записи!"))
     });
 </script>
 

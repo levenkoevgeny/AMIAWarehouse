@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+{% block title %}
+    <title>Вещи</title>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <br>
+        <h3>Список наименований</h3>
+        <form action="{% url 'clothing:clothes_list' %}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        {% render_field filter.form.clothes_title class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Номенклатура</label>
+                        {% render_field filter.form.nomenclature class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Срок носки от</label>
+                        {% render_field filter.form.wear_time_from class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Срок носки до</label>
+                        {% render_field filter.form.wear_time_till class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Поиск</button>
+            <a href="{% url 'clothing:clothes_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+        </form>
+        <br>
+
+    {% if clothes_list %}
+        <h5>Найдено записей - {{ clothes_list.count }}</h5> <br>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Название</th>
+                <th scope="col">Номенклатура</th>
+                <th scope="col">Срок носки</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for clothes in clothes_list %}
+                <tr>
+                    <td>{{ clothes.id }}</td>
+                    <td>{{ clothes.clothes_title|default_if_none:"Нет данных" }}</td>
+                    <td>{{ clothes.nomenclature|default_if_none:"Нет данных" }}</td>
+                    <td>{{ clothes.wear_time|default_if_none:"Нет данных" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>Список пуст!</p>
+        {% endif %}
+
+
+
+
+    </div>
+{% endblock %}
+
+
+{% block own_js %}{% endblock %}
+

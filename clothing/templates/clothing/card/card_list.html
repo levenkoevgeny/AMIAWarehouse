@@ -9,22 +9,90 @@
     <div class="container">
 
 
+    <div class="modal fade" id="card_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form action="{% url 'clothing:card_input' %}" method="POST">{% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Новая карточка</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
 
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Сотрудник (курсант)</label><br>
+                                    {% render_field card_form.employee class+="form-select" style="width: 100%" %}
+                                </div>
+                            </div>
 
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Норма</label><br>
+                                    {% render_field card_form.norm class+="form-select" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Рост</label>
+                                    {% render_field card_form.growth class+="form-control" %}
 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обхват груди</label>
+                                    {% render_field card_form.bust class+="form-control" %}
 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Куртка</label>
+                                    {% render_field card_form.jacket class+="form-control" %}
 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обувь</label>
+                                    {% render_field card_form.shoes class+="form-control" %}
 
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Фуражка</label>
+                                    {% render_field card_form.cap class+="form-control" %}
 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Воторничек</label>
+                                    {% render_field card_form.collar class+="form-control" %}
 
-
-
-
-
-
-
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+        <h2>Арматурные карточки</h2>
         <br>
         <form action="{% url 'clothing:card_list' %}">
             <div class="row">
@@ -55,13 +123,12 @@
             </div>
             <button type="submit" class="btn btn-secondary">Поиск</button>
             <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
-
         </form>
         <br>
         <br>
         <h5>Найдено записей - {{ card_list.count }}</h5> <br>
-        <a href="{% url 'clothing:card_input' %}" class="link-secondary">Добавить карточку</a><br>
-        <a href="{% url 'clothing:clothes_sheet' %}" class="link-secondary">Раздаточная ведомость</a><br>
+        <a href="#card_add_data_form" data-bs-toggle="modal" class="btn btn-secondary" style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a><br>
+{#        <a href="{% url 'clothing:clothes_sheet' %}" class="link-secondary">Раздаточная ведомость</a><br>#}
         <br>
         <table class="table">
             <thead>

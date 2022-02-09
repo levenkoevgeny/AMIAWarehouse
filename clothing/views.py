@@ -1,14 +1,12 @@
 from django.shortcuts import render
 
-from django.shortcuts import render
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.urls import reverse
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee
-from .forms import CardForm, ClothesForm
+from .forms import CardForm, ClothesForm, EmployeeForm
 
 from django.forms.models import model_to_dict
 from datetime import datetime, date
@@ -16,14 +14,14 @@ from dateutil.relativedelta import *
 
 from rest_framework import viewsets
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer
-from .filters import CardFilter
+from .filters import CardFilter, EmployeeFilter, ClothesFilter
 
 
 def card_list(request):
     f = CardFilter(request.GET, queryset=Card.objects.all())
     card_list = f.qs
-
-    return render(request, 'clothing/card/card_list.html', {'card_list': card_list, 'filter': f})
+    card_form = CardForm()
+    return render(request, 'clothing/card/card_list.html', {'card_list': card_list, 'card_form': card_form, 'filter': f})
 
 
 def card_input(request):
@@ -39,12 +37,25 @@ def card_input(request):
         return render(request, 'clothing/card/card_input_form.html', {'form': form})
 
 
+def card_update(request, card_id):
+    if request.method == 'POST':
+        obj = get_object_or_404(Card, pk=card_id)
+        form = CardForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('clothing:get_card', kwargs={'card_id': card_id}))
+    else:
+        pass
+
+
 def get_card(request, card_id):
     if request.method == 'POST':
         pass
     else:
         card = get_object_or_404(Card, pk=card_id)
-        form = CardForm(instance=card)
+        card_form = CardForm(instance=card)
+        employee = card.employee
+        employee_form = EmployeeForm(instance=employee)
         norm_clothes_list = card.norm.clothes_list.all()
 
         list_of_issues = ClothesInCard.objects.filter(card_id=card_id)
@@ -66,23 +77,22 @@ def get_card(request, card_id):
             result_list.append(dict_cl)
 
         return render(request, 'clothing/card/card.html',
-                      {'form': form, 'card': card, 'norm_clothes_list': norm_clothes_list, 'result_list': result_list,
+                      {'card_form': card_form, 'employee_form': employee_form,  'card': card,
+                       'employee': employee,
+                       'norm_clothes_list': norm_clothes_list, 'result_list': result_list,
                        'year_list': year_list, 'clothes_list': Clothes.objects.all()})
-
-
-def card_update(request, card_id):
-    if request.method == 'POST':
-        obj = get_object_or_404(Card, pk=card_id)
-        form = CardForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:card_list'))
-    else:
-        pass
 
 
 def card_delete(request):
     pass
+
+
+def clothes_list(request):
+    f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
+    clothes_list = f.qs
+    clothes_form = ClothesForm()
+    return render(request, 'clothing/clothes/clothes_list.html',
+                  {'clothes_list': clothes_list, 'clothes_form': clothes_form, 'filter': f})
 
 
 def clothes_input(request):
@@ -95,6 +105,29 @@ def clothes_update(request, clothes_id):
 
 def clothes_delete(request):
     pass
+
+
+def employee_list(request):
+    f = EmployeeFilter(request.GET, queryset=Employee.objects.all())
+    employee_list = f.qs
+    employee_form = EmployeeForm()
+    return render(request, 'clothing/employees/employee_list.html',
+                  {'employee_list': employee_list, 'employee_form': employee_form, 'filter': f})
+
+
+def employee_input(request):
+    pass
+
+
+def employee_update(request, employee_id, card_id):
+    if request.method == 'POST':
+        obj = get_object_or_404(Employee, pk=employee_id)
+        form = EmployeeForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('clothing:get_card', kwargs={'card_id': card_id}))
+    else:
+        pass
 
 
 def get_sheet(request):
@@ -119,7 +152,7 @@ def get_sheet(request):
                 employee_clothes_dict[clothes.id] = ""
         result_dict[card.id] = employee_clothes_dict
 
-    return render(request, 'clothing/sheet.html',
+    return render(request, 'clothing/reports/sheet.html',
                   {'clothes_list': clothes_list, 'card_list': Card.objects.all(), 'result_dict': result_dict})
 
 

@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'clothing:card_list' %}">Вещевая служба</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'clothing:card_list' %}">На главную</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Документы учета
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'clothing:employee_list' %}">Именной список</a></li>
+                        <li><a class="dropdown-item" href="{% url 'clothing:card_list' %}">Арм. карточки</a></li>
+                        <li><a class="dropdown-item" href="{% url 'clothing:clothes_list' %}">Наименования</a></li>
+                        <li><a class="dropdown-item" href="{% url 'clothing:clothes_list' %}">Нормы</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Выходные документы
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'clothing:clothes_sheet' %}">Раздаточная ведомость</a></li>
+{#                        <li><a class="dropdown-item" href="#">Наименования</a></li>#}
+{#                        <li><a class="dropdown-item" href="#">Нормы</a></li>#}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

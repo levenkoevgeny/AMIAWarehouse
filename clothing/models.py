@@ -88,7 +88,7 @@ class Clothes(models.Model):
 
 class Norm(models.Model):
     norm_title = models.CharField(verbose_name="Название нормы", max_length=255)
-    clothes_list = models.ManyToManyField(Clothes, verbose_name="Наименования")
+    clothes_list = models.ManyToManyField(Clothes, verbose_name="Наименования", through='ClothesInNorm', blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
@@ -100,6 +100,20 @@ class Norm(models.Model):
         ordering = ('-id',)
         verbose_name = 'Норма'
         verbose_name_plural = 'Нормы'
+
+
+class ClothesInNorm(models.Model):
+    norm = models.ForeignKey(Norm, on_delete=models.CASCADE, verbose_name="Норма")
+    clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Наименование")
+    norm_count = models.IntegerField(verbose_name="Количество по норме")
+
+    def __str__(self):
+        return self.norm.norm_title + ' ' + self.clothes.clothes_title + ' ' + str(self.norm_count)
+
+    class Meta:
+        ordering = ('-id',)
+        verbose_name = 'Наименование в норме'
+        verbose_name_plural = 'Наименования в норме'
 
 
 class Employee(models.Model):

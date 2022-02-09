@@ -7,6 +7,7 @@ urlpatterns = [
     path('cards', views.card_list, name='card_list'),
     path('card/input', views.card_input, name='card_input'),
     path('card/<card_id>', views.get_card, name='get_card'),
+    path('card-full/<card_id>', views.get_card_full, name='get_card_full'),
     path('card/<card_id>/update', views.card_update, name='card_update'),
 
     path('clothes', views.clothes_list, name='clothes_list'),

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load dict_tags %}
+
+{% block own_css %}{% endblock %}
+{% block title %}
+    <title>Арматурная карточка</title>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <br>
+
+        <br>
+
+        <h3>Движение материальных средств - <span class="fst-italic">{{ card.employee.get_full_name }}</span></h3><br>
+
+        {% if clothes_list %}
+            {% for id in list_of_clothes_id %}
+                {% with clothes=clothes_list|get_clothes:id %}
+                    <h5>Наименование - <span class="fst-italic">{{ clothes.clothes_title }}</span>,</h5>
+                    <h5>Номенклатура - <span class="fst-italic">{{ clothes.nomenclature }}</span>,</h5>
+                    <h5>Срок носки - <span class="fst-italic">{{ clothes.wear_time }} мес.</span></h5>
+                {% endwith %}
+
+                {% with issues=clothes_list|get_issues_dates:id %}
+                    {% for item in issues %}
+                        {{ item.date_of_issue }}<br>
+                    {% endfor %}<br>
+                {% endwith %}
+            {% endfor %}
+
+        {% else %}
+            <p>Список пуст!</p>
+        {% endif %}
+
+
+    </div>
+{% endblock %}
+
+
+{% block own_js %}{% endblock %}
+

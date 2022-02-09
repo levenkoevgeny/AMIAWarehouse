@@ -1,4 +1,6 @@
 from django import template
+from clothing.models import Clothes
+from django.shortcuts import get_object_or_404
 
 register = template.Library()
 
@@ -8,8 +10,12 @@ def get_sub_dict(value, index):
     return value[index]
 
 
+@register.filter(name='get_issues_dates')
+def get_issues_dates(value, clothes_id):
+    return value.filter(clothes__id=clothes_id).order_by('date_of_issue')
 
 
-    # arg_list = [arg.strip() for arg in args.split(',')]
-    # return value.subject_set.filter(level__level_title=arg_list[0]).filter(guids__kind__kind_name=arg_list[1],
-    #                                                                        guids__grif__grif_name=arg_list[2]).count()
+@register.filter(name='get_clothes')
+def get_clothes(value, clothes_id):
+    return get_object_or_404(Clothes, pk=clothes_id)
+

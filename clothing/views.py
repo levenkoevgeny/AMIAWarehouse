@@ -4,15 +4,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.urls import reverse
-
-from .models import Card, Clothes, Norm, ClothesInCard, Employee
-from .forms import CardForm, ClothesForm, EmployeeForm
-
 from django.forms.models import model_to_dict
 from datetime import datetime, date
 from dateutil.relativedelta import *
-
 from rest_framework import viewsets
+
+from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm
+from .forms import CardForm, ClothesForm, EmployeeForm
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer
 from .filters import CardFilter, EmployeeFilter, ClothesFilter
 
@@ -21,7 +19,8 @@ def card_list(request):
     f = CardFilter(request.GET, queryset=Card.objects.all())
     card_list = f.qs
     card_form = CardForm()
-    return render(request, 'clothing/card/card_list.html', {'card_list': card_list, 'card_form': card_form, 'filter': f})
+    return render(request, 'clothing/card/card_list.html',
+                  {'card_list': card_list, 'card_form': card_form, 'filter': f})
 
 
 def card_input(request):
@@ -52,11 +51,14 @@ def get_card(request, card_id):
     if request.method == 'POST':
         pass
     else:
+        # for update
         card = get_object_or_404(Card, pk=card_id)
         card_form = CardForm(instance=card)
         employee = card.employee
         employee_form = EmployeeForm(instance=employee)
-        norm_clothes_list = card.norm.clothes_list.all()
+
+        # norm list
+        norm_clothes_list = ClothesInNorm.objects.filter(norm_id=card.norm.id)
 
         list_of_issues = ClothesInCard.objects.filter(card_id=card_id)
         list_of_clothes_id = []
@@ -77,10 +79,18 @@ def get_card(request, card_id):
             result_list.append(dict_cl)
 
         return render(request, 'clothing/card/card.html',
-                      {'card_form': card_form, 'employee_form': employee_form,  'card': card,
+                      {'card_form': card_form, 'employee_form': employee_form, 'card': card,
                        'employee': employee,
                        'norm_clothes_list': norm_clothes_list, 'result_list': result_list,
                        'year_list': year_list, 'clothes_list': Clothes.objects.all()})
+
+
+def get_card_full(request, card_id):
+    card = get_object_or_404(Card, pk=card_id)
+    clothes_list = ClothesInCard.objects.filter(card_id=card_id)
+    list_of_clothes_id = list(set([item.clothes.id for item in clothes_list]))
+    return render(request, 'clothing/card/card_full.html',
+                  {'card': card, 'clothes_list': clothes_list, 'list_of_clothes_id': list_of_clothes_id})
 
 
 def card_delete(request):

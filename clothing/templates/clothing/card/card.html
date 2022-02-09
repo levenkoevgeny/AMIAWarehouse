@@ -218,6 +218,7 @@
             <thead>
             <tr>
                 <th scope="col">Наименование</th>
+                <th scope="col">Срок носки</th>
                 <th scope="col">Количество</th>
             </tr>
             </thead>
@@ -225,8 +226,9 @@
 
             {% for norm_clothes in norm_clothes_list %}
                 <tr>
-                    <th scope="row">{{ norm_clothes }}</th>
-                    <td>1</td>
+                    <td>{{ norm_clothes.clothes.clothes_title }}</td>
+                    <td>{{ norm_clothes.clothes.wear_time }} мес.</td>
+                    <td>{{ norm_clothes.norm_count }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -235,7 +237,7 @@
 
     <br>
     <div class="container-fluid">
-        <h5>Таблица выдачи</h5>
+        <h5><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица выдачи</a></h5>
         <form id="clothes_in_card_form">{% csrf_token %}
             <input type="hidden" value="{{ card.id }}" id="id_card">
             <div class="row align-items-end">

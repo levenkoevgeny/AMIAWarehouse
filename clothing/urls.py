@@ -19,4 +19,6 @@ urlpatterns = [
     path('employees/input', views.employee_input, name='employee_input'),
     path('employees/<employee_id>/<card_id>/update', views.employee_update, name='employee_update'),
 
+    path('norms', views.norm_list, name='norm_list'),
+
 ]

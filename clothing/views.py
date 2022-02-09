@@ -10,9 +10,9 @@ from dateutil.relativedelta import *
 from rest_framework import viewsets
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm
-from .forms import CardForm, ClothesForm, EmployeeForm
+from .forms import CardForm, ClothesForm, EmployeeForm, NormForm
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer
-from .filters import CardFilter, EmployeeFilter, ClothesFilter
+from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
 
 
 def card_list(request):
@@ -140,6 +140,15 @@ def employee_update(request, employee_id, card_id):
         pass
 
 
+def norm_list(request):
+    f = NormFilter(request.GET, queryset=Norm.objects.all())
+    print(f.form)
+    norm_list = f.qs
+    norm_form = NormForm()
+    return render(request, 'clothing/norms/norm_list.html',
+                  {'norm_list': norm_list, 'norm_form': norm_form, 'filter': f})
+
+# reports
 def get_sheet(request):
     clothes_list = Clothes.objects.all()
     result_dict = {}

@@ -22,3 +22,9 @@ class ClothesForm(ModelForm):
     class Meta:
         model = Clothes
         fields = ['clothes_title', 'wear_time', 'nomenclature']
+
+
+class NormForm(ModelForm):
+    class Meta:
+        model = Norm
+        fields = ['norm_title']

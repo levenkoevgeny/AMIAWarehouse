@@ -95,6 +95,38 @@
         <h2>Арматурные карточки</h2>
         <br>
         <form action="{% url 'clothing:card_list' %}">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        {% render_field filter.form.last_name class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Подразделение</label>
+                        {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Должность</label>
+                        {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Звание</label>
+                        {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
+                    </div>
+                </div>
+            </div>
+
+
             <div class="row">
                 <div class="col-md-3">
                     <div class="mb-3">

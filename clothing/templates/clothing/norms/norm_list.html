@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+{% block title %}
+    <title>Нормы</title>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <br>
+        <h3>Список норм</h3>
+        <form action="{% url 'clothing:norm_list' %}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        {% render_field filter.form.norm_title__icontains class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Поиск</button>
+            <a href="{% url 'clothing:norm_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+        </form>
+        <br>
+
+    {% if norm_list %}
+        <h5>Найдено записей - {{ norm_list.count }}</h5> <br>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Название</th>
+                <th scope="col">Список наименований</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for norm in norm_list %}
+                <tr>
+                    <td>{{ norm.id }}</td>
+                    <td>{{ norm.norm_title|default_if_none:"Нет данных" }}</td>
+                    <td>
+                        {% for clothes in norm.clothes_list.all %}
+                            {{ clothes.clothes_title }} ({{ clothes.nomenclature }}) <br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>Список пуст!</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block own_js %}{% endblock %}
+

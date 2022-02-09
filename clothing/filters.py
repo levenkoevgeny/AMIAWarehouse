@@ -1,8 +1,15 @@
 import django_filters
-from .models import Card, Employee, Clothes, Subdivision, Rank
+from .models import Card, Employee, Clothes, Subdivision, Rank, Norm, Position
 
 
 class CardFilter(django_filters.FilterSet):
+    last_name = django_filters.CharFilter(field_name='employee__last_name', lookup_expr='icontains')
+    subdivision = django_filters.ModelMultipleChoiceFilter(field_name='employee__subdivision',
+                                                           queryset=Subdivision.objects.all())
+    rank = django_filters.ModelMultipleChoiceFilter(field_name='employee__rank',
+                                                    queryset=Rank.objects.all())
+    position = django_filters.ModelMultipleChoiceFilter(field_name='employee__position',
+                                                        queryset=Position.objects.all())
     growth_from = django_filters.NumberFilter(field_name='growth', lookup_expr='gte')
     growth_till = django_filters.NumberFilter(field_name='growth', lookup_expr='lte')
     bust_from = django_filters.NumberFilter(field_name='bust', lookup_expr='gte')
@@ -32,3 +39,11 @@ class ClothesFilter(django_filters.FilterSet):
     class Meta:
         model = Clothes
         fields = ['nomenclature']
+
+
+class NormFilter(django_filters.FilterSet):
+    class Meta:
+        model = Norm
+        fields = {
+            'norm_title': ['icontains'],
+        }

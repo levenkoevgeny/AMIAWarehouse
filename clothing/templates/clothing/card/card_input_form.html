@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+{% block title %}<title>Арматурная карточка</title>{% endblock %}
+{% block content %}
+    <div class="container">
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{ field.label }}: {{ error|escape }}
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+        <br>
+        <h5>Добавление арматурной карточки</h5>
+        <br>
+        <form action="{% url 'clothing:card_input' %}" method="POST">{% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Сотрудник (курсант)</label><br>
+                        {% render_field form.employee class+="form-select my-select2" style="width: 100%" %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Норма</label><br>
+                        {% render_field form.norm class+="form-select my-select2" style="width: 100%" %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Рост</label>
+                        {% render_field form.growth class+="form-control" %}
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Обхват груди</label>
+                        {% render_field form.bust class+="form-control" %}
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Куртка</label>
+                        {% render_field form.jacket class+="form-control" %}
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Обувь</label>
+                        {% render_field form.shoes class+="form-control" %}
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Фуражка</label>
+                        {% render_field form.cap class+="form-control" %}
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Воторничек</label>
+                        {% render_field form.collar class+="form-control" %}
+
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Добавить</button>
+        </form>
+
+
+    </div>
+{% endblock %}
+{% block own_js %}{% endblock %}

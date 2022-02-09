@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+{% block title %}<title>Арматурная карточка</title>{% endblock %}
+{% block content %}
+    <div class="container">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <br>
+        <form action="{% url 'clothing:card_list' %}">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Рост от</label>
+                        {% render_field filter.form.growth_from class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Рост до</label>
+                        {% render_field filter.form.growth_till class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Обхват груди от</label>
+                        {% render_field filter.form.bust_from class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">Обхват груди до</label>
+                        {% render_field filter.form.bust_till class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-secondary">Поиск</button>
+            <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+
+        </form>
+        <br>
+        <br>
+        <h5>Найдено записей - {{ card_list.count }}</h5> <br>
+        <a href="{% url 'clothing:card_input' %}" class="link-secondary">Добавить карточку</a><br>
+        <a href="{% url 'clothing:clothes_sheet' %}" class="link-secondary">Раздаточная ведомость</a><br>
+        <br>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Звание</th>
+                <th scope="col">Должность</th>
+                <th scope="col">Рост</th>
+                <th scope="col">Обхват груди</th>
+                <th scope="col">Куртка</th>
+                <th scope="col">Обувь</th>
+                <th scope="col">Фуражка</th>
+                <th scope="col">Воротничок</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for card in card_list %}
+                <tr>
+                    <td>{{ card.id }}</td>
+                    <td><a href="{% url 'clothing:get_card' card.id %}"
+                           class="link-secondary">{{ card.employee.last_name|default_if_none:"Нет данных" }}</a></td>
+                    <td>{{ card.employee.rank|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.employee.position|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.growth|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.bust|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.get_jacket|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.get_shoes|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.cap|default_if_none:"Нет данных" }}</td>
+                    <td>{{ card.get_collar|default_if_none:"Нет данных" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+{% block own_js %}{% endblock %}

@@ -90,9 +90,13 @@ def get_card(request, card_id):
 def get_card_full(request, card_id):
     card = get_object_or_404(Card, pk=card_id)
     clothes_list = ClothesInCard.objects.filter(card_id=card_id)
+    clothes_list_full = Clothes.objects.all()
     list_of_clothes_id = list(set([item.clothes.id for item in clothes_list]))
     return render(request, 'clothing/card/card_full.html',
-                  {'card': card, 'clothes_list': clothes_list, 'list_of_clothes_id': list_of_clothes_id})
+                  {'card': card,
+                   'clothes_list': clothes_list,
+                   'clothes_list_full': clothes_list_full,
+                   'list_of_clothes_id': list_of_clothes_id})
 
 
 def card_delete(request):

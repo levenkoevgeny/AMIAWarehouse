@@ -130,7 +130,7 @@ class Employee(models.Model):
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего редактирования", auto_now=True)
 
     def __str__(self):
-        return self.last_name + ' ' + self.first_name + ' ' + self.patronymic
+        return self.last_name
 
     @property
     def get_full_name(self):
@@ -144,7 +144,7 @@ class Employee(models.Model):
             return None
 
     class Meta:
-        ordering = ('last_name',)
+        ordering = ('-id',)
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
 

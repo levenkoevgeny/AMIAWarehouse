@@ -11,7 +11,7 @@
         <div class="modal fade" id="card_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form action="{% url 'clothing:card_input' %}" method="POST">{% csrf_token %}
+                <form id="add_card_form">{% csrf_token %}
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Новая карточка</h5>
@@ -94,8 +94,8 @@
         <br>
         <h2>Арматурные карточки</h2>
         <br>
-        <form action="{% url 'clothing:card_list' %}">
 
+        <form action="{% url 'clothing:card_list' %}">
             <div class="row">
                 <div class="col-md-12">
                     <div class="mb-3">
@@ -125,8 +125,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="row">
                 <div class="col-md-3">
                     <div class="mb-3">
@@ -157,11 +155,10 @@
             <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
         </form>
         <br>
-        <br>
 
-        <h5>Найдено записей - {{ card_list.count }}</h5> <br>
+        <h5>Найдено записей - {{ card_list.count }}</h5>
         <a href="#card_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
-           style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a><br>
+           style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a>
         <br>
         {% if card_list %}
             <table class="table">
@@ -201,8 +198,42 @@
         {% else %}
             <p>Список пуст!</p>
         {% endif %}
-
-
     </div>
 {% endblock %}
-{% block own_js %}{% endblock %}
+{% block own_js %}
+
+    <script>
+        $('#add_card_form').submit(function (e) {
+            e.preventDefault();
+
+            new_obj = {
+                'employee': $('#id_employee').val() == "" ? null : $('#id_employee').val(),
+                'norm': $('#id_norm').val() == "" ? null : $('#id_norm').val(),
+                'growth': $('#id_growth').val() == "" ? null : $('#id_growth').val(),
+                'bust': $('#id_bust').val() == "" ? null : $('#id_bust').val(),
+                'jacket': $('#id_jacket').val() == "" ? null : $('#id_jacket').val(),
+                'shoes': $('#id_shoes').val() == "" ? null : $('#id_shoes').val(),
+                'cap': $('#id_cap').val() == "" ? null : $('#id_cap').val(),
+                'collar': $('#id_collar').val() == "" ? null : $('#id_collar').val(),
+            }
+
+            console.log(new_obj);
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch('/api/cards/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(new_obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка записи!")
+                }
+            }).catch((e) => alert(e.message))
+        });
+    </script>
+
+{% endblock %}

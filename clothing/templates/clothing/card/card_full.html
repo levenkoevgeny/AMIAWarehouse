@@ -18,6 +18,36 @@
 
         <h3>Движение материальных средств - <span class="fst-italic">{{ card.employee.get_full_name }}</span></h3><br>
 
+
+        <form id="clothes_in_card_form">{% csrf_token %}
+            <input type="hidden" value="{{ card.id }}" id="id_card">
+            <div class="row align-items-end">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label class="form-label">Наименование</label>
+                        <select name="clothes" class="form-select" id="id_clothes" required>
+                            <option value="">-----</option>
+                            {% for clothes in clothes_list_full %}
+                                <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label class="form-label">Дата выдачи</label>
+                        <input type="date" class="form-control" id="id_date_of_issue" required>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
         {% if clothes_list %}
             {% for id in list_of_clothes_id %}
                 {% with clothes=clothes_list|get_clothes:id %}
@@ -28,7 +58,7 @@
 
                 {% with issues=clothes_list|get_issues_dates:id %}
                     {% for item in issues %}
-                        {{ item.date_of_issue }}<br>
+                        {{ item.date_of_issue }} <a href="javascript:delete_clothes_in_card({{ item.id }})">удалить</a><br>
                     {% endfor %}<br>
                 {% endwith %}
             {% endfor %}
@@ -42,5 +72,53 @@
 {% endblock %}
 
 
-{% block own_js %}{% endblock %}
+{% block own_js %}
+
+    <script>
+        $('#clothes_in_card_form').submit(function (e) {
+            e.preventDefault();
+            new_obj = {
+                'card': $('#id_card').val(),
+                'clothes': $('#id_clothes').val(),
+                'date_of_issue': $('#id_date_of_issue').val()
+            }
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch('/api/clothes-in-card/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(new_obj)
+
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка удаления!")
+                }
+            }).catch((e) => alert(e.message))
+        });
+
+        function delete_clothes_in_card(id) {
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch(`/api/clothes-in-card/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+            }).then(response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        window.location.href = window.location.href
+                    } else {
+                        throw new Error("Ошибка удаления!")
+                    }
+                }
+            ).catch((e) => alert(e.message))
+        }
+
+    </script>
+
+{% endblock %}
 

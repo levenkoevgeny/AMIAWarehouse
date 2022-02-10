@@ -17,7 +17,7 @@
                  aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <form action="{% url 'clothing:clothes_update' clothes.id %}" method="POST">{% csrf_token %}
+                    <form class="clothes_in_card_form_class" id="{{ clothes.id }}">{% csrf_token %}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">{{ clothes.clothes_title }}</h5>
@@ -30,21 +30,21 @@
                                         <div class="mb-3">
                                             <label class="form-label">Наименование</label><br>
                                             <input type="text" class="form-control" value="{{ clothes.clothes_title }}"
-                                                   name="clothes_title" required>
+                                                   name="clothes_title" id="id_clothes_title_{{ clothes.id }}" required>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="form-label">Номенклатура</label><br>
                                             <input type="text" class="form-control" value="{{ clothes.nomenclature }}"
-                                                   name="nomenclature">
+                                                   name="nomenclature" id="id_nomenclature_{{ clothes.id }}">
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="form-label">Срок носки</label><br>
                                             <input type="text" class="form-control" value="{{ clothes.wear_time }}"
-                                                   name="wear_time" required>
+                                                   name="wear_time" id="id_wear_time_{{ clothes.id }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -107,7 +107,7 @@
                     <th scope="col">Название</th>
                     <th scope="col">Номенклатура</th>
                     <th scope="col">Срок носки</th>
-{#                    <th scope="col"></th>#}
+                    {#                    <th scope="col"></th>#}
                 </tr>
                 </thead>
                 <tbody>
@@ -118,7 +118,7 @@
                                class="link-secondary">{{ clothes.clothes_title|default_if_none:"Нет данных" }}</a></td>
                         <td>{{ clothes.nomenclature|default_if_none:"Нет данных" }}</td>
                         <td>{{ clothes.wear_time|default_if_none:"Нет данных" }} мес.</td>
-{#                        <td><a href="javascript:delete_clothes({{ clothes.id }})">удалить</a></td>#}
+                        {#                        <td><a href="javascript:delete_clothes({{ clothes.id }})">удалить</a></td>#}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -149,6 +149,57 @@
                 }
             ).catch((e) => alert(e.message))
         }
+
+
     </script>
+
+    <script>
+        $('.clothes_in_card_form_class').submit(function (e) {
+            let form_id = e.target.id;
+            e.preventDefault();
+            obj = {
+                'clothes_title': $(`#id_clothes_title_${form_id}`).val(),
+                'nomenclature': $(`#id_nomenclature_${form_id}`).val(),
+                'wear_time': $(`#id_wear_time_${form_id}`).val()
+            }
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch(`/api/clothes/${form_id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка удаления!")
+                }
+            }).catch((e) => alert(e.message))
+        });
+
+        function delete_clothes_in_card(id) {
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch(`/api/clothes-in-card/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+            }).then(response => {
+                    if (response.status >= 200 && response.status < 300) {
+                        window.location.href = window.location.href
+                    } else {
+                        throw new Error("Ошибка удаления!")
+                    }
+                }
+            ).catch((e) => alert(e.message))
+        }
+
+    </script>
+
+
+
 {% endblock %}
 

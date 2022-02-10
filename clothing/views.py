@@ -11,9 +11,11 @@ from datetime import datetime, date
 from dateutil.relativedelta import *
 from rest_framework import viewsets
 
-from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm
-from .forms import CardForm, ClothesForm, EmployeeForm, NormForm
-from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer
+from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm, Subdivision, Position, Rank, SEX, \
+    EMPLOYEE_KIND
+from .forms import CardForm, ClothesForm, EmployeeForm, NormForm, ClothesInNormForm
+from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer, \
+    ClothesInNormSerializer
 from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
 
 
@@ -137,7 +139,14 @@ def employee_list(request):
     employee_list = f.qs
     employee_form = EmployeeForm()
     return render(request, 'clothing/employees/employee_list.html',
-                  {'employee_list': employee_list, 'employee_form': employee_form, 'filter': f})
+                  {'employee_list': employee_list,
+                   'employee_form': employee_form,
+                   'subdivision_list': Subdivision.objects.all(),
+                   'rank_list': Rank.objects.all(),
+                   'position_list': Position.objects.all(),
+                   'kind_list': EMPLOYEE_KIND,
+                   'sex_list': SEX,
+                   'filter': f})
 
 
 def employee_input(request):
@@ -163,6 +172,46 @@ def norm_list(request):
     norm_form = NormForm()
     return render(request, 'clothing/norms/norm_list.html',
                   {'norm_list': norm_list, 'norm_form': norm_form, 'filter': f})
+
+
+def norm_items(request, norm_id):
+    norm = get_object_or_404(Norm, pk=norm_id)
+    item_list = ClothesInNorm.objects.filter(norm_id=norm_id).order_by('clothes')
+    clothes_in_norm_form = ClothesInNormForm()
+    return render(request, 'clothing/norms/norm_items.html', {
+        'norm': norm,
+        'clothes_in_norm_form': clothes_in_norm_form,
+        'item_list': item_list,
+        'clothes_list': Clothes.objects.all(),
+    })
+
+
+import random
+
+def get_random_data(request):
+    for i in range(1, 2000):
+        new_employee = Employee(
+            last_name="LastName" + str(i),
+            first_name="Firstname" + str(i),
+            patronymic="Patronymic" + str(i),
+            kind=1,
+            sex=1,
+            subdivision=get_object_or_404(Subdivision, pk=1),
+            position=get_object_or_404(Position, pk=1)
+        )
+        new_employee.save()
+
+        new_card = Card(
+            employee=new_employee,
+            norm=get_object_or_404(Norm, pk=1),
+            growth=random.randint(170, 190),
+            bust=random.randint(90, 110),
+            jacket=random.randint(1, 2),
+            shoes=random.randint(1, 2),
+            cap=random.randint(55, 60),
+            collar=random.randint(1, 2),
+        )
+        new_card.save()
 
 
 # reports
@@ -216,3 +265,8 @@ class ClothesViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+
+class ClothesInNormViewSet(viewsets.ModelViewSet):
+    queryset = ClothesInNorm.objects.all()
+    serializer_class = ClothesInNormSerializer

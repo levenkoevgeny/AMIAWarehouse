@@ -12,6 +12,51 @@
 {% block content %}
     <div class="container">
 
+
+        <div class="modal fade" id="clothes_add_data_form" tabindex="-1"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form id="clothes_add_form">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Новое наименование</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Наименование</label><br>
+                                        {% render_field clothes_form.clothes_title class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Номенклатура</label><br>
+                                        {% render_field clothes_form.nomenclature class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Срок носки</label><br>
+                                        {% render_field clothes_form.wear_time class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
         {% for clothes in clothes_list %}
             <div class="modal fade" id="card_add_data_form_{{ clothes.id }}" tabindex="-1"
                  aria-labelledby="exampleModalLabel"
@@ -43,7 +88,7 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="form-label">Срок носки</label><br>
-                                            <input type="text" class="form-control" value="{{ clothes.wear_time }}"
+                                            <input type="number" class="form-control" value="{{ clothes.wear_time }}"
                                                    name="wear_time" id="id_wear_time_{{ clothes.id }}" required>
                                         </div>
                                     </div>
@@ -97,7 +142,8 @@
             <a href="{% url 'clothing:clothes_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
         </form>
         <br>
-
+        <a href="#clothes_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
+           style="display: block; margin-left:auto; width: 250px;">Добавить наименование</a>
         {% if clothes_list %}
             <h5>Найдено записей - {{ clothes_list.count }}</h5> <br>
             <table class="table">
@@ -154,12 +200,39 @@
     </script>
 
     <script>
-        $('.clothes_in_card_form_class').submit(function (e) {
-            let form_id = e.target.id;
+
+
+        $('#clothes_add_form').submit(function (e) {
             e.preventDefault();
+            new_obj = {
+                'clothes_title': $(`#id_clothes_title`).val(),
+                'nomenclature': $(`#id_nomenclature`).val() == "" ? null : $('#id_nomenclature').val(),
+                'wear_time': $(`#id_wear_time`).val()
+            }
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch('/api/clothes/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(new_obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка записи!")
+                }
+            }).catch((e) => alert(e.message))
+        });
+
+
+        $('.clothes_in_card_form_class').submit(function (e) {
+            e.preventDefault();
+            let form_id = e.target.id;
             obj = {
                 'clothes_title': $(`#id_clothes_title_${form_id}`).val(),
-                'nomenclature': $(`#id_nomenclature_${form_id}`).val(),
+                'nomenclature': $(`#id_nomenclature_${form_id}`).val() == "" ? null : $(`#id_nomenclature_${form_id}`).val(),
                 'wear_time': $(`#id_wear_time_${form_id}`).val()
             }
             csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -174,7 +247,7 @@
                 if (response.status >= 200 && response.status < 300) {
                     window.location.href = window.location.href
                 } else {
-                    throw new Error("Ошибка удаления!")
+                    throw new Error("Ошибка записи!")
                 }
             }).catch((e) => alert(e.message))
         });

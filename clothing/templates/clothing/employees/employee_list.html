@@ -75,6 +75,12 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
+                                        <label class="form-label">Пол</label><br>
+                                        {% render_field employee_form.sex class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
                                         <label class="form-label">Дата рождения</label><br>
                                         {% render_field employee_form.date_of_birth class+="form-control" %}
                                     </div>
@@ -92,88 +98,163 @@
 
         {#    update form#}
 
-    {% for employee in employee_list %}
+        {% for employee in employee_list %}
+            <div class="modal fade" id="employee_update_data_form_{{ employee.id }}" tabindex="-1"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <form id="{{ employee.id }}" class="employee_update_form_class">{% csrf_token %}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{ employee.last_name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Фамилия</label><br>
+                                            <input type="text" class="form-control"
+                                                   value="{{ employee.last_name }}"
+                                                   name="last_name" id="id_last_name_{{ employee.id }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Имя</label><br>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   value="{{ employee.first_name }}"
+                                                   name="first_name" id="id_first_name_{{ employee.id }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Отчество</label><br>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   value="{{ employee.patronymic }}"
+                                                   name="patronymic" id="id_patronymic_{{ employee.id }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                </div>
 
-        <div class="modal fade" id="employee_update_data_form_{{ employee.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form id="add_employee_form">{% csrf_token %}
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ employee.last_name }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Фамилия</label><br>
-                                        {% render_field employee_form.last_name class+="form-control" %}
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Тип записи</label><br>
+                                            <select name="kind" id="id_kind_{{ employee.id }}" class="form-select" >
+                                                <option value="">----</option>
+                                                {% if employee.kind == 1 %}
+                                                    <option value="1" selected>Курсант</option>
+                                                    <option value="2">Офицер</option>
+                                                    <option value="3">Гражданский</option>
+                                                {% elif employee.kind == 2 %}
+                                                    <option value="1">Курсант</option>
+                                                    <option value="2" selected>Офицер</option>
+                                                    <option value="3">Гражданский</option>
+                                                {% else %}
+                                                    <option value="1">Курсант</option>
+                                                    <option value="2">Офицер</option>
+                                                    <option value="3" selected>Гражданский</option>
+                                                {% endif %}
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Подразделение</label><br>
+                                            <select name="subdivision" id="id_subdivision_{{ employee.id }}" class="form-select">
+                                                <option value="">----</option>
+                                                {% for subdivision in subdivision_list %}
+                                                    {% if subdivision.id == employee.subdivision.id %}
+                                                        <option value="{{ subdivision.id }}"
+                                                                selected>{{ subdivision.subdivision_name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ subdivision.id }}">{{ subdivision.subdivision_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Звание</label><br>
+                                            <select name="rank" id="id_rank_{{ employee.id }}" class="form-select">
+                                                <option value="">----</option>
+                                                {% for rank in rank_list %}
+                                                    {% if rank.id == employee.rank.id %}
+                                                        <option value="{{ rank.id }}"
+                                                                selected>{{ rank.rank }}</option>
+                                                    {% else %}
+                                                        <option value="{{ rank.id }}">{{ rank.rank }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Имя</label><br>
-                                        {% render_field employee_form.first_name class+="form-control" %}
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Должность</label><br>
+                                            <select name="position" id="id_position_{{ employee.id }}" class="form-select">
+                                                <option value="">----</option>
+                                                {% for position in position_list %}
+                                                    {% if position.id == employee.position.id %}
+                                                        <option value="{{ position.id }}"
+                                                                selected>{{ position.position }}</option>
+                                                    {% else %}
+                                                        <option value="{{ position.id }}">{{ position.position }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Отчество</label><br>
-                                        {% render_field employee_form.patronymic class+="form-control" %}
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Пол</label><br>
+                                            <select name="sex" id="id_sex_{{ employee.id }}" class="form-select">
+                                                <option value="">----</option>
+                                                {% if employee.sex == 1 %}
+                                                    <option value="1" selected>Мужской</option>
+                                                    <option value="2">Женский</option>
+                                                {% else %}
+                                                    <option value="1">Мужской</option>
+                                                    <option value="2" selected>Женский</option>
+                                                {% endif %}
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Дата рождения</label><br>
+                                            <input type="date"
+                                                   value="{{ employee.date_of_birth|date:"Y-m-d" }}"
+                                                   name="date_of_birth" id="id_date_of_birth_{{ employee.id }}"
+                                                   class="form-control">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Тип записи</label><br>
-                                        {% render_field employee_form.kind class+="form-select" %}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Подразделение</label><br>
-                                        {% render_field employee_form.subdivision class+="form-select" %}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Звание</label><br>
-                                        {% render_field employee_form.rank class+="form-select" %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Должность</label><br>
-                                        {% render_field employee_form.position class+="form-select" %}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Дата рождения</label><br>
-                                        {% render_field employee_form.date_of_birth class+="form-control" %}
-                                    </div>
-                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
 
-    {% endfor %}
-
-
+        {% endfor %}
 
         <br>
         <h3>Сотрудники (курсанты)</h3>
@@ -237,7 +318,8 @@
                 {% for employee in employee_list %}
                     <tr>
                         <td>{{ employee.id }}</td>
-                        <td><a href="#employee_update_data_form_{{ employee.id }}" data-bs-toggle="modal" class="link-secondary">{{ employee.last_name|default_if_none:"Нет даных" }}</a></td>
+                        <td><a href="#employee_update_data_form_{{ employee.id }}" data-bs-toggle="modal"
+                               class="link-secondary">{{ employee.last_name|default_if_none:"Нет даных" }}</a></td>
                         <td>{{ employee.first_name|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.patronymic|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.rank|default_if_none:"Нет даных" }}</td>
@@ -251,18 +333,14 @@
         {% else %}
             <p>Список пуст!</p>
         {% endif %}
-
-
     </div>
 {% endblock %}
 
 
 {% block own_js %}
-
     <script>
         $('#add_employee_form').submit(function (e) {
             e.preventDefault();
-
             new_obj = {
                 'last_name': $('#id_last_name').val() == "" ? null : $('#id_last_name').val(),
                 'first_name': $('#id_first_name').val() == "" ? null : $('#id_first_name').val(),
@@ -272,6 +350,7 @@
                 'kind': $('#id_kind').val() == "" ? null : $('#id_kind').val(),
                 'rank': $('#id_rank').val() == "" ? null : $('#id_rank').val(),
                 'position': $('#id_position').val() == "" ? null : $('#id_position').val(),
+                'date_of_birth': $('#id_date_of_birth').val() == "" ? null : $('#id_date_of_birth').val(),
             }
 
             csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -290,9 +369,37 @@
                 }
             }).catch((e) => alert(e.message))
         });
+
+        $('.employee_update_form_class').submit(function (e) {
+            e.preventDefault();
+            let form_id = e.target.id;
+            obj = {
+                'last_name': $(`#id_last_name_${form_id}`).val() == "" ? null : $(`#id_last_name_${form_id}`).val(),
+                'first_name': $(`#id_first_name_${form_id}`).val() == "" ? null : $(`#id_first_name_${form_id}`).val(),
+                'patronymic': $(`#id_patronymic_${form_id}`).val() == "" ? null : $(`#id_patronymic_${form_id}`).val(),
+                'subdivision': $(`#id_subdivision_${form_id}`).val() == "" ? null : $(`#id_subdivision_${form_id}`).val(),
+                'sex': $(`#id_sex_${form_id}`).val() == "" ? null : $(`#id_sex_${form_id}`).val(),
+                'kind': $(`#id_kind_${form_id}`).val() == "" ? null : $(`#id_kind_${form_id}`).val(),
+                'rank': $(`#id_rank_${form_id}`).val() == "" ? null : $(`#id_rank_${form_id}`).val(),
+                'position': $(`#id_position_${form_id}`).val() == "" ? null : $(`#id_position_${form_id}`).val(),
+                'date_of_birth': $(`#id_date_of_birth_${form_id}`).val() == "" ? null : $(`#id_date_of_birth_${form_id}`).val(),
+            }
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch(`/api/employees/${form_id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка записи!")
+                }
+            }).catch((e) => alert(e.message))
+        });
     </script>
-
-
-
 {% endblock %}
 

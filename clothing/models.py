@@ -1,5 +1,30 @@
 from django.db import models
 
+
+class Dimensions(models.Model):
+    dimension = models.CharField(max_length=20, verbose_name="Размер")
+
+    def __str__(self):
+        return self.dimension
+
+    class Meta:
+        ordering = ('dimension',)
+        verbose_name = 'Размер (куртки)'
+        verbose_name_plural = 'Размеры (куртки)'
+
+
+class ShoesDimensions(models.Model):
+    shoes_dimension = models.CharField(max_length=20, verbose_name="Размер обуви")
+
+    def __str__(self):
+        return self.shoes_dimension
+
+    class Meta:
+        ordering = ('shoes_dimension',)
+        verbose_name = 'Размер (куртки)'
+        verbose_name_plural = 'Размеры (куртки)'
+
+
 DIMENSIONS = [
     (1, '39/1'),
     (2, '39/2'),
@@ -114,6 +139,7 @@ class ClothesInNorm(models.Model):
         ordering = ('-id',)
         verbose_name = 'Наименование в норме'
         verbose_name_plural = 'Наименования в норме'
+        unique_together = [['norm', 'clothes']]
 
 
 class Employee(models.Model):
@@ -122,7 +148,7 @@ class Employee(models.Model):
     patronymic = models.CharField(verbose_name="Отчество", max_length=30)
     subdivision = models.ForeignKey(Subdivision, on_delete=models.SET_NULL, verbose_name="Подразделение", blank=True,
                                     null=True)
-    sex = models.IntegerField(choices=SEX, verbose_name="Пол", blank=True, null=True)
+    sex = models.IntegerField(choices=SEX, verbose_name="Пол", blank=True, null=True, default=1)
     kind = models.IntegerField(choices=EMPLOYEE_KIND, verbose_name="Тип сотрудника")
     rank = models.ForeignKey(Rank, on_delete=models.CASCADE, verbose_name="Звание", blank=True, null=True)
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, verbose_name="Должность", blank=True, null=True)

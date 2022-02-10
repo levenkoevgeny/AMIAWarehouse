@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ClothesInCard, Card, Norm, Clothes, Employee
+from .models import ClothesInCard, Card, Norm, Clothes, Employee, ClothesInNorm
 
 
 class ClothesInCardSerializer(serializers.ModelSerializer):
@@ -17,6 +17,12 @@ class CardSerializer(serializers.ModelSerializer):
 class NormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Norm
+        fields = '__all__'
+
+
+class ClothesInNormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClothesInNorm
         fields = '__all__'
 
 

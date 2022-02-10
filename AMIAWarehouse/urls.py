@@ -22,6 +22,7 @@ router = routers.DefaultRouter()
 router.register(r'clothes-in-card', views.ClothesInCardViewSet)
 router.register(r'cards', views.CardViewSet)
 router.register(r'norms', views.NormViewSet)
+router.register(r'norms-items', views.ClothesInNormViewSet)
 router.register(r'clothes', views.ClothesViewSet)
 router.register(r'employees', views.EmployeeViewSet)
 

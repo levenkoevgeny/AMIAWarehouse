@@ -13,7 +13,7 @@ from rest_framework import viewsets
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm
 from .forms import CardForm, ClothesForm, EmployeeForm, NormForm
-from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer
+from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer
 from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
 
 
@@ -141,15 +141,7 @@ def employee_list(request):
 
 
 def employee_input(request):
-    if request.method == 'POST':
-        form = EmployeeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:employee_list'))
-        else:
-            raise Exception("validation error")
-    else:
-        pass
+    pass
 
 
 def employee_update(request, employee_id, card_id):
@@ -219,3 +211,8 @@ class NormViewSet(viewsets.ModelViewSet):
 class ClothesViewSet(viewsets.ModelViewSet):
     queryset = Clothes.objects.all()
     serializer_class = ClothesSerializer
+
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer

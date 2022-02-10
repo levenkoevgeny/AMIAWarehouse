@@ -23,6 +23,7 @@ router.register(r'clothes-in-card', views.ClothesInCardViewSet)
 router.register(r'cards', views.CardViewSet)
 router.register(r'norms', views.NormViewSet)
 router.register(r'clothes', views.ClothesViewSet)
+router.register(r'employees', views.EmployeeViewSet)
 
 
 urlpatterns = [

@@ -11,15 +11,13 @@
 
 {% block content %}
 
-
-
-
     <div class="container">
 
+        {#    add form#}
         <div class="modal fade" id="employee_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form action="{% url 'clothing:employee_input' %}" method="POST">{% csrf_token %}
+                <form id="add_employee_form">{% csrf_token %}
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Новый сотрудник</h5>
@@ -82,8 +80,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -93,6 +89,90 @@
                 </form>
             </div>
         </div>
+
+        {#    update form#}
+
+    {% for employee in employee_list %}
+
+        <div class="modal fade" id="employee_update_data_form_{{ employee.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form id="add_employee_form">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ employee.last_name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Фамилия</label><br>
+                                        {% render_field employee_form.last_name class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Имя</label><br>
+                                        {% render_field employee_form.first_name class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Отчество</label><br>
+                                        {% render_field employee_form.patronymic class+="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Тип записи</label><br>
+                                        {% render_field employee_form.kind class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Подразделение</label><br>
+                                        {% render_field employee_form.subdivision class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Звание</label><br>
+                                        {% render_field employee_form.rank class+="form-select" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Должность</label><br>
+                                        {% render_field employee_form.position class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата рождения</label><br>
+                                        {% render_field employee_form.date_of_birth class+="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    {% endfor %}
+
 
 
         <br>
@@ -157,13 +237,13 @@
                 {% for employee in employee_list %}
                     <tr>
                         <td>{{ employee.id }}</td>
-                        <td>{{ employee.last_name|default_if_none:"Нет даных" }}</td>
+                        <td><a href="#employee_update_data_form_{{ employee.id }}" data-bs-toggle="modal" class="link-secondary">{{ employee.last_name|default_if_none:"Нет даных" }}</a></td>
                         <td>{{ employee.first_name|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.patronymic|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.rank|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.subdivision|default_if_none:"Нет даных" }}</td>
                         <td>{{ employee.get_sex|default_if_none:"Нет даных" }}</td>
-{#                        <td>{{ employee.date_of_birth|default_if_none:"Нет даных" }}</td>#}
+                        {#                        <td>{{ employee.date_of_birth|default_if_none:"Нет даных" }}</td>#}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -177,5 +257,42 @@
 {% endblock %}
 
 
-{% block own_js %}{% endblock %}
+{% block own_js %}
+
+    <script>
+        $('#add_employee_form').submit(function (e) {
+            e.preventDefault();
+
+            new_obj = {
+                'last_name': $('#id_last_name').val() == "" ? null : $('#id_last_name').val(),
+                'first_name': $('#id_first_name').val() == "" ? null : $('#id_first_name').val(),
+                'patronymic': $('#id_patronymic').val() == "" ? null : $('#id_patronymic').val(),
+                'subdivision': $('#id_subdivision').val() == "" ? null : $('#id_subdivision').val(),
+                'sex': $('#id_sex').val() == "" ? null : $('#id_sex').val(),
+                'kind': $('#id_kind').val() == "" ? null : $('#id_kind').val(),
+                'rank': $('#id_rank').val() == "" ? null : $('#id_rank').val(),
+                'position': $('#id_position').val() == "" ? null : $('#id_position').val(),
+            }
+
+            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            fetch('/api/employees/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(new_obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка записи!")
+                }
+            }).catch((e) => alert(e.message))
+        });
+    </script>
+
+
+
+{% endblock %}
 

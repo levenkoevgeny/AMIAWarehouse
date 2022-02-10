@@ -18,7 +18,7 @@ SEX = [
 EMPLOYEE_KIND = [
     (1, 'Курсант'),
     (2, 'Офицер'),
-    (1, 'Гражданский'),
+    (3, 'Гражданский'),
 ]
 
 
@@ -118,8 +118,8 @@ class ClothesInNorm(models.Model):
 
 class Employee(models.Model):
     last_name = models.CharField(verbose_name="Фамилия", max_length=30)
-    first_name = models.CharField(verbose_name="Имя", max_length=30, blank=True, null=True)
-    patronymic = models.CharField(verbose_name="Отчество", max_length=30, blank=True, null=True)
+    first_name = models.CharField(verbose_name="Имя", max_length=30)
+    patronymic = models.CharField(verbose_name="Отчество", max_length=30)
     subdivision = models.ForeignKey(Subdivision, on_delete=models.SET_NULL, verbose_name="Подразделение", blank=True,
                                     null=True)
     sex = models.IntegerField(choices=SEX, verbose_name="Пол", blank=True, null=True)

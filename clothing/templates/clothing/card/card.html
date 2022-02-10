@@ -93,9 +93,11 @@
         </div>
     </div>
 
-    <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}" method="POST">{% csrf_token %}
+            <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}"
+                  method="POST">{% csrf_token %}
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
@@ -164,9 +166,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
 
 
                     </div>
@@ -319,7 +318,6 @@
             'date_of_issue': $('#id_date_of_issue').val()
         }
         csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-        console.log(csrftoken);
         fetch('/api/clothes-in-card/', {
             method: 'POST',
             headers: {
@@ -328,7 +326,13 @@
             },
             body: JSON.stringify(new_obj)
 
-        }).then(() => window.location.href = window.location.href).catch(() => alert("Ошибка записи!"))
+        }).then(response => {
+            if (response.status >= 200 && response.status < 300) {
+                window.location.href = window.location.href
+            } else {
+                throw new Error("Ошибка удаления!")
+            }
+        }).catch((e) => alert(e.message))
     });
 </script>
 

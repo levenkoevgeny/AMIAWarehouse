@@ -12,7 +12,89 @@
 {% block content %}
 
 
+
+
     <div class="container">
+
+        <div class="modal fade" id="employee_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form action="{% url 'clothing:employee_input' %}" method="POST">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Новый сотрудник</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Фамилия</label><br>
+                                        {% render_field employee_form.last_name class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Имя</label><br>
+                                        {% render_field employee_form.first_name class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Отчество</label><br>
+                                        {% render_field employee_form.patronymic class+="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Тип записи</label><br>
+                                        {% render_field employee_form.kind class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Подразделение</label><br>
+                                        {% render_field employee_form.subdivision class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Звание</label><br>
+                                        {% render_field employee_form.rank class+="form-select" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Должность</label><br>
+                                        {% render_field employee_form.position class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата рождения</label><br>
+                                        {% render_field employee_form.date_of_birth class+="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
         <br>
         <h3>Сотрудники (курсанты)</h3>
         <br>
@@ -26,14 +108,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Подразделения</label>
-                        {% render_field filter.form.subdivision class+="form-control my-select2" %}
+                        <label class="form-label">Подразделения</label><br>
+                        {% render_field filter.form.subdivision class+="form-control my-select2" style="width: 100%" %}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Звания</label>
-                        {% render_field filter.form.rank class+="form-control my-select2" %}
+                        <label class="form-label">Звания</label><br>
+                        {% render_field filter.form.rank class+="form-control my-select2" style="width: 100%" %}
                     </div>
                 </div>
             </div>
@@ -56,7 +138,8 @@
             <a href="{% url 'clothing:employee_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
         </form>
         <br>
-
+        <a href="#employee_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
+           style="display: block; margin-left:auto; width: 300px;">Добавить сотрудника (курсанта)</a><br>
         {% if employee_list %}
             <table class="table">
                 <thead>
@@ -68,25 +151,21 @@
                     <th scope="col">Звание</th>
                     <th scope="col">Подразделение</th>
                     <th scope="col">Пол</th>
-                    <th scope="col">Дата рождения</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for employee in employee_list %}
                     <tr>
                         <td>{{ employee.id }}</td>
-                        <td>{{ employee.last_name }}</td>
-                        <td>{{ employee.first_name }}</td>
-                        <td>{{ employee.patronymic }}</td>
-                        <td>{{ employee.rank }}</td>
-                        <td>{{ employee.subdivision }}</td>
-                        <td>{{ employee.get_sex }}</td>
-                        <td>{{ employee.date_of_birth }}</td>
-
+                        <td>{{ employee.last_name|default_if_none:"Нет даных" }}</td>
+                        <td>{{ employee.first_name|default_if_none:"Нет даных" }}</td>
+                        <td>{{ employee.patronymic|default_if_none:"Нет даных" }}</td>
+                        <td>{{ employee.rank|default_if_none:"Нет даных" }}</td>
+                        <td>{{ employee.subdivision|default_if_none:"Нет даных" }}</td>
+                        <td>{{ employee.get_sex|default_if_none:"Нет даных" }}</td>
+{#                        <td>{{ employee.date_of_birth|default_if_none:"Нет даных" }}</td>#}
                     </tr>
                 {% endfor %}
-
-
                 </tbody>
             </table>
         {% else %}

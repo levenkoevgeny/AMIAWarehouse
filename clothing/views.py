@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.urls import reverse
 from django.forms.models import model_to_dict
+from django.forms import modelformset_factory
+
 from datetime import datetime, date
 from dateutil.relativedelta import *
 from rest_framework import viewsets
@@ -110,7 +112,16 @@ def clothes_input(request):
 
 
 def clothes_update(request, clothes_id):
-    pass
+    if request.method == 'POST':
+        obj = get_object_or_404(Clothes, pk=clothes_id)
+        form = ClothesForm(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('clothing:clothes_list'))
+        else:
+            raise Exception("Ошибка записи")
+    else:
+        pass
 
 
 def clothes_delete(request):
@@ -126,7 +137,15 @@ def employee_list(request):
 
 
 def employee_input(request):
-    pass
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('clothing:employee_list'))
+        else:
+            raise Exception("validation error")
+    else:
+        pass
 
 
 def employee_update(request, employee_id, card_id):
@@ -136,6 +155,8 @@ def employee_update(request, employee_id, card_id):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('clothing:get_card', kwargs={'card_id': card_id}))
+        else:
+            raise Exception("Ошибка employee update data")
     else:
         pass
 
@@ -146,6 +167,7 @@ def norm_list(request):
     norm_form = NormForm()
     return render(request, 'clothing/norms/norm_list.html',
                   {'norm_list': norm_list, 'norm_form': norm_form, 'filter': f})
+
 
 # reports
 def get_sheet(request):

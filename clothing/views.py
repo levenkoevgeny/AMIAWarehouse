@@ -1,18 +1,19 @@
-from django.shortcuts import render
+import random
 
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.urls import reverse
 from django.forms.models import model_to_dict
-from django.forms import modelformset_factory
+from django.core.paginator import Paginator
 
 from datetime import datetime, date
 from dateutil.relativedelta import *
 from rest_framework import viewsets
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm, Subdivision, Position, Rank, SEX, \
-    EMPLOYEE_KIND
+    EMPLOYEE_KIND, Dimensions, ShoesDimensions, CapDimensions
 from .forms import CardForm, ClothesForm, EmployeeForm, NormForm, ClothesInNormForm
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer, \
     ClothesInNormSerializer
@@ -21,10 +22,12 @@ from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
 
 def card_list(request):
     f = CardFilter(request.GET, queryset=Card.objects.all())
-    card_list = f.qs
+    paginator = Paginator(f.qs, 50)
+    page = request.GET.get('page')
+    cards_list = paginator.get_page(page)
     card_form = CardForm()
     return render(request, 'clothing/card/card_list.html',
-                  {'card_list': card_list, 'card_form': card_form, 'filter': f})
+                  {'list': cards_list, 'card_form': card_form, 'filter': f})
 
 
 def card_input(request):
@@ -107,10 +110,12 @@ def card_delete(request):
 
 def clothes_list(request):
     f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
-    clothes_list = f.qs
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    cl_list = paginator.get_page(page)
     clothes_form = ClothesForm()
     return render(request, 'clothing/clothes/clothes_list.html',
-                  {'clothes_list': clothes_list, 'clothes_form': clothes_form, 'filter': f})
+                  {'list': cl_list, 'clothes_form': clothes_form, 'filter': f})
 
 
 def clothes_input(request):
@@ -136,10 +141,12 @@ def clothes_delete(request):
 
 def employee_list(request):
     f = EmployeeFilter(request.GET, queryset=Employee.objects.all())
-    employee_list = f.qs
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    employees_list = paginator.get_page(page)
     employee_form = EmployeeForm()
     return render(request, 'clothing/employees/employee_list.html',
-                  {'employee_list': employee_list,
+                  {'list': employees_list,
                    'employee_form': employee_form,
                    'subdivision_list': Subdivision.objects.all(),
                    'rank_list': Rank.objects.all(),
@@ -168,10 +175,12 @@ def employee_update(request, employee_id, card_id):
 
 def norm_list(request):
     f = NormFilter(request.GET, queryset=Norm.objects.all())
-    norm_list = f.qs
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    norms_list = paginator.get_page(page)
     norm_form = NormForm()
     return render(request, 'clothing/norms/norm_list.html',
-                  {'norm_list': norm_list, 'norm_form': norm_form, 'filter': f})
+                  {'list': norms_list, 'norm_form': norm_form, 'filter': f})
 
 
 def norm_items(request, norm_id):
@@ -185,33 +194,70 @@ def norm_items(request, norm_id):
         'clothes_list': Clothes.objects.all(),
     })
 
+def init_dimensions(request):
 
-import random
+    Rank.objects.all().delete()
+    ranks = [
+        'рядовой',
+        'младший',
+        'сержант',
+        'старшина',
+        'младший лейтенант милиции',
+        'лейтенант милиции',
+        'старший лейтенант милиции',
+        'капитан милиции',
+        'майор милиции',
+        'подполковник милиции',
+        'полковник милиции',
+    ]
+
+    for rank in ranks:
+        Rank.objects.create(rank=rank)
+
+    Dimensions.objects.all().delete()
+    for i in range(34, 65):
+        for j in range(1, 8):
+            Dimensions.objects.create(dimension=str(i) + "/" + str(j))
+
+    ShoesDimensions.objects.all().delete()
+    for i in range(36, 47):
+        ShoesDimensions.objects.create(shoes_dimension=str(i))
+
+    CapDimensions.objects.all().delete()
+    for i in range(52, 66):
+        CapDimensions.objects.create(cap_dimension=str(i))
+
+    return HttpResponseRedirect(reverse('clothing:card_list'))
+
 
 def get_random_data(request):
-    for i in range(1, 2000):
+    Employee.objects.all().delete()
+    for i in range(1, 1000):
         new_employee = Employee(
             last_name="LastName" + str(i),
             first_name="Firstname" + str(i),
             patronymic="Patronymic" + str(i),
             kind=1,
             sex=1,
-            subdivision=get_object_or_404(Subdivision, pk=1),
-            position=get_object_or_404(Position, pk=1)
+            subdivision=get_object_or_404(Subdivision, pk=random.randint(1, 2)),
+            position=get_object_or_404(Position, pk=random.randint(1, 2)),
+            rank=get_object_or_404(Rank, pk=random.randint(1, 11))
         )
         new_employee.save()
 
-        new_card = Card(
-            employee=new_employee,
-            norm=get_object_or_404(Norm, pk=1),
-            growth=random.randint(170, 190),
-            bust=random.randint(90, 110),
-            jacket=random.randint(1, 2),
-            shoes=random.randint(1, 2),
-            cap=random.randint(55, 60),
-            collar=random.randint(1, 2),
-        )
-        new_card.save()
+        # new_card = Card(
+        #     employee=new_employee,
+        #     norm=get_object_or_404(Norm, pk=1),
+        #     growth=random.randint(170, 190),
+        #     bust=random.randint(90, 110),
+        #     jacket=random.randint(1, 2),
+        #     shoes=random.randint(1, 2),
+        #     cap=random.randint(55, 60),
+        #     collar=random.randint(1, 2),
+        # )
+        # new_card.save()
+
+    return HttpResponseRedirect(reverse('clothing:card_list'))
 
 
 # reports

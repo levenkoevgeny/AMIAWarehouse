@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load url_replace %}
+
+{% block content %}
+    <div class="container">
+        {% block modals %}{% endblock %}
+        <br>
+        <h2>{% block list_title %}{% endblock %}</h2>
+        <br>
+        {% block filters %}{% endblock %}
+        <br>
+        {% block add_button %}{% endblock %}
+        <br>
+        {% if list %}
+            <p>Найдено записей - <b>{{ filter.qs|length }}</b></p>
+            {% block list %}{% endblock %}
+            <nav aria-label="...">
+                <ul class="pagination pagination-sm">
+                    {% if list.has_previous %}
+                        <li class="page-item">
+                            <a class="btn btn-outline-dark"
+                               href="?{% url_replace request 'page' list.previous_page_number %}"><span
+                                    aria-hidden="true">&laquo;</span></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="btn btn-outline-dark disabled" href="#"><span
+                                    aria-hidden="true">&laquo;</span></a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item d-flex align-items-center disabled"><b>&nbsp;&nbsp;Страница {{ list.number }}
+                        из {{ list.paginator.num_pages }}&nbsp;&nbsp;</b></li>
+                    {% if list.has_next %}
+                        <li class="page-item">
+                            <a class="btn btn-outline-dark"
+                               href="?{% url_replace request 'page' list.next_page_number %}"><span aria-hidden="true">&raquo;</span></a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="btn btn-outline-dark disabled" href="#"><span
+                                    aria-hidden="true">&raquo;</span></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <p>Список пуст!</p>
+        {% endif %}
+    </div>
+{% endblock %}

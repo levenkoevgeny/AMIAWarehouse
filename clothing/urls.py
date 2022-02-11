@@ -22,6 +22,7 @@ urlpatterns = [
     path('norms', views.norm_list, name='norm_list'),
     path('norms/<norm_id>/items', views.norm_items, name='norm_items'),
     path('random', views.get_random_data, name='random'),
+    path('init-dimensions', views.init_dimensions, name='init-dimensions'),
 
 
 ]

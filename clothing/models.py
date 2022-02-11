@@ -21,19 +21,21 @@ class ShoesDimensions(models.Model):
 
     class Meta:
         ordering = ('shoes_dimension',)
-        verbose_name = 'Размер (куртки)'
-        verbose_name_plural = 'Размеры (куртки)'
+        verbose_name = 'Размер (обуви)'
+        verbose_name_plural = 'Размеры (обуви)'
 
 
-DIMENSIONS = [
-    (1, '39/1'),
-    (2, '39/2'),
-]
+class CapDimensions(models.Model):
+    cap_dimension = models.CharField(max_length=20, verbose_name="Размер фуражки")
 
-SHOES_DIMENSIONS = [
-    (1, '37'),
-    (2, '38'),
-]
+    def __str__(self):
+        return self.cap_dimension
+
+    class Meta:
+        ordering = ('cap_dimension',)
+        verbose_name = 'Размер (фуражки)'
+        verbose_name_plural = 'Размеры (фуражки)'
+
 
 SEX = [
     (1, 'Мужской'),
@@ -99,6 +101,7 @@ class Clothes(models.Model):
     wear_time = models.IntegerField(verbose_name="Сроки носки, мес.")
     nomenclature = models.CharField(verbose_name="Номенклатура", max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
+    price = models.FloatField(verbose_name="Цена", blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
@@ -152,6 +155,9 @@ class Employee(models.Model):
     kind = models.IntegerField(choices=EMPLOYEE_KIND, verbose_name="Тип сотрудника")
     rank = models.ForeignKey(Rank, on_delete=models.CASCADE, verbose_name="Звание", blank=True, null=True)
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, verbose_name="Должность", blank=True, null=True)
+    is_on_decree = models.BooleanField(verbose_name="В декрете", default=False)
+    decree_start = models.DateField(verbose_name="Начало декрета", blank=True, null=True)
+    decree_finish = models.DateField(verbose_name="Окончание декрета", blank=True, null=True)
     date_of_birth = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего редактирования", auto_now=True)
 
@@ -180,35 +186,15 @@ class Card(models.Model):
     norm = models.ForeignKey(Norm, on_delete=models.CASCADE, verbose_name="Норма")
     growth = models.IntegerField(verbose_name="Рост", blank=True, null=True)
     bust = models.IntegerField(verbose_name="Обхват груди", blank=True, null=True)
-    jacket = models.IntegerField(choices=DIMENSIONS, verbose_name="Куртка", blank=True, null=True)
-    shoes = models.IntegerField(choices=SHOES_DIMENSIONS, verbose_name="Обувь", blank=True, null=True)
-    cap = models.IntegerField(verbose_name="Фуражка", blank=True, null=True)
-    collar = models.IntegerField(choices=DIMENSIONS, verbose_name="Воротничок", blank=True, null=True)
+    jacket = models.ForeignKey(Dimensions, on_delete=models.SET_NULL, verbose_name="Куртка", blank=True, null=True)
+    shoes = models.ForeignKey(ShoesDimensions, on_delete=models.SET_NULL, verbose_name="Обувь", blank=True, null=True)
+    cap = models.ForeignKey(CapDimensions, on_delete=models.SET_NULL, verbose_name="Фуражка", blank=True, null=True)
+    collar = models.ForeignKey(Dimensions, on_delete=models.SET_NULL, verbose_name="Воротничок", related_name="collar",
+                               blank=True, null=True)
     clothes = models.ManyToManyField(Clothes, verbose_name="Имущество", through='ClothesInCard', blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
-
-    @property
-    def get_jacket(self):
-        if self.jacket:
-            return DIMENSIONS[self.jacket - 1][1]
-        else:
-            return None
-
-    @property
-    def get_shoes(self):
-        if self.jacket:
-            return DIMENSIONS[self.shoes - 1][1]
-        else:
-            return None
-
-    @property
-    def get_collar(self):
-        if self.jacket:
-            return DIMENSIONS[self.collar - 1][1]
-        else:
-            return None
 
     def __str__(self):
         return self.employee.last_name

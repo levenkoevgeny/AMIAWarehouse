@@ -1,33 +1,63 @@
-{% extends 'base.html' %}
+{% extends 'base_list.html' %}
 
 {% load widget_tweaks %}
 {% load static %}
 
 {% block own_css %}{% endblock %}
-{% block title %}
-    <title>Нормы</title>
-{% endblock %}
 
+{% block title %}<title>Нормы</title>{% endblock %}
 
-{% block content %}
-    <div class="container">
+{% block modals %}
+    {#create#}
+    <div class="modal fade" id="norm_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form id="add_norm_form">{% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Новая норма</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Название</label><br>
+                                    {% render_field norm_form.norm_title class+="form-control" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        {#create#}
-        <div class="modal fade" id="norm_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+    {#        update#}
+
+    {% for norm in list %}
+        <div class="modal fade" id="norm_update_data_form_{{ norm.id }}" tabindex="-1"
+             aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form id="add_norm_form">{% csrf_token %}
+                <form id="{{ norm.id }}" class="norm_update_form">{% csrf_token %}
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Новая норма</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Название</label><br>
-                                        {% render_field norm_form.norm_title class+="form-control" style="width: 100%" %}
+                                        <input type="text" class="form-control" name="norm_title"
+                                               id="id_norm_title_{{ norm.id }}" value="{{ norm.norm_title }}" required>
                                     </div>
                                 </div>
                             </div>
@@ -40,107 +70,62 @@
                 </form>
             </div>
         </div>
-
-        {#update#}
-
-
-        {% for norm in norm_list %}
-
-            <div class="modal fade" id="norm_update_data_form_{{ norm.id }}" tabindex="-1"
-                 aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <form id="{{ norm.id }}" class="norm_update_form">{% csrf_token %}
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Название</label><br>
-                                            <input type="text" class="form-control" name="norm_title"
-                                                   id="id_norm_title_{{ norm.id }}" value="{{ norm.norm_title }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        {% endfor %}
-
-
-
-
-
-        <br>
-        <h3>Список норм</h3>
-        <form action="{% url 'clothing:norm_list' %}">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Название</label>
-                        {% render_field filter.form.norm_title__icontains class+="form-control" %}
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-secondary">Поиск</button>
-            <a href="{% url 'clothing:norm_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
-        </form>
-        <br>
-
-        <h5>Найдено записей - {{ norm_list.count }}</h5>
-        <a href="#norm_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
-           style="display: block; margin-left:auto; width: 180px;">Добавить норму</a>
-
-        {% if norm_list %}
-            <h5>Найдено записей - {{ norm_list.count }}</h5> <br>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">Название</th>
-                    <th scope="col">Список наименований</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for norm in norm_list %}
-                    <tr>
-                        <td>{{ norm.id }}</td>
-                        <td>
-{#                            <a href="#norm_update_data_form_{{ norm.id }}" data-bs-toggle="modal"#}
-{#                               class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
-                            <a href="{% url 'clothing:norm_items' norm.id %}" class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>
-                        </td>
-                        <td>
-                            {% for clothes in norm.clothes_list.all %}
-                                {{ clothes.clothes_title }} ({{ clothes.nomenclature }}) <br>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Список пуст!</p>
-        {% endif %}
-    </div>
+    {% endfor %}
 {% endblock %}
 
+{% block list_title %}Список норм{% endblock %}
+
+{% block filters %}
+    <form action="{% url 'clothing:norm_list' %}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Название</label>
+                    {% render_field filter.form.norm_title__icontains class+="form-control" %}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-secondary">Поиск</button>
+        <a href="{% url 'clothing:norm_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+    </form>
+{% endblock %}
+
+{% block add_button %}
+    <a href="#norm_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
+       style="display: block; margin-left:auto; width: 180px;">Добавить норму</a>
+{% endblock %}
+
+{% block list %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Название</th>
+            <th scope="col">Список наименований</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for norm in list %}
+            <tr>
+                <td>{{ norm.id }}</td>
+                <td>
+{#                    <a href="#norm_update_data_form_{{ norm.id }}" data-bs-toggle="modal"#}
+{#                       class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
+                    <a href="{% url 'clothing:norm_items' norm.id %}"
+                       class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>
+                </td>
+                <td>
+                    {% for clothes in norm.clothes_list.all %}
+                        {{ clothes.clothes_title }} ({{ clothes.nomenclature }}) <br>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
 
 {% block own_js %}
-
     <script>
         $('#add_norm_form').submit(function (e) {
             e.preventDefault();
@@ -187,8 +172,120 @@
                 }
             }).catch((e) => alert(e.message))
         });
-
     </script>
-
 {% endblock %}
+
+
+
+
+
+{#{% extends 'base.html' %}#}
+{##}
+{#{% load widget_tweaks %}#}
+{#{% load static %}#}
+{##}
+{#{% block own_css %}{% endblock %}#}
+{#{% block title %}#}
+{#    <title>Нормы</title>#}
+{#{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#    <div class="container">#}
+
+{#        <br>#}
+{#        <h3>Список норм</h3>#}
+
+{#        <br>#}
+{##}
+{#        <h5>Найдено записей - {{ norm_list.count }}</h5>#}
+{#        <a href="#norm_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"#}
+{#           style="display: block; margin-left:auto; width: 180px;">Добавить норму</a>#}
+{##}
+{#        {% if norm_list %}#}
+{#            <h5>Найдено записей - {{ norm_list.count }}</h5> <br>#}
+{#            <table class="table">#}
+{#                <thead>#}
+{#                <tr>#}
+{#                    <th scope="col">id</th>#}
+{#                    <th scope="col">Название</th>#}
+{#                    <th scope="col">Список наименований</th>#}
+{#                </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                {% for norm in norm_list %}#}
+{#                    <tr>#}
+{#                        <td>{{ norm.id }}</td>#}
+{#                        <td>#}
+{#                            <a href="#norm_update_data_form_{{ norm.id }}" data-bs-toggle="modal"#}
+{#                               class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
+{#                            <a href="{% url 'clothing:norm_items' norm.id %}" class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
+{#                        </td>#}
+{#                        <td>#}
+{#                            {% for clothes in norm.clothes_list.all %}#}
+{#                                {{ clothes.clothes_title }} ({{ clothes.nomenclature }}) <br>#}
+{#                            {% endfor %}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#                </tbody>#}
+{#            </table>#}
+{#        {% else %}#}
+{#            <p>Список пуст!</p>#}
+{#        {% endif %}#}
+{#    </div>#}
+{#{% endblock %}#}
+{##}
+{##}
+{#{% block own_js %}#}
+{##}
+{#    <script>#}
+{#        $('#add_norm_form').submit(function (e) {#}
+{#            e.preventDefault();#}
+{#            new_obj = {#}
+{#                'norm_title': $('#id_norm_title').val() == "" ? null : $('#id_norm_title').val(),#}
+{#            }#}
+{#            csrftoken = $("input[name='csrfmiddlewaretoken']").val();#}
+{#            fetch('/api/norms/', {#}
+{#                method: 'POST',#}
+{#                headers: {#}
+{#                    'Content-Type': 'application/json;charset=utf-8',#}
+{#                    "X-CSRFToken": csrftoken,#}
+{#                },#}
+{#                body: JSON.stringify(new_obj)#}
+{#            }).then(response => {#}
+{#                if (response.status >= 200 && response.status < 300) {#}
+{#                    window.location.href = window.location.href#}
+{#                } else {#}
+{#                    throw new Error("Ошибка записи!")#}
+{#                }#}
+{#            }).catch((e) => alert(e.message))#}
+{#        });#}
+{##}
+{##}
+{#        $('.norm_update_form').submit(function (e) {#}
+{#            e.preventDefault();#}
+{#            let form_id = e.target.id;#}
+{#            obj = {#}
+{#                'norm_title': $(`#id_norm_title_${form_id}`).val() == "" ? null : $(`#id_norm_title_${form_id}`).val(),#}
+{#            }#}
+{#            csrftoken = $("input[name='csrfmiddlewaretoken']").val();#}
+{#            fetch(`/api/norms/${form_id}/`, {#}
+{#                method: 'PUT',#}
+{#                headers: {#}
+{#                    'Content-Type': 'application/json;charset=utf-8',#}
+{#                    "X-CSRFToken": csrftoken,#}
+{#                },#}
+{#                body: JSON.stringify(obj)#}
+{#            }).then(response => {#}
+{#                if (response.status >= 200 && response.status < 300) {#}
+{#                    window.location.href = window.location.href#}
+{#                } else {#}
+{#                    throw new Error("Ошибка записи!")#}
+{#                }#}
+{#            }).catch((e) => alert(e.message))#}
+{#        });#}
+{##}
+{#    </script>#}
+{##}
+{#{% endblock %}#}
 

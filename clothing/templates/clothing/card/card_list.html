@@ -1,210 +1,208 @@
-{% extends 'base.html' %}
+{% extends 'base_list.html' %}
 
 {% load widget_tweaks %}
 {% load static %}
 
 {% block own_css %}{% endblock %}
+
 {% block title %}<title>Арматурная карточка</title>{% endblock %}
-{% block content %}
-    <div class="container">
-        <div class="modal fade" id="card_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form id="add_card_form">{% csrf_token %}
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Новая карточка</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
 
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Сотрудник (курсант)</label><br>
-                                        {% render_field card_form.employee class+="form-select" style="width: 100%" %}
-                                    </div>
-                                </div>
+{% block modals %}
+    <div class="modal fade" id="card_add_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form id="add_card_form">{% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Новая карточка</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
 
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Норма</label><br>
-                                        {% render_field card_form.norm class+="form-select" style="width: 100%" %}
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Сотрудник (курсант)</label><br>
+                                    {% render_field card_form.employee class+="form-select" style="width: 100%" %}
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Рост</label>
-                                        {% render_field card_form.growth class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Обхват груди</label>
-                                        {% render_field card_form.bust class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Куртка</label>
-                                        {% render_field card_form.jacket class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Обувь</label>
-                                        {% render_field card_form.shoes class+="form-control" %}
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Фуражка</label>
-                                        {% render_field card_form.cap class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Воторничек</label>
-                                        {% render_field card_form.collar class+="form-control" %}
-
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Норма</label><br>
+                                    {% render_field card_form.norm class+="form-select" style="width: 100%" %}
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Рост</label>
+                                    {% render_field card_form.growth class+="form-control" %}
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обхват груди</label>
+                                    {% render_field card_form.bust class+="form-control" %}
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Куртка</label>
+                                    {% render_field card_form.jacket class+="form-control" %}
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обувь</label>
+                                    {% render_field card_form.shoes class+="form-control" %}
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Фуражка</label>
+                                    {% render_field card_form.cap class+="form-control" %}
+
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Воторничек</label>
+                                    {% render_field card_form.collar class+="form-control" %}
+
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <br>
-        <h2>Арматурные карточки</h2>
-        <br>
-
-        <form action="{% url 'clothing:card_list' %}">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label class="form-label">Фамилия</label>
-                        {% render_field filter.form.last_name class+="form-control" %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Подразделение</label>
-                        {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Должность</label>
-                        {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Звание</label>
-                        {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="mb-3">
-                        <label class="form-label">Рост от</label>
-                        {% render_field filter.form.growth_from class+="form-control" %}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="mb-3">
-                        <label class="form-label">Рост до</label>
-                        {% render_field filter.form.growth_till class+="form-control" %}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="mb-3">
-                        <label class="form-label">Обхват груди от</label>
-                        {% render_field filter.form.bust_from class+="form-control" %}
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="mb-3">
-                        <label class="form-label">Обхват груди до</label>
-                        {% render_field filter.form.bust_till class+="form-control" %}
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-secondary">Поиск</button>
-            <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
-        </form>
-        <br>
-
-        <h5>Найдено записей - {{ card_list.count }}</h5>
-        <a href="#card_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
-           style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a>
-        <br>
-        {% if card_list %}
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Звание</th>
-                    <th scope="col">Должность</th>
-                    <th scope="col">Рост</th>
-                    <th scope="col">Обхват груди</th>
-                    <th scope="col">Куртка</th>
-                    <th scope="col">Обувь</th>
-                    <th scope="col">Фуражка</th>
-                    <th scope="col">Воротничок</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for card in card_list %}
-                    <tr>
-                        <td>{{ card.id }}</td>
-                        <td><a href="{% url 'clothing:get_card' card.id %}"
-                               class="link-secondary">{{ card.employee.last_name|default_if_none:"Нет данных" }}</a>
-                        </td>
-                        <td>{{ card.employee.rank|default_if_none:"" }}</td>
-                        <td>{{ card.employee.position|default_if_none:"" }}</td>
-                        <td>{{ card.growth|default_if_none:"" }}</td>
-                        <td>{{ card.bust|default_if_none:"" }}</td>
-                        <td>{{ card.get_jacket|default_if_none:"" }}</td>
-                        <td>{{ card.get_shoes|default_if_none:"" }}</td>
-                        <td>{{ card.cap|default_if_none:"" }}</td>
-                        <td>{{ card.get_collar|default_if_none:"" }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Список пуст!</p>
-        {% endif %}
     </div>
 {% endblock %}
-{% block own_js %}
 
+{% block list_title %}Арматурные карточки{% endblock %}
+
+{% block filters %}
+    <form action="{% url 'clothing:card_list' %}">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-3">
+                    <label class="form-label">Фамилия</label>
+                    {% render_field filter.form.last_name class+="form-control" %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Подразделение</label>
+                    {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Должность</label>
+                    {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">Звание</label>
+                    {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Рост от</label>
+                    {% render_field filter.form.growth_from class+="form-control" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Рост до</label>
+                    {% render_field filter.form.growth_till class+="form-control" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Обхват груди от</label>
+                    {% render_field filter.form.bust_from class+="form-control" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Обхват груди до</label>
+                    {% render_field filter.form.bust_till class+="form-control" %}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-secondary">Поиск</button>
+        <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+    </form>
+{% endblock %}
+
+{% block add_button %}
+    <a href="#card_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
+       style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a>
+{% endblock %}
+
+{% block list %}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Фамилия</th>
+            <th scope="col">Звание</th>
+            <th scope="col">Должность</th>
+            <th scope="col">Рост</th>
+            <th scope="col">Обхват груди</th>
+            <th scope="col">Куртка</th>
+            <th scope="col">Обувь</th>
+            <th scope="col">Фуражка</th>
+            <th scope="col">Воротничок</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for card in list %}
+            <tr>
+                <td>{{ card.id }}</td>
+                <td><a href="{% url 'clothing:get_card' card.id %}"
+                       class="link-secondary">{{ card.employee.last_name|default_if_none:"Нет данных" }}</a>
+                </td>
+                <td>{{ card.employee.rank|default_if_none:"" }}</td>
+                <td>{{ card.employee.position|default_if_none:"" }}</td>
+                <td>{{ card.growth|default_if_none:"" }}</td>
+                <td>{{ card.bust|default_if_none:"" }}</td>
+                <td>{{ card.get_jacket|default_if_none:"" }}</td>
+                <td>{{ card.get_shoes|default_if_none:"" }}</td>
+                <td>{{ card.cap|default_if_none:"" }}</td>
+                <td>{{ card.get_collar|default_if_none:"" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block own_js %}
     <script>
         $('#add_card_form').submit(function (e) {
             e.preventDefault();
-
             new_obj = {
                 'employee': $('#id_employee').val() == "" ? null : $('#id_employee').val(),
                 'norm': $('#id_norm').val() == "" ? null : $('#id_norm').val(),
@@ -233,5 +231,4 @@
             }).catch((e) => alert(e.message))
         });
     </script>
-
 {% endblock %}

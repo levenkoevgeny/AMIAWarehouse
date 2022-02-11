@@ -98,34 +98,63 @@
 {% block filters %}
     <form action="{% url 'clothing:card_list' %}">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Фамилия</label>
                     {% render_field filter.form.last_name class+="form-control" %}
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Подразделение</label>
                     {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
                 </div>
             </div>
-            <div class="col-md-4">
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Должность</label>
                     {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Звание</label>
                     {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
                 </div>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Куртка</label>
+                    {% render_field filter.form.jacket class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Ботинки</label>
+                    {% render_field filter.form.shoes class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Фуражка</label>
+                    {% render_field filter.form.cap class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label class="form-label">Воторничек</label>
+                    {% render_field filter.form.collar class+="form-select my-select2" style="width: 100%" %}
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-3">
                 <div class="mb-3">
@@ -189,10 +218,10 @@
                 <td>{{ card.employee.position|default_if_none:"" }}</td>
                 <td>{{ card.growth|default_if_none:"" }}</td>
                 <td>{{ card.bust|default_if_none:"" }}</td>
-                <td>{{ card.get_jacket|default_if_none:"" }}</td>
-                <td>{{ card.get_shoes|default_if_none:"" }}</td>
+                <td>{{ card.jacket|default_if_none:"" }}</td>
+                <td>{{ card.shoes|default_if_none:"" }}</td>
                 <td>{{ card.cap|default_if_none:"" }}</td>
-                <td>{{ card.get_collar|default_if_none:"" }}</td>
+                <td>{{ card.collar|default_if_none:"" }}</td>
             </tr>
         {% endfor %}
         </tbody>

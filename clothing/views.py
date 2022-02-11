@@ -245,17 +245,17 @@ def get_random_data(request):
         )
         new_employee.save()
 
-        # new_card = Card(
-        #     employee=new_employee,
-        #     norm=get_object_or_404(Norm, pk=1),
-        #     growth=random.randint(170, 190),
-        #     bust=random.randint(90, 110),
-        #     jacket=random.randint(1, 2),
-        #     shoes=random.randint(1, 2),
-        #     cap=random.randint(55, 60),
-        #     collar=random.randint(1, 2),
-        # )
-        # new_card.save()
+        new_card = Card(
+            employee=new_employee,
+            norm=get_object_or_404(Norm, pk=1),
+            growth=random.randint(170, 190),
+            bust=random.randint(90, 110),
+            jacket=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
+            shoes=get_object_or_404(ShoesDimensions, pk=random.randint(1, 8)),
+            cap=get_object_or_404(CapDimensions, pk=random.randint(1, 5)),
+            collar=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
+        )
+        new_card.save()
 
     return HttpResponseRedirect(reverse('clothing:card_list'))
 

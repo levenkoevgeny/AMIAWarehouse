@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Employee, Position, Rank, Subdivision, Card, Norm, Clothes, ClothesInCard, ClothesInNorm, \
-    Dimensions, ShoesDimensions, CapDimensions
+from .models import Employee, Position, Rank, Subdivision, Card, Norm, Clothes, ClothesInCard, ClothesInNorm
 
 admin.site.register(Employee)
 admin.site.register(Subdivision)
@@ -11,6 +10,3 @@ admin.site.register(Norm)
 admin.site.register(Clothes)
 admin.site.register(ClothesInCard)
 admin.site.register(ClothesInNorm)
-admin.site.register(Dimensions)
-admin.site.register(ShoesDimensions)
-admin.site.register(CapDimensions)

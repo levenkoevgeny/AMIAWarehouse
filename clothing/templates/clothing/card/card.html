@@ -12,7 +12,7 @@
     <title>Card</title>
 </head>
 <body>
-
+{% include 'nav_main.html' %}
 <div class="container">
 
     <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -240,7 +240,7 @@
         <form id="clothes_in_card_form">{% csrf_token %}
             <input type="hidden" value="{{ card.id }}" id="id_card">
             <div class="row align-items-end">
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Наименование</label>
                         <select name="clothes" class="form-select" id="id_clothes" required>
@@ -251,13 +251,19 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
+                    <div class="mb-3">
+                        <label class="form-label">Количество</label>
+                        <input type="number" class="form-control" id="id_count_of_issue" required>
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Дата выдачи</label>
                         <input type="date" class="form-control" id="id_date_of_issue" required>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="mb-3">
                         <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
                         </button>
@@ -315,6 +321,7 @@
         new_obj = {
             'card': $('#id_card').val(),
             'clothes': $('#id_clothes').val(),
+            'count': $('#id_count_of_issue').val(),
             'date_of_issue': $('#id_date_of_issue').val()
         }
         csrftoken = $("input[name='csrfmiddlewaretoken']").val();

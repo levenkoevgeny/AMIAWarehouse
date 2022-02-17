@@ -208,6 +208,7 @@ class Card(models.Model):
 class ClothesInCard(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE, verbose_name="Арматурная карточка")
     clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Вещь")
+    count = models.IntegerField(verbose_name="Количество", default=1)
     date_of_issue = models.DateField(verbose_name="Дата выдачи")
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,

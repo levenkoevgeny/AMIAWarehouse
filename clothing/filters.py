@@ -21,7 +21,7 @@ class CardFilter(django_filters.FilterSet):
                                                      queryset=ShoesDimensions.objects.all())
     cap = django_filters.ModelMultipleChoiceFilter(field_name='cap',
                                                    queryset=CapDimensions.objects.all())
-    collar = django_filters.ModelMultipleChoiceFilter(field_name='cap',
+    collar = django_filters.ModelMultipleChoiceFilter(field_name='collar',
                                                       queryset=Dimensions.objects.all())
 
     class Meta:

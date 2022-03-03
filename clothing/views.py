@@ -310,7 +310,6 @@ def get_sheet(request):
                             break
 
                     result_list_of_issues = list_of_issues.exclude(id__in=[*id_need_to_delete_array])
-                    print(result_list_of_issues)
 
                     if result_list_of_issues.count() == 0:
                         employee_clothes_dict[clothes.id] = norm_count
@@ -329,6 +328,8 @@ def get_sheet(request):
                         else:
                             employee_clothes_dict[clothes.id] = ""
 
+            else:
+                employee_clothes_dict[clothes.id] = ""
 
         # # количество лет с момента первой выдачи до текущего года
         # year_count = datetime.now().year - list_of_issues.order_by(

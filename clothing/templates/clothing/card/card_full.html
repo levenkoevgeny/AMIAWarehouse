@@ -25,7 +25,7 @@
                 <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Наименование</label>
-                        <select name="clothes" class="form-select" id="id_clothes" required>
+                        <select name="clothes" class="form-select my-select2" id="id_clothes" required multiple>
                             <option value="">-----</option>
                             {% for clothes in clothes_list_full %}
                                 <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
@@ -85,27 +85,33 @@
     <script>
         $('#clothes_in_card_form').submit(function (e) {
             e.preventDefault();
-            new_obj = {
-                'card': $('#id_card').val(),
-                'clothes': $('#id_clothes').val(),
-                'count': $('#id_count_of_issue').val(),
-                'date_of_issue': $('#id_date_of_issue').val()
-            }
-            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-            fetch('/api/clothes-in-card/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify(new_obj)
+            let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
 
-            }).then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    window.location.href = window.location.href
-                } else {
-                    throw new Error("Ошибка удаления!")
+            let ids_array = $('#id_clothes').val();
+
+            let requests = []
+            ids_array.map(id => {
+                let new_obj = {
+                    'card': $('#id_card').val(),
+                    'clothes': id,
+                    'count': $('#id_count_of_issue').val(),
+                    'date_of_issue': $('#id_date_of_issue').val()
                 }
+
+                requests.push(
+                    fetch('/api/clothes-in-card/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8',
+                            "X-CSRFToken": csrftoken,
+                        },
+                        body: JSON.stringify(new_obj)
+                    })
+                )
+            })
+
+            Promise.all(requests).then(() => {
+                window.location.href = window.location.href
             }).catch((e) => alert(e.message))
         });
 

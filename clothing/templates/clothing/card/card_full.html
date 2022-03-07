@@ -12,6 +12,69 @@
 
 {% block content %}
     <div class="container">
+
+        {% for clothes in clothes_list %}
+
+            <div class="modal fade" id="clothes_in_card_update_form_{{ clothes.id }}" tabindex="-1"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <form id="{{ clothes.id }}" class="clothes_in_card_update_form">{% csrf_token %}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ clothes.clothes }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Количество</label><br>
+                                            <input type="number" class="form-control" name="count"
+                                                   id="id_count_{{ clothes.id }}" value="{{ clothes.count }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Дата выдачи</label><br>
+                                            <input type="date" class="form-control" name="date_of_issue"
+                                                   id="id_date_of_issue_{{ clothes.id }}"
+                                                   value="{{ clothes.date_of_issue|date:"Y-m-d" }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            {% if clothes.has_replacement %}
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="id_has_replacement_{{ clothes.id }}" checked>
+                                            {% else %}
+                                                <input class="form-check-input" type="checkbox"
+                                                       id="id_has_replacement_{{ clothes.id }}">
+                                            {% endif %}
+                                            <label class="form-check-label">
+                                                Замена
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        {% endfor %}
+
+
+
+
+
+
         <br>
 
         <br>
@@ -65,7 +128,9 @@
 
                 {% with issues=clothes_list|get_issues_dates:id %}
                     {% for item in issues %}
-                        {{ item.date_of_issue }} {{ item.count }} шт. <a href="javascript:delete_clothes_in_card({{ item.id }})">удалить</a>
+                        <a href="#clothes_in_card_update_form_{{ item.id }}"
+                           data-bs-toggle="modal">{{ item.date_of_issue }} {{ item.count }} шт. </a>
+                        <a href="javascript:delete_clothes_in_card({{ item.id }})">удалить</a>
                         <br>
                     {% endfor %}<br>
                 {% endwith %}
@@ -132,6 +197,33 @@
                 }
             ).catch((e) => alert(e.message))
         }
+
+        $('.clothes_in_card_update_form').submit(function (e) {
+            e.preventDefault();
+            let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+            let form_id = e.target.id;
+
+            let obj = {
+                'count': $(`#id_count_${form_id}`).val(),
+                'date_of_issue': $(`#id_date_of_issue_${form_id}`).val(),
+                'has_replacement': $(`#id_has_replacement_${form_id}`).is(':checked')
+            }
+
+            fetch(`/api/clothes-in-card/${form_id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify(obj)
+            }).then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    window.location.href = window.location.href
+                } else {
+                    throw new Error("Ошибка записи!")
+                }
+            }).catch((e) => alert(e.message))
+        });
 
     </script>
 

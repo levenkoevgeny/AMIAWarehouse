@@ -210,12 +210,13 @@ class ClothesInCard(models.Model):
     clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Вещь")
     count = models.IntegerField(verbose_name="Количество", default=1)
     date_of_issue = models.DateField(verbose_name="Дата выдачи")
+    has_replacement = models.BooleanField(verbose_name="Имеет замену", default=False)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
     def __str__(self):
-        return self.clothes.clothes_title + ' ' + str(self.date_of_issue)
+        return self.clothes.clothes_title + ' ' + str(self.count) + ' ' + str(self.date_of_issue)
 
     class Meta:
         ordering = ('id',)

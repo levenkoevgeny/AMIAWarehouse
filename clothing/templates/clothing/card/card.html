@@ -1,367 +1,347 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% load widget_tweaks %}
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+{% extends 'base.html' %}
 
-    <script src="https://code.jquery.com/jquery-3.6.0.js"
-            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-            crossorigin="anonymous"></script>
+{% load widget_tweaks %}
+{% load static %}
+{% load dict_tags %}
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% block own_css %}{% endblock %}
+{% block title %}
+    <title>Арматурная карточка</title>
+{% endblock %}
 
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
-    <title>Card</title>
-</head>
-<body>
-{% include 'nav_main.html' %}
-<div class="container">
+{% block content %}
+    <div class="container">
 
-    <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <form action="{% url 'clothing:card_update' card_id=card.id %}" method="POST">{% csrf_token %}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <input type="hidden" value="{{ card.employee.id }}" name="employee">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Норма</label><br>
-                                    {% render_field card_form.norm class+="form-select my-select2" style="width: 100%" %}
+        <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form action="{% url 'clothing:card_update' card_id=card.id %}" method="POST">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <input type="hidden" value="{{ card.employee.id }}" name="employee">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Норма</label><br>
+                                        {% render_field card_form.norm class+="form-select my-select2" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Рост</label>
+                                        {% render_field card_form.growth class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Обхват груди</label>
+                                        {% render_field card_form.bust class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Куртка</label>
+                                        {% render_field card_form.jacket class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Обувь</label>
+                                        {% render_field card_form.shoes class+="form-control" %}
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Фуражка</label>
+                                        {% render_field card_form.cap class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Воторничек</label>
+                                        {% render_field card_form.collar class+="form-control" %}
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Рост</label>
-                                    {% render_field card_form.growth class+="form-control" %}
-
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Обхват груди</label>
-                                    {% render_field card_form.bust class+="form-control" %}
-
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Куртка</label>
-                                    {% render_field card_form.jacket class+="form-control" %}
-
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Обувь</label>
-                                    {% render_field card_form.shoes class+="form-control" %}
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Фуражка</label>
-                                    {% render_field card_form.cap class+="form-control" %}
-
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Воторничек</label>
-                                    {% render_field card_form.collar class+="form-control" %}
-
-                                </div>
-                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                    </div>
-                </div>
-            </form>
+                </form>
 
 
-        </div>
-    </div>
-
-    <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}"
-                  method="POST">{% csrf_token %}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Фамилия</label><br>
-                                    {% render_field employee_form.last_name class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Имя</label><br>
-                                    {% render_field employee_form.first_name class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Отчество</label><br>
-                                    {% render_field employee_form.patronymic class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Подразделение</label><br>
-                                    {% render_field employee_form.subdivision class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Звание</label><br>
-                                    {% render_field employee_form.rank class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Тип записи</label><br>
-                                    {% render_field employee_form.kind class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Должность</label><br>
-                                    {% render_field employee_form.position class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Пол</label><br>
-                                    {% render_field employee_form.sex class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Дата рождения</label><br>
-                                    {% render_field employee_form.date_of_birth class+="form-control" style="width: 100%" %}
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                    </div>
-                </div>
-            </form>
-
-
-        </div>
-    </div>
-
-    <br>
-
-    <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.id }}</h2>
-
-    <div class="row">
-        <h4 class="card-title mb-3"><a href="#employee_data_form" data-bs-toggle="modal"
-                                       class="link-secondary">{{ card.employee.get_full_name }}</a></h4>
-        <div class="col-xl-6 my-2">
-            <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
-            <h6>должность - <span
-                    class="fst-italic">{{ card.employee.position }} ({{ card.employee.subdivision }})</span></h6>
-            <h6>зачислен(а) - <span class="fst-italic">Нет данных</span></h6>
-            <h6>исключен(а) - <span class="fst-italic">Нет данных</span></h6>
-            <h6>личный номер - <span class="fst-italic">Нет данных</span></h6>
-
-        </div>
-        <div class="col-xl-6 my-2">
-            <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary">Сведения о
-                ростовке</a></h5>
-
-            <h6>рост - <span class="fst-italic">{{ card.growth|default_if_none:"Нет данных" }}</span></h6>
-            <h6>обхват груди - <span class="fst-italic">{{ card.bust|default_if_none:"Нет данных" }}</span></h6>
-            <h6>куртка - <span class="fst-italic">{{ card.jacket|default_if_none:"Нет данных" }}</span></h6>
-            <h6>ботинки - <span class="fst-italic">{{ card.shoes|default_if_none:"Нет данных" }}</span></h6>
-            <h6>фуражка - <span class="fst-italic">{{ card.cap|default_if_none:"Нет данных" }}</span></h6>
-            <h6>воротничок-размер - <span class="fst-italic">{{ card.collar|default_if_none:"Нет данных" }}</span>
-            </h6>
-        </div>
-    </div>
-
-    <br>
-    <div class="border p-3">
-        <h5>Норма положенности - <span class="fst-italic">{{ card.norm }}</span></h5>
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">Наименование</th>
-                <th scope="col">Срок носки</th>
-                <th scope="col">Количество</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for norm_clothes in norm_clothes_list %}
-                <tr>
-                    <td>{{ norm_clothes.clothes.clothes_title }}</td>
-                    <td>{{ norm_clothes.clothes.wear_time }} мес.</td>
-                    <td>{{ norm_clothes.norm_count }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <br>
-    <div class="container-fluid">
-        <h5><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица выдачи</a></h5>
-        <form id="clothes_in_card_form">{% csrf_token %}
-            <input type="hidden" value="{{ card.id }}" id="id_card">
-            <div class="row align-items-end">
-                <div class="col-lg-3">
-                    <div class="mb-3">
-                        <label class="form-label">Наименование</label>
-                        <select name="clothes" class="form-select my-select2" id="id_clothes" multiple required>
-                            <option value="">-----</option>
-                            {% for clothes in clothes_list %}
-                                <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="mb-3">
-                        <label class="form-label">Количество</label>
-                        <input type="number" class="form-control" id="id_count_of_issue" required>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="mb-3">
-                        <label class="form-label">Дата выдачи</label>
-                        <input type="date" class="form-control" id="id_date_of_issue" required>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
-                        </button>
-                    </div>
-                </div>
             </div>
-        </form>
-        {% if result_list %}
+        </div>
+
+        <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}"
+                      method="POST">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Фамилия</label><br>
+                                        {% render_field employee_form.last_name class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Имя</label><br>
+                                        {% render_field employee_form.first_name class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Отчество</label><br>
+                                        {% render_field employee_form.patronymic class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Подразделение</label><br>
+                                        {% render_field employee_form.subdivision class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Звание</label><br>
+                                        {% render_field employee_form.rank class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Тип записи</label><br>
+                                        {% render_field employee_form.kind class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Должность</label><br>
+                                        {% render_field employee_form.position class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Пол</label><br>
+                                        {% render_field employee_form.sex class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата рождения</label><br>
+                                        {% render_field employee_form.date_of_birth class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+
+        <br>
+
+        <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.id }}</h2>
+
+        <div class="row">
+            <h4 class="card-title mb-3"><a href="#employee_data_form" data-bs-toggle="modal"
+                                           class="link-secondary">{{ card.employee.get_full_name }}</a></h4>
+            <div class="col-xl-6 my-2">
+                <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
+                <h6>должность - <span
+                        class="fst-italic">{{ card.employee.position }} ({{ card.employee.subdivision }})</span></h6>
+                <h6>зачислен(а) - <span class="fst-italic">Нет данных</span></h6>
+                <h6>исключен(а) - <span class="fst-italic">Нет данных</span></h6>
+                <h6>личный номер - <span class="fst-italic">Нет данных</span></h6>
+
+            </div>
+            <div class="col-xl-6 my-2">
+                <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary">Сведения
+                    о
+                    ростовке</a></h5>
+
+                <h6>рост - <span class="fst-italic">{{ card.growth|default_if_none:"Нет данных" }}</span></h6>
+                <h6>обхват груди - <span class="fst-italic">{{ card.bust|default_if_none:"Нет данных" }}</span></h6>
+                <h6>куртка - <span class="fst-italic">{{ card.jacket|default_if_none:"Нет данных" }}</span></h6>
+                <h6>ботинки - <span class="fst-italic">{{ card.shoes|default_if_none:"Нет данных" }}</span></h6>
+                <h6>фуражка - <span class="fst-italic">{{ card.cap|default_if_none:"Нет данных" }}</span></h6>
+                <h6>воротничок-размер - <span class="fst-italic">{{ card.collar|default_if_none:"Нет данных" }}</span>
+                </h6>
+            </div>
+        </div>
+
+        <br>
+        <div class="border p-3">
+            <h5>Норма положенности - <span class="fst-italic">{{ card.norm }}</span></h5>
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">№ п.п</th>
-                    <th scope="col">Наименование предметов</th>
-                    <th scope="col">Дата последней выдачи</th>
-                    {% for year in year_list %}
-                        <th scope="col">{{ year }}</th>
-                    {% endfor %}
-
+                    <th scope="col">Наименование</th>
+                    <th scope="col">Срок носки</th>
+                    <th scope="col">Количество</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for result in result_list %}
+
+                {% for norm_clothes in norm_clothes_list %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ result.clothes_title }}</td>
-                        <td>{{ result.last_date }}</td>
-                        {% for year in year_list %}
-                            {% if result.year_of_ending == year %}
-                                <th scope="col">{{ result.date_of_ending|date:"m.y" }}</th>
-                            {% else %}
-                                <th scope="col"></th>
-                            {% endif %}
-                        {% endfor %}
+                        <td>{{ norm_clothes.clothes.clothes_title }}</td>
+                        <td>{{ norm_clothes.clothes.wear_time }} мес.</td>
+                        <td>{{ norm_clothes.norm_count }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            Список пуст!
-        {% endif %}
+        </div>
+
+        <br>
+        <div class="container-fluid">
+            <h5><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица выдачи</a></h5>
+            <form id="clothes_in_card_form">{% csrf_token %}
+                <input type="hidden" value="{{ card.id }}" id="id_card">
+                <div class="row align-items-end">
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label class="form-label">Наименование</label>
+                            <select name="clothes" class="form-select my-select2" id="id_clothes" multiple required
+                                    style="width: 100%">
+                                <option value="">-----</option>
+                                {% for clothes in clothes_list %}
+                                    <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label class="form-label">Количество</label>
+                            <input type="number" class="form-control" id="id_count_of_issue" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <label class="form-label">Дата выдачи</label>
+                            <input type="date" class="form-control" id="id_date_of_issue" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% if result_list %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">№ п.п</th>
+                        <th scope="col">Наименование предметов</th>
+                        <th scope="col">Дата последней выдачи</th>
+                        {% for year in year_list %}
+                            <th scope="col">{{ year }}</th>
+                        {% endfor %}
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in result_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ result.clothes_title }}</td>
+                            <td>{{ result.last_date }}</td>
+                            {% for year in year_list %}
+                                {% if result.year_of_ending == year %}
+                                    <th scope="col">{{ result.date_of_ending|date:"m.y" }}</th>
+                                {% else %}
+                                    <th scope="col"></th>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                Список пуст!
+            {% endif %}
+        </div>
     </div>
-</div>
+{% endblock %}
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
 
-<script>
-    $('#clothes_in_card_form').submit(function (e) {
-        e.preventDefault();
-        let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+{% block own_js %}
+    <script>
+        $('#clothes_in_card_form').submit(function (e) {
+            e.preventDefault();
+            let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
 
-        let ids_array = $('#id_clothes').val();
+            let ids_array = $('#id_clothes').val();
 
-        let requests = []
-        ids_array.map(id => {
-            let new_obj = {
-                'card': $('#id_card').val(),
-                'clothes': id,
-                'count': $('#id_count_of_issue').val(),
-                'date_of_issue': $('#id_date_of_issue').val()
-            }
+            let requests = []
+            ids_array.map(id => {
+                let new_obj = {
+                    'card': $('#id_card').val(),
+                    'clothes': id,
+                    'count': $('#id_count_of_issue').val(),
+                    'date_of_issue': $('#id_date_of_issue').val()
+                }
 
-            requests.push(
-                fetch('/api/clothes-in-card/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json;charset=utf-8',
-                        "X-CSRFToken": csrftoken,
-                    },
-                    body: JSON.stringify(new_obj)
-                })
-            )
-        })
+                requests.push(
+                    fetch('/api/clothes-in-card/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json;charset=utf-8',
+                            "X-CSRFToken": csrftoken,
+                        },
+                        body: JSON.stringify(new_obj)
+                    })
+                )
+            })
 
-        Promise.all(requests).then(() => {
-            window.location.href = window.location.href
-        }).catch((e) => alert(e.message))
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('.my-select2').select2();
-    });
-</script>
-<!-- Option 2: Separate Popper and Bootstrap JS -->
-<!--
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
--->
-</body>
-</html>
+            Promise.all(requests).then(() => {
+                window.location.href = window.location.href
+            }).catch((e) => alert(e.message))
+        });
+    </script>
+{% endblock %}

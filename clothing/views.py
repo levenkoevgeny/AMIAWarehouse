@@ -11,6 +11,9 @@ from django.core.paginator import Paginator
 from datetime import datetime, date
 from dateutil.relativedelta import *
 from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm, Subdivision, Position, Rank, SEX, \
     EMPLOYEE_KIND, Dimensions, ShoesDimensions, CapDimensions
@@ -317,7 +320,8 @@ def get_sheet(request):
                         first_issue = result_list_of_issues.first()
                         first_issue_date_of_end = first_issue.date_of_issue + relativedelta(months=clothes.wear_time)
                         last_issue = result_list_of_issues.last()
-                        last_issue_date_of_end = last_issue.date_of_issue + relativedelta(months=clothes.wear_time / norm_count)
+                        last_issue_date_of_end = last_issue.date_of_issue + relativedelta(
+                            months=clothes.wear_time / norm_count)
                         if first_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
                             employee_clothes_dict[clothes.id] = norm_count
                         elif last_issue_date_of_end < date_start or last_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
@@ -406,3 +410,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 class ClothesInNormViewSet(viewsets.ModelViewSet):
     queryset = ClothesInNorm.objects.all()
     serializer_class = ClothesInNormSerializer
+
+
+# rest api endpoint for making clones based on parent
+@api_view(['POST'])
+def make_cloned_norm(request):
+    if 'parent_norm' in request.data:
+        if request.method == 'POST':
+            serializer = NormSerializer(data=request.data)
+            if serializer.is_valid():
+                new_norm = serializer.save()
+                clothes_in_norm_list = ClothesInNorm.objects.filter(norm_id=request.data['parent_norm'])
+                for clothes_item in clothes_in_norm_list:
+                    ClothesInNorm.objects.create(norm=new_norm, clothes=clothes_item.clothes,
+                                                 norm_count=clothes_item.norm_count)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'message': '400 bad request'}, status=status.HTTP_400_BAD_REQUEST)

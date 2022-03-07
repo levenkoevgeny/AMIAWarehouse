@@ -27,6 +27,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Родительская форма</label><br>
+                                    <select class="form-select" name="parent_norm" id="id_parent_norm">
+                                        <option value="" selected>-----</option>
+                                        {% for norm in list %}
+                                            <option value="{{ norm.id }}">{{ norm.norm_title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -109,8 +122,8 @@
             <tr>
                 <td>{{ norm.id }}</td>
                 <td>
-{#                    <a href="#norm_update_data_form_{{ norm.id }}" data-bs-toggle="modal"#}
-{#                       class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
+                    {#                    <a href="#norm_update_data_form_{{ norm.id }}" data-bs-toggle="modal"#}
+                    {#                       class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>#}
                     <a href="{% url 'clothing:norm_items' norm.id %}"
                        class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>
                 </td>
@@ -129,11 +142,14 @@
     <script>
         $('#add_norm_form').submit(function (e) {
             e.preventDefault();
+            let url = $('#id_parent_norm').val() == "" ? "/api/norms/" : "/clothing/norms/make-clone/"
             new_obj = {
                 'norm_title': $('#id_norm_title').val() == "" ? null : $('#id_norm_title').val(),
+                'created_at': new Date(),
+                'parent_norm': $('#id_parent_norm').val() == "" ? null : $('#id_parent_norm').val(),
             }
             csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-            fetch('/api/norms/', {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8',

@@ -139,56 +139,7 @@
 {% endblock %}
 
 {% block own_js %}
-    <script>
-        $('#add_norm_form').submit(function (e) {
-            e.preventDefault();
-            let url = $('#id_parent_norm').val() == "" ? "/api/norms/" : "/clothing/norms/make-clone/"
-            new_obj = {
-                'norm_title': $('#id_norm_title').val() == "" ? null : $('#id_norm_title').val(),
-                'created_at': new Date(),
-                'parent_norm': $('#id_parent_norm').val() == "" ? null : $('#id_parent_norm').val(),
-            }
-            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify(new_obj)
-            }).then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    window.location.href = window.location.href
-                } else {
-                    throw new Error("Ошибка записи!")
-                }
-            }).catch((e) => alert(e.message))
-        });
-
-
-        $('.norm_update_form').submit(function (e) {
-            e.preventDefault();
-            let form_id = e.target.id;
-            obj = {
-                'norm_title': $(`#id_norm_title_${form_id}`).val() == "" ? null : $(`#id_norm_title_${form_id}`).val(),
-            }
-            csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-            fetch(`/api/norms/${form_id}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify(obj)
-            }).then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    window.location.href = window.location.href
-                } else {
-                    throw new Error("Ошибка записи!")
-                }
-            }).catch((e) => alert(e.message))
-        });
-    </script>
+    <script src="{% static 'clothing/js/norm_CRUD.js' %}"></script>
 {% endblock %}
 
 

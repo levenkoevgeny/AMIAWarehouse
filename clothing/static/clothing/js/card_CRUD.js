@@ -10,7 +10,8 @@ $('#clothes_in_card_form').submit(function (e) {
             'card': $('#id_card').val(),
             'clothes': id,
             'count': $('#id_count_of_issue').val(),
-            'date_of_issue': $('#id_date_of_issue').val()
+            'date_of_issue': $('#id_date_of_issue').val(),
+            'movement': $('#id_movement').val(),
         }
 
         requests.push(

@@ -12,9 +12,7 @@
 
 {% block content %}
     <div class="container">
-
         {% for clothes in clothes_list %}
-
             <div class="modal fade" id="clothes_in_card_update_form_{{ clothes.id }}" tabindex="-1"
                  aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
@@ -45,6 +43,21 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
+                                            <label class="form-label">Движение</label><br>
+                                            <select class="form-select" name="movement" id="id_movement">
+                                                {% if clothes.movement == 1 %}
+                                                    <option value="1" selected>Выдача</option>
+                                                    <option value="2">Сдача</option>
+                                                {% else %}
+                                                    <option value="1">Выдача</option>
+                                                    <option value="2" selected>Сдача</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
                                             {% if clothes.has_replacement %}
                                                 <input class="form-check-input" type="checkbox"
                                                        id="id_has_replacement_{{ clothes.id }}" checked>
@@ -71,16 +84,11 @@
         {% endfor %}
 
 
-
-
-
-
         <br>
 
         <br>
 
         <h3>Движение материальных средств - <span class="fst-italic">{{ card.employee.get_full_name }}</span></h3><br>
-
 
         <form id="clothes_in_card_form">{% csrf_token %}
             <input type="hidden" value="{{ card.id }}" id="id_card">
@@ -96,10 +104,19 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="mb-3">
                         <label class="form-label">Количество</label>
                         <input type="number" class="form-control" id="id_count_of_issue" required>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="mb-3">
+                        <label class="form-label">Движение</label>
+                        <select class="form-select" name="movement" id="id_movement">
+                            <option value="1">Выдача</option>
+                            <option value="2">Сдача</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -109,7 +126,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <div class="mb-3">
                         <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
                         </button>
@@ -129,7 +146,7 @@
                 {% with issues=clothes_list|get_issues_dates:id %}
                     {% for item in issues %}
                         <a href="#clothes_in_card_update_form_{{ item.id }}"
-                           data-bs-toggle="modal">{{ item.date_of_issue }} {{ item.count }} шт. </a>
+                           data-bs-toggle="modal">{{ item.date_of_issue }} {{ item.count }} шт. ({{ item.get_movement }})</a>
                         <a href="javascript:delete_clothes_in_card({{ item.id }})">удалить</a>
                         <br>
                     {% endfor %}<br>

@@ -252,19 +252,29 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="mb-3">
                             <label class="form-label">Количество</label>
                             <input type="number" class="form-control" id="id_count_of_issue" required>
                         </div>
                     </div>
+                    <div class="col-lg-2">
+                        <div class="mb-3">
+                            <label class="form-label">Движение</label>
+                            <select class="form-select" name="movement" id="id_movement">
+                                <option value="1">Выдача</option>
+                                <option value="2">Сдача</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="col-lg-3">
                         <div class="mb-3">
                             <label class="form-label">Дата выдачи</label>
                             <input type="date" class="form-control" id="id_date_of_issue" required>
                         </div>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <div class="mb-3">
                             <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
                             </button>
@@ -282,7 +292,6 @@
                         {% for year in year_list %}
                             <th scope="col">{{ year }}</th>
                         {% endfor %}
-
                     </tr>
                     </thead>
                     <tbody>
@@ -305,6 +314,7 @@
             {% else %}
                 Список пуст!
             {% endif %}
+            <br>
         </div>
     </div>
 {% endblock %}

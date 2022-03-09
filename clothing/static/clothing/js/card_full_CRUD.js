@@ -10,7 +10,8 @@ $('#clothes_in_card_form').submit(function (e) {
             'card': $('#id_card').val(),
             'clothes': id,
             'count': $('#id_count_of_issue').val(),
-            'date_of_issue': $('#id_date_of_issue').val()
+            'date_of_issue': $('#id_date_of_issue').val(),
+            'movement': $('#id_movement').val(),
         }
 
         requests.push(
@@ -56,7 +57,8 @@ $('.clothes_in_card_update_form').submit(function (e) {
     let obj = {
         'count': $(`#id_count_${form_id}`).val(),
         'date_of_issue': $(`#id_date_of_issue_${form_id}`).val(),
-        'has_replacement': $(`#id_has_replacement_${form_id}`).is(':checked')
+        'has_replacement': $(`#id_has_replacement_${form_id}`).is(':checked'),
+        'movement': $('#id_movement').val(),
     }
 
     fetch(`/api/clothes-in-card/${form_id}/`, {

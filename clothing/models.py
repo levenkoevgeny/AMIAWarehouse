@@ -1,5 +1,21 @@
 from django.db import models
 
+SEX = [
+    (1, 'Мужской'),
+    (2, 'Женский'),
+]
+
+EMPLOYEE_KIND = [
+    (1, 'Курсант'),
+    (2, 'Офицер'),
+    (3, 'Гражданский'),
+]
+
+MOVEMENT = [
+    (1, 'Выдача'),
+    (2, 'Сдача'),
+]
+
 
 class Dimensions(models.Model):
     dimension = models.CharField(max_length=20, verbose_name="Размер")
@@ -35,18 +51,6 @@ class CapDimensions(models.Model):
         ordering = ('cap_dimension',)
         verbose_name = 'Размер (фуражки)'
         verbose_name_plural = 'Размеры (фуражки)'
-
-
-SEX = [
-    (1, 'Мужской'),
-    (2, 'Женский'),
-]
-
-EMPLOYEE_KIND = [
-    (1, 'Курсант'),
-    (2, 'Офицер'),
-    (3, 'Гражданский'),
-]
 
 
 class Subdivision(models.Model):
@@ -210,6 +214,7 @@ class ClothesInCard(models.Model):
     clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Вещь")
     count = models.IntegerField(verbose_name="Количество", default=1)
     date_of_issue = models.DateField(verbose_name="Дата выдачи")
+    movement = models.IntegerField(choices=MOVEMENT, verbose_name="Движение (выдача / сдача)", default=1)
     has_replacement = models.BooleanField(verbose_name="Имеет замену", default=False)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
@@ -217,6 +222,10 @@ class ClothesInCard(models.Model):
 
     def __str__(self):
         return self.clothes.clothes_title + ' ' + str(self.count) + ' ' + str(self.date_of_issue)
+
+    @property
+    def get_movement(self):
+        return MOVEMENT[self.movement - 1][1]
 
     class Meta:
         ordering = ('id',)

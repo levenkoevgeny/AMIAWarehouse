@@ -213,6 +213,7 @@
         <br>
         <div class="border p-3">
             <h5>Норма положенности - <span class="fst-italic">{{ card.norm }}</span></h5>
+            <input type="hidden" id="id_norm" value="{{ card.norm.id }}">
             <table class="table">
                 <thead>
                 <tr>
@@ -245,7 +246,6 @@
                             <label class="form-label">Наименование</label>
                             <select name="clothes" class="form-select my-select2" id="id_clothes" multiple required
                                     style="width: 100%">
-                                <option value="">-----</option>
                                 {% for clothes in clothes_list %}
                                     <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
                                 {% endfor %}
@@ -278,6 +278,14 @@
                         <div class="mb-3">
                             <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
                             </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="id_all_position_checkbox">
+                            <label class="form-check-label">Выбрать все позиции в норме</label>
                         </div>
                     </div>
                 </div>
@@ -322,4 +330,5 @@
 
 {% block own_js %}
     <script src="{% static 'clothing/js/card_CRUD.js' %}"></script>
+    <script src="{% static 'clothing/js/card_UI.js' %}"></script>
 {% endblock %}

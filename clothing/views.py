@@ -21,6 +21,7 @@ from .forms import CardForm, ClothesForm, EmployeeForm, NormForm, ClothesInNormF
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer, \
     ClothesInNormSerializer
 from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 def card_list(request):
@@ -410,6 +411,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 class ClothesInNormViewSet(viewsets.ModelViewSet):
     queryset = ClothesInNorm.objects.all()
     serializer_class = ClothesInNormSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['norm']
 
 
 # rest api endpoint for making clones based on parent

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'clothing.apps.ClothingConfig',
     'widget_tweaks',
     'rest_framework',
+    'django_filters',
     "corsheaders",
 ]
 

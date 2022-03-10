@@ -83,10 +83,19 @@ def get_card(request, card_id):
             cl = get_object_or_404(Clothes, pk=cl_id)
             dict_cl = model_to_dict(cl)
             last_date = list_of_issues.filter(clothes_id=cl_id).order_by('-date_of_issue').first().date_of_issue
+
             dict_cl['last_date'] = last_date
+
             date_of_ending = last_date + relativedelta(months=cl.wear_time)
+
+            first_day_current_year = date(date.today().year, 1, 1)
+
+            if date_of_ending < first_day_current_year:
+                date_of_ending = first_day_current_year
+
             dict_cl['date_of_ending'] = date_of_ending
             dict_cl['year_of_ending'] = date_of_ending.year
+            dict_cl['wear_time_year'] = int(dict_cl['wear_time'] / 12)
             result_list.append(dict_cl)
 
         return render(request, 'clothing/card/card.html',
@@ -271,6 +280,9 @@ def get_sheet(request):
     # результат
     result_dict = {}
 
+    lll = 0
+
+
     for card in Card.objects.all():
         # норма сотрудника
         current_norm = card.norm.clothes_list.all()
@@ -284,6 +296,7 @@ def get_sheet(request):
         date_end = date(2022, 12, 31)
         # текущая дата
         current_date = datetime.now()
+
         for clothes in clothes_list:
             if clothes in current_norm:
                 # список выдач этой вещи этому сотруднику
@@ -335,47 +348,6 @@ def get_sheet(request):
 
             else:
                 employee_clothes_dict[clothes.id] = ""
-
-        # # количество лет с момента первой выдачи до текущего года
-        # year_count = datetime.now().year - list_of_issues.order_by(
-        #     'date_of_issue').first().date_of_issue.year
-        #
-        # # закончен ли цикл выдачи
-        # is_over = True if year_count % (clothes.wear_time / 12) == 0 else False
-        #
-        # if is_over:
-        #     # получить выдачу период назад
-        #     first_issues = list_of_issues.filter(
-        #         date_of_issue__gte=date_start - relativedelta(months=clothes.wear_time),
-        #         date_of_issue__lte=date_end - relativedelta(months=clothes.wear_time)).first()
-        #     # дата окончания срока носки
-        #     if first_issues:
-        #         date_of_need_issue = first_issues.date_of_issue + relativedelta(months=clothes.wear_time)
-        #
-        #         if date_of_need_issue <= date_start or date_of_need_issue >= date_start and date_of_need_issue <= date_end:
-        #             employee_clothes_dict[clothes.id] = 1
-        #         else:
-        #             employee_clothes_dict[clothes.id] = ""
-        #     else:
-        #         employee_clothes_dict[clothes.id] = ""
-        # else:
-        #     # смещение на срок носки назад
-        #     offset = year_count % (clothes.wear_time / 12)
-        #     list_of_issues_with_offset = list_of_issues.filter(date_of_issue__year__gte=datetime.now().year-offset, date_of_issue__year__lte=datetime.now().year)
-        #     need_clothes_counter = 0
-        #     norm_count = ClothesInNorm.objects.filter(norm=card.norm, clothes=clothes).first().norm_count
-        #
-        #     for item in list_of_issues_with_offset:
-        #         # clothes_term = item.count * clothes.wear_time / norm_count
-        #         # if clothes_term > 12:
-        #         #     clothes_term_normalize = 12
-        #         #
-        #         # date_of_need_issue = item.date_of_issue + relativedelta(months=clothes_term_normalize*item.count)
-        #         # if date_of_need_issue <= date_start or date_of_need_issue >= date_start and date_of_need_issue <= date_end:
-        #             need_clothes_counter += 1
-        #
-        #     employee_clothes_dict[clothes.id] = norm_count - need_clothes_counter
-
         result_dict[card.id] = employee_clothes_dict
 
     return render(request, 'clothing/reports/sheet.html',

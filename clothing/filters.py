@@ -1,12 +1,18 @@
 import django_filters
 from .models import Card, Employee, Clothes, Subdivision, Rank, Norm, Position, Dimensions, CapDimensions, \
-    ShoesDimensions
+    ShoesDimensions, Group, Course, EMPLOYEE_KIND
 
 
 class CardFilter(django_filters.FilterSet):
+    card_number = django_filters.CharFilter(field_name='card_number', lookup_expr='exact')
     last_name = django_filters.CharFilter(field_name='employee__last_name', lookup_expr='icontains')
+    kind = django_filters.MultipleChoiceFilter(field_name='employee__kind', choices=EMPLOYEE_KIND)
     subdivision = django_filters.ModelMultipleChoiceFilter(field_name='employee__subdivision',
                                                            queryset=Subdivision.objects.all())
+    group = django_filters.ModelMultipleChoiceFilter(field_name='employee__group',
+                                                     queryset=Group.objects.all())
+    course = django_filters.ModelMultipleChoiceFilter(field_name='employee__group__course',
+                                                      queryset=Course.objects.all())
     rank = django_filters.ModelMultipleChoiceFilter(field_name='employee__rank',
                                                     queryset=Rank.objects.all())
     position = django_filters.ModelMultipleChoiceFilter(field_name='employee__position',

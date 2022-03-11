@@ -143,10 +143,36 @@ class ClothesInNorm(models.Model):
         return self.norm.norm_title + ' ' + self.clothes.clothes_title + ' ' + str(self.norm_count)
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('clothes__clothes_title',)
         verbose_name = 'Наименование в норме'
         verbose_name_plural = 'Наименования в норме'
         unique_together = [['norm', 'clothes']]
+
+
+class Course(models.Model):
+    course_name = models.CharField(verbose_name="Курс", max_length=255)
+
+    def __str__(self):
+        return self.course_name
+
+    class Meta:
+        ordering = ('course_name',)
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
+
+
+class Group(models.Model):
+    group_name = models.CharField(verbose_name="Группа", max_length=255)
+    course = models.ForeignKey(Course, verbose_name="Курс", on_delete=models.SET_NULL, blank=True,
+                               null=True)
+
+    def __str__(self):
+        return self.group_name
+
+    class Meta:
+        ordering = ('group_name',)
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
 
 class Employee(models.Model):
@@ -155,6 +181,7 @@ class Employee(models.Model):
     patronymic = models.CharField(verbose_name="Отчество", max_length=30)
     subdivision = models.ForeignKey(Subdivision, on_delete=models.SET_NULL, verbose_name="Подразделение", blank=True,
                                     null=True)
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, verbose_name="Группа", blank=True, null=True)
     sex = models.IntegerField(choices=SEX, verbose_name="Пол", blank=True, null=True, default=1)
     kind = models.IntegerField(choices=EMPLOYEE_KIND, verbose_name="Тип сотрудника")
     rank = models.ForeignKey(Rank, on_delete=models.CASCADE, verbose_name="Звание", blank=True, null=True)
@@ -186,6 +213,7 @@ class Employee(models.Model):
 
 
 class Card(models.Model):
+    card_number = models.CharField(max_length=100, verbose_name="Номер карты")
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name="Сотрудник/курсант")
     norm = models.ForeignKey(Norm, on_delete=models.CASCADE, verbose_name="Норма")
     growth = models.IntegerField(verbose_name="Рост", blank=True, null=True)
@@ -216,6 +244,9 @@ class ClothesInCard(models.Model):
     date_of_issue = models.DateField(verbose_name="Дата выдачи")
     movement = models.IntegerField(choices=MOVEMENT, verbose_name="Движение (выдача / сдача)", default=1)
     has_replacement = models.BooleanField(verbose_name="Имеет замену", default=False)
+    document_number = models.CharField(max_length=100, verbose_name="Номер документа", blank=True, null=True)
+    has_certificate = models.BooleanField(verbose_name="Получено по сертификату", default=False)
+    certificate_number = models.CharField(max_length=100, verbose_name="Номер аттестата", blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)

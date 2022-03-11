@@ -69,9 +69,9 @@ def get_card(request, card_id):
         employee_form = EmployeeForm(instance=employee)
 
         # norm list
-        norm_clothes_list = ClothesInNorm.objects.filter(norm_id=card.norm.id)
+        norm_clothes_list = ClothesInNorm.objects.filter(norm_id=card.norm.id).order_by('clothes__clothes_title')
 
-        list_of_issues = ClothesInCard.objects.filter(card_id=card_id)
+        list_of_issues = ClothesInCard.objects.filter(card_id=card_id).order_by('clothes__clothes_title')
         list_of_clothes_id = []
         result_list = []
 
@@ -79,6 +79,7 @@ def get_card(request, card_id):
 
         for item in list_of_issues:
             list_of_clothes_id.append(item.clothes.id)
+
         for cl_id in set(list_of_clothes_id):
             cl = get_object_or_404(Clothes, pk=cl_id)
             dict_cl = model_to_dict(cl)
@@ -101,7 +102,8 @@ def get_card(request, card_id):
         return render(request, 'clothing/card/card.html',
                       {'card_form': card_form, 'employee_form': employee_form, 'card': card,
                        'employee': employee,
-                       'norm_clothes_list': norm_clothes_list, 'result_list': result_list,
+                       'norm_clothes_list': norm_clothes_list,
+                       'result_list': sorted(result_list, key=lambda d: d['clothes_title']),
                        'year_list': year_list, 'clothes_list': Clothes.objects.all()})
 
 
@@ -198,7 +200,7 @@ def norm_list(request):
 
 def norm_items(request, norm_id):
     norm = get_object_or_404(Norm, pk=norm_id)
-    item_list = ClothesInNorm.objects.filter(norm_id=norm_id).order_by('clothes')
+    item_list = ClothesInNorm.objects.filter(norm_id=norm_id).order_by('clothes__clothes_title')
     clothes_in_norm_form = ClothesInNormForm()
     return render(request, 'clothing/norms/norm_items.html', {
         'norm': norm,
@@ -281,7 +283,6 @@ def get_sheet(request):
     result_dict = {}
 
     lll = 0
-
 
     for card in Card.objects.all():
         # норма сотрудника

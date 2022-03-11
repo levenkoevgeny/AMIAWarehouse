@@ -12,6 +12,9 @@ $('#clothes_in_card_form').submit(function (e) {
             'count': $('#id_count_of_issue').val(),
             'date_of_issue': $('#id_date_of_issue').val(),
             'movement': $('#id_movement').val(),
+            'has_certificate': $('#id_has_certificate_checkbox').is(':checked'),
+            'certificate_number': $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
+            'document_number': $('#id_document_number').val() == "" ? null : $('#id_document_number').val(),
         }
 
         requests.push(
@@ -34,6 +37,7 @@ $('#clothes_in_card_form').submit(function (e) {
 $('#add_card_form').submit(function (e) {
     e.preventDefault();
     new_obj = {
+        'card_number': $('#id_card_number').val() == "" ? null : $('#id_card_number').val(),
         'employee': $('#id_employee').val() == "" ? null : $('#id_employee').val(),
         'norm': $('#id_norm').val() == "" ? null : $('#id_norm').val(),
         'growth': $('#id_growth').val() == "" ? null : $('#id_growth').val(),

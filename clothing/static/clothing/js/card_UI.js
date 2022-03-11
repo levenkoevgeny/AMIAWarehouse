@@ -22,3 +22,16 @@ $("#id_all_position_checkbox").change(function () {
         $('#id_clothes').trigger('change');
     }
 });
+
+
+$("#id_has_certificate_checkbox").change(function () {
+    if (this.checked) {
+
+        $('#id_certificate_number').prop("disabled", false);
+        $('#id_document_number').prop("disabled", true);
+
+    } else {
+        $('#id_certificate_number').prop("disabled", true);
+        $('#id_document_number').prop("disabled", false);
+    }
+});

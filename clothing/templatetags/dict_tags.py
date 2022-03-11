@@ -1,6 +1,7 @@
 from django import template
 from clothing.models import Clothes
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Lower
 
 register = template.Library()
 
@@ -18,4 +19,9 @@ def get_issues_dates(value, clothes_id):
 @register.filter(name='get_clothes')
 def get_clothes(value, clothes_id):
     return get_object_or_404(Clothes, pk=clothes_id)
+
+
+@register.filter(name='sort_by')
+def sort_by(queryset, order):
+    return queryset.order_by(Lower(order))
 

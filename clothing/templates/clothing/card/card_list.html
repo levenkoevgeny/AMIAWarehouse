@@ -19,7 +19,14 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Номер карты</label><br>
+                                    {% render_field card_form.card_number class+="form-control" %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Сотрудник (курсант)</label><br>
@@ -96,97 +103,144 @@
 {% block list_title %}Арматурные карточки{% endblock %}
 
 {% block filters %}
-    <form action="{% url 'clothing:card_list' %}">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">Фамилия</label>
-                    {% render_field filter.form.last_name class+="form-control" %}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">Подразделение</label>
-                    {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                    Фильтр
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form action="{% url 'clothing:card_list' %}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Номер карты</label>
+                                    {% render_field filter.form.card_number class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Вид сотрудника</label>
+                                    {% render_field filter.form.kind class+="form-control my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Фамилия</label>
+                                    {% render_field filter.form.last_name class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Подразделение</label>
+                                    {% render_field filter.form.subdivision class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Группа</label>
+                                    {% render_field filter.form.group class+="form-control my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Курс</label>
+                                    {% render_field filter.form.course class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Должность</label>
+                                    {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Звание</label>
+                                    {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Куртка</label>
+                                    {% render_field filter.form.jacket class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Ботинки</label>
+                                    {% render_field filter.form.shoes class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Фуражка</label>
+                                    {% render_field filter.form.cap class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Воторничек</label>
+                                    {% render_field filter.form.collar class+="form-select my-select2" style="width: 100%" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Рост от</label>
+                                    {% render_field filter.form.growth_from class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Рост до</label>
+                                    {% render_field filter.form.growth_till class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обхват груди от</label>
+                                    {% render_field filter.form.bust_from class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Обхват груди до</label>
+                                    {% render_field filter.form.bust_till class+="form-control" %}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Поиск</button>
+                        <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">Должность</label>
-                    {% render_field filter.form.position class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">Звание</label>
-                    {% render_field filter.form.rank class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Куртка</label>
-                    {% render_field filter.form.jacket class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Ботинки</label>
-                    {% render_field filter.form.shoes class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Фуражка</label>
-                    {% render_field filter.form.cap class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Воторничек</label>
-                    {% render_field filter.form.collar class+="form-select my-select2" style="width: 100%" %}
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Рост от</label>
-                    {% render_field filter.form.growth_from class+="form-control" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Рост до</label>
-                    {% render_field filter.form.growth_till class+="form-control" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Обхват груди от</label>
-                    {% render_field filter.form.bust_from class+="form-control" %}
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label class="form-label">Обхват груди до</label>
-                    {% render_field filter.form.bust_till class+="form-control" %}
-                </div>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-secondary">Поиск</button>
-        <a href="{% url 'clothing:card_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
-    </form>
 {% endblock %}
 
 {% block add_button %}
+    <br>
     <a href="#card_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
        style="display: block; margin-left:auto; width: 200px;">Добавить карточку</a>
 {% endblock %}

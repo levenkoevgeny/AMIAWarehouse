@@ -113,7 +113,7 @@ class Clothes(models.Model):
         return self.clothes_title
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('-id',)
         verbose_name = 'Наименование предмета'
         verbose_name_plural = 'Наименования предметов'
 

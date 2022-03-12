@@ -13,8 +13,8 @@
 
 
 {% block content %}
-    <div class="container">
 
+    <div class="container">
 
         {#    модалки для редактирования выдачи #}
         {% for clothes in clothes_in_card_list %}
@@ -35,7 +35,7 @@
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="form-label">Движение</label><br>
-                                            <select class="form-select" name="movement" id="id_movement">
+                                            <select class="form-select" id="id_movement_modal_{{ clothes.id }}">
                                                 {% if clothes.movement == 1 %}
                                                     <option value="1" selected>Выдача</option>
                                                     <option value="2">Сдача</option>
@@ -51,31 +51,45 @@
                                     <div class="col-md-6">
                                         <div class="mb-6">
                                             <label class="form-label">Количество</label><br>
-                                            <input type="number" class="form-control" name="count"
-                                                   id="id_count_{{ clothes.id }}" value="{{ clothes.count }}" required>
+                                            <input type="number" class="form-control"
+                                                   id="id_count_modal_{{ clothes.id }}" value="{{ clothes.count }}"
+                                                   required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Дата выдачи</label><br>
-                                            <input type="date" class="form-control" name="date_of_issue"
-                                                   id="id_date_of_issue_{{ clothes.id }}"
+                                            <input type="date" class="form-control"
+                                                   id="id_date_of_issue_modal_{{ clothes.id }}"
                                                    value="{{ clothes.date_of_issue|date:"Y-m-d" }}" required>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="row d-flex align-items-end">
                                     <div class="col-md-6">
+                                        <div class="mb-1 form-check">
+                                            {% if clothes.has_certificate %}
+                                                <input type="checkbox" class="form-check-input"
+                                                       id="id_has_certificate_checkbox_modal_{{ clothes.id }}"
+                                                       checked>
+                                            {% else %}
+                                                <input type="checkbox" class="form-check-input"
+                                                       id="id_has_certificate_checkbox_modal_{{ clothes.id }}">
+                                            {% endif %}
+                                            <label class="form-check-label">Получено по аттестату</label>
+                                        </div>
                                         <div class="mb-3">
                                             <label class="form-label">№ аттестата</label><br>
-                                            <input type="text" class="form-control" id="id_certificate_number">
+                                            <input type="text" class="form-control"
+                                                   id="id_certificate_number_modal_{{ clothes.id }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">№ документа</label><br>
-                                            <input type="text" class="form-control" id="id_document_number">
+                                            <input type="text" class="form-control"
+                                                   id="id_document_number_modal_{{ clothes.id }}">
                                         </div>
                                     </div>
                                 </div>
@@ -84,10 +98,10 @@
                                         <div class="mb-3">
                                             {% if clothes.has_replacement %}
                                                 <input class="form-check-input" type="checkbox"
-                                                       id="id_has_replacement_{{ clothes.id }}" checked>
+                                                       id="id_has_replacement_modal_{{ clothes.id }}" checked>
                                             {% else %}
                                                 <input class="form-check-input" type="checkbox"
-                                                       id="id_has_replacement_{{ clothes.id }}">
+                                                       id="id_has_replacement_modal_{{ clothes.id }}">
                                             {% endif %}
                                             <label class="form-check-label">
                                                 Замена
@@ -95,10 +109,10 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена
+                                </button>
                                 <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                             </div>
                         </div>
@@ -107,96 +121,17 @@
             </div>
         {% endfor %}
 
-
-
         {#    модалки для редактирования личных данных #}
-        <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form action="{% url 'clothing:card_update' card_id=card.id %}" method="POST">{% csrf_token %}
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <input type="hidden" value="{{ card.employee.id }}" name="employee">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Норма</label><br>
-                                        {% render_field card_form.norm class+="form-select" style="width: 100%" %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Рост</label>
-                                        {% render_field card_form.growth class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Обхват груди</label>
-                                        {% render_field card_form.bust class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Куртка</label>
-                                        {% render_field card_form.jacket class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Обувь</label>
-                                        {% render_field card_form.shoes class+="form-control" %}
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Фуражка</label>
-                                        {% render_field card_form.cap class+="form-control" %}
-
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Воторничек</label>
-                                        {% render_field card_form.collar class+="form-control" %}
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                        </div>
-                    </div>
-                </form>
-
-
-            </div>
-        </div>
         <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form action="{% url 'clothing:employee_update' employee_id=employee.id card_id=card.id %}"
-                      method="POST">{% csrf_token %}
+                <form id="id_employee_update_form">{% csrf_token %}
+                    <input type="hidden" value="{{ employee.id }}" id="id_employee">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row">
@@ -274,6 +209,85 @@
 
             </div>
         </div>
+        <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form id="id_card_data_update_form">{% csrf_token %}
+                    <input type="hidden" value="{{ card.id }}" id="id_card">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <input type="hidden" value="{{ card.employee.id }}" name="employee">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Норма</label><br>
+                                        {% render_field card_form.norm class+="form-select" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Рост</label>
+                                        {% render_field card_form.growth class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Обхват груди</label>
+                                        {% render_field card_form.bust class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Куртка</label>
+                                        {% render_field card_form.jacket class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Обувь</label>
+                                        {% render_field card_form.shoes class+="form-control" %}
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Фуражка</label>
+                                        {% render_field card_form.cap class+="form-control" %}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Воторничек</label>
+                                        {% render_field card_form.collar class+="form-control" %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <br>
 
         <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.card_number }}</h2>
@@ -284,7 +298,8 @@
             <div class="col-xl-6 my-2">
                 <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
                 <h6>должность - <span
-                        class="fst-italic">{{ card.employee.position }} ({{ card.employee.subdivision }})</span></h6>
+                        class="fst-italic">{{ card.employee.position|default_if_none:"Нет данных" }} ({{ card.employee.subdivision|default_if_none:"Нет данных" }})</span>
+                </h6>
                 <h6>зачислен(а) - <span class="fst-italic">Нет данных</span></h6>
                 <h6>исключен(а) - <span class="fst-italic">Нет данных</span></h6>
                 <h6>личный номер - <span class="fst-italic">Нет данных</span></h6>
@@ -299,7 +314,8 @@
                 <h6>куртка - <span class="fst-italic">{{ card.jacket|default_if_none:"Нет данных" }}</span></h6>
                 <h6>ботинки - <span class="fst-italic">{{ card.shoes|default_if_none:"Нет данных" }}</span></h6>
                 <h6>фуражка - <span class="fst-italic">{{ card.cap|default_if_none:"Нет данных" }}</span></h6>
-                <h6>воротничок-размер - <span class="fst-italic">{{ card.collar|default_if_none:"Нет данных" }}</span>
+                <h6>воротничок-размер - <span
+                        class="fst-italic">{{ card.collar|default_if_none:"Нет данных" }}</span>
                 </h6>
             </div>
         </div>
@@ -352,7 +368,8 @@
                         <div class="col-lg-12">
                             <div class="mb-1">
                                 <label class="form-label">Наименование</label><br>
-                                <select name="clothes" class="form-select my-select2" id="id_clothes" multiple required
+                                <select name="clothes" class="form-select my-select2" id="id_clothes" multiple
+                                        required
                                         style="width: 100%">
                                     {% for clothes in card.norm.clothes_list.all %}
                                         <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
@@ -415,155 +432,167 @@
                     </div>
                 </form>
             </div>
-
-            <br>
-            {% if clothes_in_card_list %}
-                <table class="table table-bordered">
-                    <thead class="align-middle text-center">
-                    <tr>
-                        <th rowspan="3" class="border border-3 border-secondary">№ п.п</th>
-                        <th rowspan="3" class="border border-3 border-secondary">Наименование предметов</th>
-                        <th rowspan="3" class="border border-3 border-secondary">Состоит согласно вещевому
-                            аттестату <br> <span
-                                    class="fst-italic text-decoration-underline">{{ certificate_number }}</span>
-                        </th>
-                        <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Выдано
-                        </th>
-                        <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Сдано</th>
-                    </tr>
-
-                    <tr>
-                        {% for year in year_list %}
-                            <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>
-                        {% endfor %}
-                        {% for year in year_list %}
-                            <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        {% for year in year_list %}
-                            <th class="border border-3 border-secondary">Дата</th>
-                            <th class="border border-3 border-secondary">Кол.</th>
-                            <th class="border border-3 border-secondary">№ док.</th>
-                        {% endfor %}
-                        {% for year in year_list %}
-                            <th class="border border-3 border-secondary">Дата</th>
-                            <th class="border border-3 border-secondary">Кол.</th>
-                            <th class="border border-3 border-secondary">№ док.</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                    <tbody class="align-middle text-center">
-                    {% for cl_in_n in norm_clothes_list %}
-                        <tr>
-                            <th class="border">{{ forloop.counter }}</th>
-                            <th class="border text-start">
-                                <nobr>{{ cl_in_n.clothes.clothes_title }} ({{ cl_in_n.clothes.wear_time }} мес.)</nobr>
-                            </th>
-                            <td class="border">
-                                {% if clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}
-                                    {% with cert_item=clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}
-                                        <nobr>{{ cert_item.clothes.clothes_title }} {{ cert_item.count }} {{ cert_item.date_of_issue|date:"m.y" }}</nobr>
-                                    {% endwith %}
-                                {% endif %}
-                            </td>
-                            {% for year in year_list %}
-                                {% with args=year|str_concat:cl_in_n.clothes.id %}
-                                    {% if clothes_in_card_list|get_movement_out:args %}
-                                        <td class="border border-2 border-secondary">
-                                            {% for item in clothes_in_card_list|get_movement_out:args %}
-                                                <a href="#clothes_in_card_update_form_{{ item.id }}"
-                                                   data-bs-toggle="modal"
-                                                   title="{{ item.clothes }}">{{ item.date_of_issue|date:"m.y" }}</a>
-                                                <br>
-                                            {% endfor %}
-                                        </td>
-                                        <td class="border border-2 border-secondary">
-                                            {% for item in clothes_in_card_list|get_movement_out:args %}
-                                                {{ item.count }}<br>
-                                            {% endfor %}
-                                        </td>
-                                        <td class="border border-2 border-secondary">
-                                            {% for item in clothes_in_card_list|get_movement_out:args %}
-                                                <nobr>{{ item.document_number|default_if_none:"" }}</nobr><br>
-                                            {% endfor %}
-                                        </td>
-                                    {% else %}
-                                        <td class="border"></td>
-                                        <td class="border"></td>
-                                        <td class="border"></td>
-                                    {% endif %}
-                                {% endwith %}
-                            {% endfor %}
-                            {% for year in year_list %}
-                                {% with args=year|str_concat:cl_in_n.clothes.id %}
-                                    {% if clothes_in_card_list|get_movement_out:args %}
-                                        <td class="border">
-                                            {% for item in clothes_in_card_list|get_movement_in:args %}
-                                                {{ item.date_of_issue|date:"m.y" }}<br>
-                                            {% endfor %}
-                                        </td>
-                                        <td class="border">
-                                            {% for item in clothes_in_card_list|get_movement_in:args %}
-                                                {{ item.count }}<br>
-                                            {% endfor %}
-                                        </td>
-                                        <td class="border">
-                                            {% for item in clothes_in_card_list|get_movement_in:args %}
-                                                {{ item.document_number|default_if_none:"" }}<br>
-                                            {% endfor %}
-                                        </td>
-                                    {% else %}
-                                        <td class="border"></td>
-                                        <td class="border"></td>
-                                        <td class="border"></td>
-                                    {% endif %}
-
-                                {% endwith %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-
-                <br>
-                <br><br>
-
-
-                {#                <table class="table">#}
-                {#                    <thead>#}
-                {#                    <tr>#}
-                {#                        <th scope="col">№ п.п</th>#}
-                {#                        <th scope="col">Наименование предметов</th>#}
-                {#                        <th scope="col">Дата последней выдачи</th>#}
-                {#                        {% for year in year_list %}#}
-                {#                            <th scope="col">{{ year }}</th>#}
-                {#                        {% endfor %}#}
-                {#                    </tr>#}
-                {#                    </thead>#}
-                {#                    <tbody>#}
-                {#                    {% for result in result_list %}#}
-                {#                        <tr>#}
-                {#                            <td>{{ forloop.counter }}</td>#}
-                {#                            <td>{{ result.clothes_title }} ({{ result.wear_time_year }} лет)</td>#}
-                {#                            <td>{{ result.last_date }}</td>#}
-                {#                            {% for year in year_list %}#}
-                {#                                {% if result.year_of_ending == year %}#}
-                {#                                    <th scope="col">{{ result.date_of_ending|date:"m.y" }}</th>#}
-                {#                                {% else %}#}
-                {#                                    <th scope="col"></th>#}
-                {#                                {% endif %}#}
-                {#                            {% endfor %}#}
-                {#                        </tr>#}
-                {#                    {% endfor %}#}
-                {#                    </tbody>#}
-                {#                </table>#}
-            {% else %}
-                Список пуст!<br>
-            {% endif %}
-            <br>
         </div>
     </div>
+    <div class="container-fluid">
+        <br>
+        {% if clothes_in_card_list %}
+            <table class="table table-bordered table-sm">
+                <thead class="align-middle text-center">
+                <tr>
+                    <th rowspan="3" class="border border-3 border-secondary">№ п.п</th>
+                    <th rowspan="3" class="border border-3 border-secondary">Наименование предметов</th>
+                    <th rowspan="3" class="border border-3 border-secondary">Состоит согласно вещевому
+                        аттестату <br> <span
+                                class="fst-italic text-decoration-underline">{{ certificate_number|default_if_none:"____" }}</span>
+                    </th>
+                    <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Выдано
+                    </th>
+                    <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Сдано</th>
+                </tr>
+
+                <tr>
+                    {% for year in year_list %}
+                        <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>
+                    {% endfor %}
+                    {% for year in year_list %}
+                        <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for year in year_list %}
+                        <th class="border border-3 border-secondary">Дата</th>
+                        <th class="border border-3 border-secondary">Кол.</th>
+                        <th class="border border-3 border-secondary">№ док.</th>
+                    {% endfor %}
+                    {% for year in year_list %}
+                        <th class="border border-3 border-secondary">Дата</th>
+                        <th class="border border-3 border-secondary">Кол.</th>
+                        <th class="border border-3 border-secondary">№ док.</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody class="align-middle text-center">
+                {% for cl_in_n in norm_clothes_list %}
+                    <tr>
+                        <th class="border">{{ forloop.counter }}</th>
+                        <th class="border text-start">
+                            <nobr>{{ cl_in_n.clothes.clothes_title }} ({{ cl_in_n.clothes.wear_time }} мес.)</nobr>
+                        </th>
+                        <td class="border">
+                            {% if clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}
+                                {% with cert_item=clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}
+                                    <nobr>
+                                        <a href="#clothes_in_card_update_form_{{ cert_item.id }}"
+                                           data-bs-toggle="modal"
+                                           class="link-secondary">{{ cert_item.clothes.clothes_title }} {{ cert_item.count }} {{ cert_item.date_of_issue|date:"m.y" }}</a>
+                                    </nobr>
+                                {% endwith %}
+                            {% endif %}
+                        </td>
+                        {% for year in year_list %}
+                            {% with args=year|str_concat:cl_in_n.clothes.id %}
+                                {% if clothes_in_card_list|get_movement_out:args %}
+                                    <td class="border border-2 border-secondary">
+                                        {% for item in clothes_in_card_list|get_movement_out:args %}
+                                            <a href="#clothes_in_card_update_form_{{ item.id }}"
+                                               data-bs-toggle="modal"
+                                               title="{{ item.clothes }}"
+                                               class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>
+                                            <br>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="border border-2 border-secondary">
+                                        {% for item in clothes_in_card_list|get_movement_out:args %}
+                                            {{ item.count }}<br>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="border border-2 border-secondary">
+                                        {% for item in clothes_in_card_list|get_movement_out:args %}
+                                            <nobr>{{ item.document_number|default_if_none:"" }}</nobr><br>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td class="border"></td>
+                                    <td class="border"></td>
+                                    <td class="border"></td>
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                        {% for year in year_list %}
+                            {% with args=year|str_concat:cl_in_n.clothes.id %}
+                                {% if clothes_in_card_list|get_movement_in:args %}
+                                    <td class="border">
+                                        {% for item in clothes_in_card_list|get_movement_in:args %}
+                                            <a href="#clothes_in_card_update_form_{{ item.id }}"
+                                               data-bs-toggle="modal"
+                                               title="{{ item.clothes }}"
+                                               class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>
+                                            <br>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="border">
+                                        {% for item in clothes_in_card_list|get_movement_in:args %}
+                                            {{ item.count }}<br>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="border">
+                                        {% for item in clothes_in_card_list|get_movement_in:args %}
+                                            {{ item.document_number|default_if_none:"" }}<br>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td class="border"></td>
+                                    <td class="border"></td>
+                                    <td class="border"></td>
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+            <br><br>
+
+
+            {#                <table class="table">#}
+            {#                    <thead>#}
+            {#                    <tr>#}
+            {#                        <th scope="col">№ п.п</th>#}
+            {#                        <th scope="col">Наименование предметов</th>#}
+            {#                        <th scope="col">Дата последней выдачи</th>#}
+            {#                        {% for year in year_list %}#}
+            {#                            <th scope="col">{{ year }}</th>#}
+            {#                        {% endfor %}#}
+            {#                    </tr>#}
+            {#                    </thead>#}
+            {#                    <tbody>#}
+            {#                    {% for result in result_list %}#}
+            {#                        <tr>#}
+            {#                            <td>{{ forloop.counter }}</td>#}
+            {#                            <td>{{ result.clothes_title }} ({{ result.wear_time_year }} лет)</td>#}
+            {#                            <td>{{ result.last_date }}</td>#}
+            {#                            {% for year in year_list %}#}
+            {#                                {% if result.year_of_ending == year %}#}
+            {#                                    <th scope="col">{{ result.date_of_ending|date:"m.y" }}</th>#}
+            {#                                {% else %}#}
+            {#                                    <th scope="col"></th>#}
+            {#                                {% endif %}#}
+            {#                            {% endfor %}#}
+            {#                        </tr>#}
+            {#                    {% endfor %}#}
+            {#                    </tbody>#}
+            {#                </table>#}
+        {% else %}
+            Список пуст!<br>
+        {% endif %}
+
+
+        <br>
+    </div>
+
 {% endblock %}
 
 

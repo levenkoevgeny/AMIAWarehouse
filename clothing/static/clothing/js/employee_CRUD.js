@@ -1,6 +1,6 @@
 $('#add_employee_form').submit(function (e) {
     e.preventDefault();
-    new_obj = {
+    let new_obj = {
         'last_name': $('#id_last_name').val() == "" ? null : $('#id_last_name').val(),
         'first_name': $('#id_first_name').val() == "" ? null : $('#id_first_name').val(),
         'patronymic': $('#id_patronymic').val() == "" ? null : $('#id_patronymic').val(),
@@ -12,7 +12,7 @@ $('#add_employee_form').submit(function (e) {
         'date_of_birth': $('#id_date_of_birth').val() == "" ? null : $('#id_date_of_birth').val(),
     }
 
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch('/api/employees/', {
         method: 'POST',
         headers: {
@@ -32,7 +32,7 @@ $('#add_employee_form').submit(function (e) {
 $('.employee_update_form_class').submit(function (e) {
     e.preventDefault();
     let form_id = e.target.id;
-    obj = {
+    let obj = {
         'last_name': $(`#id_last_name_${form_id}`).val() == "" ? null : $(`#id_last_name_${form_id}`).val(),
         'first_name': $(`#id_first_name_${form_id}`).val() == "" ? null : $(`#id_first_name_${form_id}`).val(),
         'patronymic': $(`#id_patronymic_${form_id}`).val() == "" ? null : $(`#id_patronymic_${form_id}`).val(),
@@ -43,7 +43,7 @@ $('.employee_update_form_class').submit(function (e) {
         'position': $(`#id_position_${form_id}`).val() == "" ? null : $(`#id_position_${form_id}`).val(),
         'date_of_birth': $(`#id_date_of_birth_${form_id}`).val() == "" ? null : $(`#id_date_of_birth_${form_id}`).val(),
     }
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch(`/api/employees/${form_id}/`, {
         method: 'PUT',
         headers: {

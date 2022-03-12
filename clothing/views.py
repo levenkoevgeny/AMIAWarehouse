@@ -109,8 +109,12 @@ def get_card(request, card_id):
 
         clothes_in_card_list = ClothesInCard.objects.filter(card=card)
 
-        certificate_number = clothes_in_card_list.filter(has_certificate=True).order_by(
-            '-date_of_issue').first().certificate_number
+        if clothes_in_card_list.filter(has_certificate=True).order_by(
+                '-date_of_issue').first():
+            certificate_number = clothes_in_card_list.filter(has_certificate=True).order_by(
+                '-date_of_issue').first().certificate_number
+        else:
+            certificate_number = None
 
         return render(request, 'clothing/card/card.html',
                       {'card_form': card_form, 'employee_form': employee_form, 'card': card, 'employee': employee,

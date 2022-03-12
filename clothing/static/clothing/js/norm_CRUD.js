@@ -1,11 +1,11 @@
 $('#add_norm_item_form').submit(function (e) {
     e.preventDefault();
-    new_obj = {
+    let new_obj = {
         'norm': $('#id_norm').val(),
         'clothes': $('#id_clothes').val() == "" ? null : $('#id_clothes').val(),
         'norm_count': $('#id_norm_count').val() == "" ? null : $('#id_norm_count').val(),
     }
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch('/api/norms-items/', {
         method: 'POST',
         headers: {
@@ -26,12 +26,12 @@ $('#add_norm_item_form').submit(function (e) {
 $('.norm_item_update_form_class').submit(function (e) {
     e.preventDefault();
     let form_id = e.target.id;
-    obj = {
+    let obj = {
         'norm': $(`#id_norm`).val(),
         'clothes': $(`#id_clothes_${form_id}`).val() == "" ? null : $(`#id_clothes_${form_id}`).val(),
         'norm_count': $(`#id_norm_count_${form_id}`).val() == "" ? null : $(`#id_norm_count_${form_id}`).val(),
     }
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch(`/api/norms-items/${form_id}/`, {
         method: 'PUT',
         headers: {
@@ -50,7 +50,7 @@ $('.norm_item_update_form_class').submit(function (e) {
 
 
 function delete_item_in_norm(id) {
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch(`/api/norms-items/${id}/`, {
         method: 'DELETE',
         headers: {
@@ -70,11 +70,10 @@ function delete_item_in_norm(id) {
 $('.norm_update_form').submit(function (e) {
     e.preventDefault();
     let norm_id = $(`#id_norm_id`).val()
-    obj = {
+    let obj = {
         'norm_title': $(`#id_norm_title`).val(),
     }
-    console.log(obj);
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch(`/api/norms/${norm_id}/`, {
         method: 'PUT',
         headers: {
@@ -94,12 +93,12 @@ $('.norm_update_form').submit(function (e) {
 $('#add_norm_form').submit(function (e) {
     e.preventDefault();
     let url = $('#id_parent_norm').val() == "" ? "/api/norms/" : "/clothing/norms/make-clone/"
-    new_obj = {
+    let new_obj = {
         'norm_title': $('#id_norm_title').val() == "" ? null : $('#id_norm_title').val(),
         'created_at': new Date(),
         'parent_norm': $('#id_parent_norm').val() == "" ? null : $('#id_parent_norm').val(),
     }
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     fetch(url, {
         method: 'POST',
         headers: {

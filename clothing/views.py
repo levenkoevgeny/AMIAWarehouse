@@ -71,40 +71,53 @@ def get_card(request, card_id):
         # norm list
         norm_clothes_list = ClothesInNorm.objects.filter(norm_id=card.norm.id).order_by('clothes__clothes_title')
 
-        list_of_issues = ClothesInCard.objects.filter(card_id=card_id).order_by('clothes__clothes_title')
-        list_of_clothes_id = []
-        result_list = []
+        # list_of_issues = ClothesInCard.objects.filter(card_id=card_id).order_by('clothes__clothes_title')
+        # list_of_clothes_id = []
+        # result_list = []
 
-        year_list = [i + date.today().year for i in range(0, 8)]
+        # year_list = [i + date.today().year for i in range(0, 8)]
+        year_list_ = [i for i in range(date.today().year - 7, date.today().year + 1)]
 
-        for item in list_of_issues:
-            list_of_clothes_id.append(item.clothes.id)
+        # for item in list_of_issues:
+        #     list_of_clothes_id.append(item.clothes.id)
 
-        for cl_id in set(list_of_clothes_id):
-            cl = get_object_or_404(Clothes, pk=cl_id)
-            dict_cl = model_to_dict(cl)
-            last_date = list_of_issues.filter(clothes_id=cl_id).order_by('-date_of_issue').first().date_of_issue
+        # for cl_id in set(list_of_clothes_id):
+        #     cl = get_object_or_404(Clothes, pk=cl_id)
+        #     dict_cl = model_to_dict(cl)
+        #     last_date = list_of_issues.filter(clothes_id=cl_id).order_by('-date_of_issue').first().date_of_issue
+        #
+        #     dict_cl['last_date'] = last_date
+        #
+        #     date_of_ending = last_date + relativedelta(months=cl.wear_time)
+        #
+        #     first_day_current_year = date(date.today().year, 1, 1)
+        #
+        #     if date_of_ending < first_day_current_year:
+        #         date_of_ending = first_day_current_year
+        #
+        #     dict_cl['date_of_ending'] = date_of_ending
+        #     dict_cl['year_of_ending'] = date_of_ending.year
+        #     dict_cl['wear_time_year'] = int(dict_cl['wear_time'] / 12)
+        #     result_list.append(dict_cl)
 
-            dict_cl['last_date'] = last_date
+        # return render(request, 'clothing/card/card.html',
+        #               {'card_form': card_form, 'employee_form': employee_form, 'card': card,
+        #                'employee': employee,
+        #                'norm_clothes_list': norm_clothes_list,
+        #                'result_list': sorted(result_list, key=lambda d: d['clothes_title']),
+        #                'year_list': year_list, 'clothes_list': Clothes.objects.all()})
 
-            date_of_ending = last_date + relativedelta(months=cl.wear_time)
+        clothes_in_card_list = ClothesInCard.objects.filter(card=card)
 
-            first_day_current_year = date(date.today().year, 1, 1)
-
-            if date_of_ending < first_day_current_year:
-                date_of_ending = first_day_current_year
-
-            dict_cl['date_of_ending'] = date_of_ending
-            dict_cl['year_of_ending'] = date_of_ending.year
-            dict_cl['wear_time_year'] = int(dict_cl['wear_time'] / 12)
-            result_list.append(dict_cl)
+        certificate_number = clothes_in_card_list.filter(has_certificate=True).order_by(
+            '-date_of_issue').first().certificate_number
 
         return render(request, 'clothing/card/card.html',
-                      {'card_form': card_form, 'employee_form': employee_form, 'card': card,
-                       'employee': employee,
-                       'norm_clothes_list': norm_clothes_list,
-                       'result_list': sorted(result_list, key=lambda d: d['clothes_title']),
-                       'year_list': year_list, 'clothes_list': Clothes.objects.all()})
+                      {'card_form': card_form, 'employee_form': employee_form, 'card': card, 'employee': employee,
+                       'year_list': year_list_, 'year_list_count': len(year_list_),
+                       'clothes_list': Clothes.objects.all(), 'norm_clothes_list': norm_clothes_list,
+                       'clothes_in_card_list': clothes_in_card_list, 'certificate_number': certificate_number
+                       })
 
 
 def get_card_full(request, card_id):

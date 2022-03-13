@@ -1,14 +1,3 @@
-function show_spinner() {
-    $('#id_main_div').css('height', '100vh')
-        .addClass('d-flex justify-content-center align-items-center')
-        .html('<div class="d-flex justify-content-center">\n' +
-        '  <div class="spinner-border text-secondary" style="width: 3rem; height: 3rem;" role="status">\n' +
-        '    <span class="visually-hidden">Loading...</span>\n' +
-        '  </div>\n' +
-        '</div>');
-}
-
-
 $('#clothes_in_card_form').submit(function (e) {
     e.preventDefault();
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -26,6 +15,7 @@ $('#clothes_in_card_form').submit(function (e) {
             'has_certificate': $('#id_has_certificate_checkbox').is(':checked'),
             'certificate_number': $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
             'document_number': $('#id_document_number').val() == "" ? null : $('#id_document_number').val(),
+            'created_at': new Date(),
         }
 
         requests.push(
@@ -44,7 +34,7 @@ $('#clothes_in_card_form').submit(function (e) {
 
     Promise.all(requests).then(() => {
         window.location.href = window.location.href
-    }).catch((e) => alert(e.message));
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
 });
 
 $('#add_card_form').submit(function (e) {
@@ -62,6 +52,9 @@ $('#add_card_form').submit(function (e) {
     }
 
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
+    show_spinner();
+
     fetch('/api/cards/', {
         method: 'POST',
         headers: {
@@ -71,11 +64,10 @@ $('#add_card_form').submit(function (e) {
         body: JSON.stringify(new_obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
 
 
@@ -106,11 +98,10 @@ $('#id_employee_update_form').submit(function (e) {
         body: JSON.stringify(obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
 
 
@@ -139,11 +130,10 @@ $('#id_card_data_update_form').submit(function (e) {
         body: JSON.stringify(obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
 
 
@@ -158,8 +148,14 @@ $('.clothes_in_card_update_form').submit(function (e) {
         'date_of_issue': $(`#id_date_of_issue_modal_${form_id}`).val(),
         'has_replacement': $(`#id_has_replacement_modal_${form_id}`).is(':checked'),
         'has_certificate': $(`#id_has_certificate_checkbox_modal_${form_id}`).is(':checked'),
-        'certificate_number': $(`#id_certificate_number_${form_id}`).val() == "" ? null : $(`#id_certificate_number_${form_id}`).val(),
-        'document_number': $(`#id_document_number_${form_id}`).val() == "" ? null : $(`#id_document_number_${form_id}`).val(),
+        'certificate_number': $(`#id_certificate_number_modal_${form_id}`).val() == "" ? null : $(`#id_certificate_number_modal_${form_id}`).val(),
+        'document_number': $(`#id_document_number_modal_${form_id}`).val() == "" ? null : $(`#id_document_number_modal_${form_id}`).val(),
+    }
+
+    if (obj.has_certificate) {
+        obj.document_number = null
+    } else {
+        obj.certificate_number = null
     }
 
     show_spinner();
@@ -173,9 +169,8 @@ $('.clothes_in_card_update_form').submit(function (e) {
         body: JSON.stringify(obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });

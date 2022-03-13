@@ -21,7 +21,7 @@ class CardForm(ModelForm):
 class ClothesForm(ModelForm):
     class Meta:
         model = Clothes
-        fields = ['clothes_title', 'wear_time', 'nomenclature']
+        fields = '__all__'
 
 
 class NormForm(ModelForm):

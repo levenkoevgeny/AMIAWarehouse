@@ -26,13 +26,18 @@ $('#clothes_in_card_form').submit(function (e) {
         )
     })
 
+    show_spinner();
+
     Promise.all(requests).then(() => {
         window.location.href = window.location.href
     }).catch((e) => alert(e.message))
 });
 
 function delete_clothes_in_card(id) {
-    csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
+    show_spinner();
+
     fetch(`/api/clothes-in-card/${id}/`, {
         method: 'DELETE',
         headers: {
@@ -60,6 +65,8 @@ $('.clothes_in_card_update_form').submit(function (e) {
         'has_replacement': $(`#id_has_replacement_${form_id}`).is(':checked'),
         'movement': $('#id_movement').val(),
     }
+
+    show_spinner();
 
     fetch(`/api/clothes-in-card/${form_id}/`, {
         method: 'PATCH',

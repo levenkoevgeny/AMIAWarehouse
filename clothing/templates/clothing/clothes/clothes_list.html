@@ -2,7 +2,7 @@
 
 {% load widget_tweaks %}
 {% load static %}
-
+{% load dict_tags %}
 {% block own_css %}{% endblock %}
 
 {% block title %}<title>Вещи</title>{% endblock %}
@@ -20,6 +20,7 @@
                                 aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
@@ -27,16 +28,37 @@
                                     {% render_field clothes_form.clothes_title class+="form-control" style="width: 100%" %}
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label">Номенклатура</label><br>
-                                    {% render_field clothes_form.nomenclature class+="form-control" style="width: 100%" %}
-                                </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="mb-3">
+                                <label class="form-label">Номенклатура</label><br>
+                                {% render_field clothes_form.nomenclature class+="form-control" style="width: 100%" %}
                             </div>
-                            <div class="col-md-12">
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Срок носки</label><br>
-                                    {% render_field clothes_form.wear_time class+="form-control" style="width: 100%" %}
+                                    {% render_field clothes_form.wear_time class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Цена</label><br>
+                                    {% render_field clothes_form.price class+="form-control" %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    {% render_field clothes_form.has_to_be_deposited class+="form-check-input" %}
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Подлежит сдаче
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -70,6 +92,8 @@
                                                name="clothes_title" id="id_clothes_title_{{ clothes.id }}" required>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Номенклатура</label><br>
@@ -77,14 +101,40 @@
                                                name="nomenclature" id="id_nomenclature_{{ clothes.id }}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Срок носки</label><br>
                                         <input type="number" class="form-control" value="{{ clothes.wear_time }}"
                                                name="wear_time" id="id_wear_time_{{ clothes.id }}" required>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Цена</label><br>
+                                        <input type="number" class="form-control" value="{{ clothes.price|formatted_float }}"
+                                               id="id_price_{{ clothes.id }}" min="0" step="0.1" required>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        {% if clothes.has_to_be_deposited %}
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="id_has_to_be_deposited_{{ clothes.id }}" checked>
+                                        {% else %}
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="id_has_to_be_deposited_{{ clothes.id }}">
+                                        {% endif %}
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Подлежит сдаче
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 SEX = [
     (1, 'Мужской'),
@@ -102,10 +103,11 @@ class Rank(models.Model):
 
 class Clothes(models.Model):
     clothes_title = models.CharField(verbose_name="Наименование", max_length=255)
-    wear_time = models.IntegerField(verbose_name="Сроки носки, мес.")
+    wear_time = models.IntegerField(verbose_name="Сроки носки, мес.", validators=[MinValueValidator(0)])
     nomenclature = models.CharField(verbose_name="Номенклатура", max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
-    price = models.FloatField(verbose_name="Цена", blank=True, null=True)
+    price = models.FloatField(verbose_name="Цена", blank=True, null=True, validators=[MinValueValidator(0.0)])
+    has_to_be_deposited = models.BooleanField(verbose_name="Подлежит сдаче", default=False)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
@@ -190,6 +192,9 @@ class Employee(models.Model):
     decree_start = models.DateField(verbose_name="Начало декрета", blank=True, null=True)
     decree_finish = models.DateField(verbose_name="Окончание декрета", blank=True, null=True)
     date_of_birth = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
+    enlisted = models.DateField(verbose_name="Зачислен", blank=True, null=True)
+    excluded = models.DateField(verbose_name="Исключен", blank=True, null=True)
+    personal_number = models.CharField(max_length=100, verbose_name="Персональный номер", blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего редактирования", auto_now=True)
 
     def __str__(self):

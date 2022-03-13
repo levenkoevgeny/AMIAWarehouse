@@ -1,4 +1,6 @@
 from django import template
+from django.template.defaultfilters import floatformat
+
 from clothing.models import Clothes
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import Lower
@@ -24,4 +26,10 @@ def get_clothes(value, clothes_id):
 @register.filter(name='sort_by')
 def sort_by(queryset, order):
     return queryset.order_by(Lower(order))
+
+
+@register.filter(name='formatted_float')
+def formatted_float(value):
+    value = floatformat(value, arg=2)
+    return str(value).replace(',', '.')
 

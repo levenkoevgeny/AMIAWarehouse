@@ -13,6 +13,7 @@ $('#add_employee_form').submit(function (e) {
     }
 
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    show_spinner();
     fetch('/api/employees/', {
         method: 'POST',
         headers: {
@@ -22,11 +23,10 @@ $('#add_employee_form').submit(function (e) {
         body: JSON.stringify(new_obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
 
 $('.employee_update_form_class').submit(function (e) {
@@ -44,6 +44,7 @@ $('.employee_update_form_class').submit(function (e) {
         'date_of_birth': $(`#id_date_of_birth_${form_id}`).val() == "" ? null : $(`#id_date_of_birth_${form_id}`).val(),
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    show_spinner();
     fetch(`/api/employees/${form_id}/`, {
         method: 'PUT',
         headers: {
@@ -53,9 +54,8 @@ $('.employee_update_form_class').submit(function (e) {
         body: JSON.stringify(obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
-            window.location.href = window.location.href
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message))
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });

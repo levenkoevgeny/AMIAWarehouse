@@ -34,3 +34,15 @@ $("#id_has_certificate_checkbox").change(function () {
         $('#id_document_number').prop("disabled", false);
     }
 });
+
+$(".has_certificate_checkbox_modal").change(function () {
+    let form_id = $(this).closest('form').attr('id')
+    if (this.checked) {
+        $(`#id_certificate_number_modal_${form_id}`).prop("disabled", false);
+        $(`#id_document_number_modal_${form_id}`).prop("disabled", true);
+
+    } else {
+        $(`#id_certificate_number_modal_${form_id}`).prop("disabled", true);
+        $(`#id_document_number_modal_${form_id}`).prop("disabled", false);
+    }
+});

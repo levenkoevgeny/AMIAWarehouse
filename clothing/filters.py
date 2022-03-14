@@ -48,8 +48,9 @@ class EmployeeFilter(django_filters.FilterSet):
 class ClothesFilter(django_filters.FilterSet):
     clothes_title = django_filters.CharFilter(field_name='clothes_title', lookup_expr='icontains')
     nomenclature = django_filters.CharFilter(field_name='nomenclature', lookup_expr='icontains')
-    wear_time_from = django_filters.NumberFilter(field_name='wear_time', lookup_expr='gte')
-    wear_time_till = django_filters.NumberFilter(field_name='wear_time', lookup_expr='lte')
+    price_from = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    price_till = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+    has_to_be_deposited = django_filters.BooleanFilter(field_name='has_to_be_deposited')
 
     class Meta:
         model = Clothes

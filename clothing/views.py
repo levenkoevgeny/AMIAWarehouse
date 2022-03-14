@@ -23,8 +23,11 @@ from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer
 from .filters import CardFilter, EmployeeFilter, ClothesFilter, NormFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from itertools import groupby
+
 
 def card_list(request):
+    request.session['back_path_card_list'] = '/clothing/cards?' + request.META.get('QUERY_STRING')
     f = CardFilter(request.GET, queryset=Card.objects.all())
     paginator = Paginator(f.qs, 50)
     page = request.GET.get('page')
@@ -62,7 +65,6 @@ def get_card(request, card_id):
     if request.method == 'POST':
         pass
     else:
-        # for update
         card = get_object_or_404(Card, pk=card_id)
         card_form = CardForm(instance=card)
         employee = card.employee
@@ -120,15 +122,16 @@ def get_card(request, card_id):
                       {'card_form': card_form, 'employee_form': employee_form, 'card': card, 'employee': employee,
                        'year_list': year_list_, 'year_list_count': len(year_list_),
                        'clothes_list': Clothes.objects.all(), 'norm_clothes_list': norm_clothes_list,
-                       'clothes_in_card_list': clothes_in_card_list, 'certificate_number': certificate_number
+                       'clothes_in_card_list': clothes_in_card_list, 'certificate_number': certificate_number,
+                       'back_path': request.session.get('back_path_card_list', '/clothing/cards')
                        })
 
 
 def get_card_full(request, card_id):
     card = get_object_or_404(Card, pk=card_id)
-    clothes_list = ClothesInCard.objects.filter(card_id=card_id)
+    clothes_list = ClothesInCard.objects.filter(card_id=card_id).order_by('clothes__clothes_title')
     clothes_list_full = Clothes.objects.all()
-    list_of_clothes_id = list(set([item.clothes.id for item in clothes_list]))
+    list_of_clothes_id = [item.clothes.id for item, _ in groupby(clothes_list)]
     return render(request, 'clothing/card/card_full.html',
                   {'card': card,
                    'clothes_list': clothes_list,
@@ -318,7 +321,8 @@ def get_sheet(request):
         for clothes in clothes_list:
             if clothes in current_norm:
                 # список выдач этой вещи этому сотруднику
-                list_of_issues = ClothesInCard.objects.filter(card_id=card.id, clothes_id=clothes.id).order_by(
+                list_of_issues = ClothesInCard.objects.filter(card_id=card.id, clothes_id=clothes.id,
+                                                              has_replacement=False).order_by(
                     'date_of_issue')
                 norm_count = ClothesInNorm.objects.filter(norm=card.norm, clothes=clothes).first().norm_count
 

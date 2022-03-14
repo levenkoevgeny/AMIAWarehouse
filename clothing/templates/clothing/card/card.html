@@ -101,7 +101,8 @@
                                             {% if clothes.has_certificate %}
                                                 <input type="text" class="form-control"
                                                        id="id_document_number_modal_{{ clothes.id }}"
-                                                       value="{{ clothes.document_number|default_if_none:"" }}" disabled>
+                                                       value="{{ clothes.document_number|default_if_none:"" }}"
+                                                       disabled>
                                             {% else %}
                                                 <input type="text" class="form-control"
                                                        id="id_document_number_modal_{{ clothes.id }}"
@@ -308,7 +309,8 @@
         </div>
 
         <br>
-
+        <div><h3><i class="fa-solid fa-arrow-left-long"></i></i><a href="{{ back_path }}" class="link-secondary">Вернуться к списку карточек</a></h3></div>
+        <br>
         <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.card_number }}</h2>
 
         <div class="row">
@@ -328,12 +330,17 @@
                     о
                     ростовке</a></h5>
 
-                <h6>рост - <span class="fst-italic">{{ card.growth|default_if_none:"Нет данных" }}</span></h6>
-                <h6>обхват груди - <span class="fst-italic">{{ card.bust|default_if_none:"Нет данных" }}</span></h6>
-                <h6>куртка - <span class="fst-italic">{{ card.jacket|default_if_none:"Нет данных" }}</span></h6>
-                <h6>ботинки - <span class="fst-italic">{{ card.shoes|default_if_none:"Нет данных" }}</span></h6>
-                <h6>фуражка - <span class="fst-italic">{{ card.cap|default_if_none:"Нет данных" }}</span></h6>
-                <h6>воротничок-размер - <span
+                <h6 style="display: inline !important;">рост - <span
+                        class="fst-italic">{{ card.growth|default_if_none:"Нет данных" }}</span></h6>,
+                <h6 style="display: inline !important;">обхват груди - <span
+                        class="fst-italic">{{ card.bust|default_if_none:"Нет данных" }}</span></h6>,
+                <h6 style="display: inline !important;">куртка - <span
+                        class="fst-italic">{{ card.jacket|default_if_none:"Нет данных" }}</span></h6>,
+                <h6 style="display: inline !important;">ботинки - <span
+                        class="fst-italic">{{ card.shoes|default_if_none:"Нет данных" }}</span></h6>,
+                <h6 style="display: inline !important;">фуражка - <span
+                        class="fst-italic">{{ card.cap|default_if_none:"Нет данных" }}</span></h6>,
+                <h6 style="display: inline !important;">воротничок-размер - <span
                         class="fst-italic">{{ card.collar|default_if_none:"Нет данных" }}</span>
                 </h6>
             </div>
@@ -378,9 +385,7 @@
 
         <br>
         <div>
-            <h5 class="px-3"><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица
-                выдачи</a></h5>
-            <div class="shadow-lg px-4 py-3 mb-5 bg-body rounded">
+            <div class="shadow-lg px-4 py-3 mb-3 bg-body rounded">
                 <form id="clothes_in_card_form">{% csrf_token %}
                     <input type="hidden" value="{{ card.id }}" id="id_card">
                     <div class="row align-items-start">
@@ -456,6 +461,8 @@
     <div class="container-fluid">
         <br>
         {% if clothes_in_card_list %}
+            <h5 class="px-3 mb-3"><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица
+                выдачи</a></h5>
             <table class="table table-bordered table-sm">
                 <thead class="align-middle text-center">
                 <tr>
@@ -514,10 +521,17 @@
                                 {% if clothes_in_card_list|get_movement_out:args %}
                                     <td class="border border-2 border-secondary">
                                         {% for item in clothes_in_card_list|get_movement_out:args %}
-                                            <a href="#clothes_in_card_update_form_{{ item.id }}"
-                                               data-bs-toggle="modal"
-                                               title="{{ item.clothes }}"
-                                               class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>
+                                            {% if item.has_replacement %}
+                                                <a href="#clothes_in_card_update_form_{{ item.id }}"
+                                                   data-bs-toggle="modal"
+                                                   title="{{ item.clothes }}"
+                                                   class="link-secondary text-danger">{{ item.date_of_issue|date:"m.y" }}</a>
+                                            {% else %}
+                                                <a href="#clothes_in_card_update_form_{{ item.id }}"
+                                                   data-bs-toggle="modal"
+                                                   title="{{ item.clothes }}"
+                                                   class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>
+                                            {% endif %}
                                             <br>
                                         {% endfor %}
                                     </td>
@@ -607,13 +621,9 @@
         {% else %}
             Список пуст!<br>
         {% endif %}
-
-
         <br>
     </div>
-
 {% endblock %}
-
 
 {% block own_js %}
     <script src="{% static 'clothing/js/card_CRUD.js' %}"></script>

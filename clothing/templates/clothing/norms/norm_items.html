@@ -7,41 +7,37 @@
 {% block title %}<title>{{ norm.norm_title }}</title>{% endblock %}
 {% block content %}
     <div class="container">
-
-
-    <div class="modal fade" id="norm_update_data_form" tabindex="-1"
-                 aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <form class="norm_update_form">{% csrf_token %}
-                        <input type="hidden" name="norm_id" id="id_norm_id" value="{{ norm.id }}">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Название</label><br>
-                                            <input type="text" class="form-control" name="norm_title"
-                                                   id="id_norm_title" value="{{ norm.norm_title }}" required>
-                                        </div>
+        <div class="modal fade" id="norm_update_data_form" tabindex="-1"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form class="norm_update_form">{% csrf_token %}
+                    <input type="hidden" name="norm_id" id="id_norm_id" value="{{ norm.id }}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Название</label><br>
+                                        <input type="text" class="form-control" name="norm_title"
+                                               id="id_norm_title" value="{{ norm.norm_title }}" required>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                            </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-
-
+        </div>
 
         {% for item in item_list %}
             <div class="modal fade" id="norm_item_update_data_form_{{ item.id }}" tabindex="-1"
@@ -86,6 +82,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Срок носки</label>
+                                            <input type="number" class="form-control" name="norm_count"
+                                                   id="id_wear_time_{{ item.id }}" value="{{ item.wear_time }}"
+                                                   required>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -98,7 +104,8 @@
         {% endfor %}
 
         <br>
-        <h2>{{ norm.norm_title }} <a href="#norm_update_data_form" data-bs-toggle="modal" class="link-secondary">(ред.)</a></h2>
+        <h2>{{ norm.norm_title }} <a href="#norm_update_data_form" data-bs-toggle="modal"
+                                     class="link-secondary">(ред.)</a></h2>
         <br>
 
 
@@ -111,25 +118,34 @@
                         {% render_field clothes_in_norm_form.clothes class+="form-control" style="width: 100%" %}
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Количество по норме</label><br>
-                        {% render_field clothes_in_norm_form.norm_count class+="form-control" style="width: 100%" %}
+                        {% render_field clothes_in_norm_form.norm_count class+="form-control" %}
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
+                    <div class="mb-3">
+                        <label class="form-label">Срок носки</label><br>
+                        {% render_field clothes_in_norm_form.wear_time class+="form-control" %}
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
                     <div class="mb-3">
                         <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
                         </button>
                     </div>
                 </div>
+
             </div>
         </form>
 
         {% if norm.clothes_list %}
             {% for item in item_list %}
                 <a class="link-secondary" href="#norm_item_update_data_form_{{ item.id }}"
-                   data-bs-toggle="modal">{{ item.clothes }} {{ item.norm_count }} шт.</a> <a href="javascript:delete_item_in_norm({{ item.id }})">удалить</a><br>
+                   data-bs-toggle="modal">{{ item.clothes }} {{ item.norm_count }} шт. {{ item.wear_time }} мес.</a>
+                <a href="javascript:delete_item_in_norm({{ item.id }})">удалить</a><br>
             {% endfor %}
 
         {% else %}

@@ -4,8 +4,10 @@ $('#add_norm_item_form').submit(function (e) {
         'norm': $('#id_norm').val(),
         'clothes': $('#id_clothes').val() == "" ? null : $('#id_clothes').val(),
         'norm_count': $('#id_norm_count').val() == "" ? null : $('#id_norm_count').val(),
+        'wear_time': $('#id_wear_time').val() == "" ? null : $('#id_wear_time').val(),
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
     show_spinner();
     fetch('/api/norms-items/', {
         method: 'POST',
@@ -30,6 +32,7 @@ $('.norm_item_update_form_class').submit(function (e) {
         'norm': $(`#id_norm`).val(),
         'clothes': $(`#id_clothes_${form_id}`).val() == "" ? null : $(`#id_clothes_${form_id}`).val(),
         'norm_count': $(`#id_norm_count_${form_id}`).val() == "" ? null : $(`#id_norm_count_${form_id}`).val(),
+        'wear_time': $(`#id_wear_time_${form_id}`).val() == "" ? null : $(`#id_wear_time_${form_id}`).val(),
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     show_spinner();

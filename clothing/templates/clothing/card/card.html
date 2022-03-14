@@ -368,11 +368,10 @@
                             </tr>
                             </thead>
                             <tbody>
-
                             {% for norm_clothes in norm_clothes_list %}
                                 <tr>
                                     <td>{{ norm_clothes.clothes.clothes_title }}</td>
-                                    <td>{{ norm_clothes.clothes.wear_time }} мес.</td>
+                                    <td>{{ norm_clothes.wear_time }} мес.</td>
                                     <td>{{ norm_clothes.norm_count }}</td>
                                 </tr>
                             {% endfor %}

@@ -155,69 +155,115 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Фамилия</label><br>
-                                        {% render_field employee_form.last_name class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.last_name class+="form-control" %}
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Имя</label><br>
-                                        {% render_field employee_form.first_name class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.first_name class+="form-control" %}
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Отчество</label><br>
-                                        {% render_field employee_form.patronymic class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.patronymic class+="form-control" %}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-lg-12">
                                     <div class="mb-3">
-                                        <label class="form-label">Подразделение</label><br>
-                                        {% render_field employee_form.subdivision class+="form-control" style="width: 100%" %}
+                                        <label class="form-label">Персональный номер</label><br>
+                                        {% render_field employee_form.personal_number class+="form-control" %}
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Звание</label><br>
-                                        {% render_field employee_form.rank class+="form-control" style="width: 100%" %}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Тип записи</label><br>
-                                        {% render_field employee_form.kind class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.kind class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Подразделение</label><br>
+                                        {% render_field employee_form.subdivision class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Звание</label><br>
+                                        {% render_field employee_form.rank class+="form-select" %}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Должность</label><br>
-                                        {% render_field employee_form.position class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.position class+="form-select" %}
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Группа (для курсантов)</label><br>
+                                        {% render_field employee_form.group class+="form-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Пол</label><br>
-                                        {% render_field employee_form.sex class+="form-control" style="width: 100%" %}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Дата рождения</label><br>
-                                        {% render_field employee_form.date_of_birth class+="form-control" style="width: 100%" %}
+                                        {% render_field employee_form.sex class+="form-select" %}
                                     </div>
                                 </div>
                             </div>
-
-
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата рождения</label><br>
+                                        {% render_field employee_form.date_of_birth class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата зачисления</label><br>
+                                        {% render_field employee_form.enlisted class+="form-control" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата исключения</label><br>
+                                        {% render_field employee_form.excluded class+="form-control" %}
+                                    </div>
+                                </div>
+                            </div>
+                            {#                        <div class="row">#}
+                            {#                             <div class="col-lg-4">#}
+                            {#                                <div class="mb-3">#}
+                            {#                                    {% render_field employee_form.is_on_decree class+="form-check-input" %}#}
+                            {#                                    <label class="form-label">В декрете</label>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            {#                            <div class="col-lg-4">#}
+                            {#                                <div class="mb-3">#}
+                            {#                                    <label class="form-label">Начало декрета</label><br>#}
+                            {#                                    {% render_field employee_form.decree_start class+="form-control" %}#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            {#                            <div class="col-lg-4">#}
+                            {#                                <div class="mb-3">#}
+                            {#                                    <label class="form-label">Окончание декрета</label><br>#}
+                            {#                                    {% render_field employee_form.decree_finish class+="form-control" %}#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            {#                        </div>#}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -309,7 +355,8 @@
         </div>
 
         <br>
-        <div><h3><i class="fa-solid fa-arrow-left-long"></i></i><a href="{{ back_path }}" class="link-secondary">Вернуться к списку карточек</a></h3></div>
+        <div><h3><i class="fa-solid fa-arrow-left-long"></i></i><a href="{{ back_path }}" class="link-secondary">Вернуться
+            к списку карточек</a></h3></div>
         <br>
         <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.card_number }}</h2>
 
@@ -471,6 +518,7 @@
                         аттестату <br> <span
                                 class="fst-italic text-decoration-underline">{{ certificate_number|default_if_none:"____" }}</span>
                     </th>
+                    <th rowspan="3" class="border border-3 border-secondary">Дата и количество следующей выдачи</th>
                     <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Выдано
                     </th>
                     <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Сдано</th>
@@ -510,11 +558,13 @@
                                     <nobr>
                                         <a href="#clothes_in_card_update_form_{{ cert_item.id }}"
                                            data-bs-toggle="modal"
-                                           class="link-secondary">{{ cert_item.clothes.clothes_title }} {{ cert_item.count }} {{ cert_item.date_of_issue|date:"m.y" }}</a>
+                                           class="link-secondary">{{ cert_item.count }}
+                                            шт. {{ cert_item.date_of_issue|date:"m.y" }}</a>
                                     </nobr>
                                 {% endwith %}
                             {% endif %}
                         </td>
+                        <td></td>
                         {% for year in year_list %}
                             {% with args=year|str_concat:cl_in_n.clothes.id %}
                                 {% if clothes_in_card_list|get_movement_out:args %}

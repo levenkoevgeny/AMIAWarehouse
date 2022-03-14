@@ -5,6 +5,7 @@ $('#add_norm_item_form').submit(function (e) {
         'clothes': $('#id_clothes').val() == "" ? null : $('#id_clothes').val(),
         'norm_count': $('#id_norm_count').val() == "" ? null : $('#id_norm_count').val(),
         'wear_time': $('#id_wear_time').val() == "" ? null : $('#id_wear_time').val(),
+        'interchange': [],
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
 

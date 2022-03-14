@@ -9,7 +9,12 @@ class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        widgets = {'date_of_birth': myDateInput}
+        widgets = {'date_of_birth': myDateInput,
+                   'decree_start': myDateInput,
+                   'decree_finish': myDateInput,
+                   'enlisted': myDateInput,
+                   'excluded': myDateInput,
+                   }
 
 
 class CardForm(ModelForm):
@@ -31,6 +36,7 @@ class NormForm(ModelForm):
 
 
 class ClothesInNormForm(ModelForm):
+
     class Meta:
         model = ClothesInNorm
         fields = '__all__'

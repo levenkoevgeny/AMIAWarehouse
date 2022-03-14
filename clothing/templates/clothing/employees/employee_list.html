@@ -41,6 +41,14 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-lg-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Персональный номер</label><br>
+                                    {% render_field employee_form.personal_number class+="form-control" %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-3">
                                     <label class="form-label">Тип записи</label><br>
@@ -70,17 +78,57 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-3">
+                                    <label class="form-label">Группа (для курсантов)</label><br>
+                                    {% render_field employee_form.group class+="form-select" %}
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
                                     <label class="form-label">Пол</label><br>
                                     {% render_field employee_form.sex class+="form-select" %}
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-3">
                                     <label class="form-label">Дата рождения</label><br>
                                     {% render_field employee_form.date_of_birth class+="form-control" %}
                                 </div>
                             </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Дата зачисления</label><br>
+                                    {% render_field employee_form.enlisted class+="form-control" %}
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Дата исключения</label><br>
+                                    {% render_field employee_form.excluded class+="form-control" %}
+                                </div>
+                            </div>
                         </div>
+                        {#                        <div class="row">#}
+                        {#                             <div class="col-lg-4">#}
+                        {#                                <div class="mb-3">#}
+                        {#                                    {% render_field employee_form.is_on_decree class+="form-check-input" %}#}
+                        {#                                    <label class="form-label">В декрете</label>#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                            <div class="col-lg-4">#}
+                        {#                                <div class="mb-3">#}
+                        {#                                    <label class="form-label">Начало декрета</label><br>#}
+                        {#                                    {% render_field employee_form.decree_start class+="form-control" %}#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                            <div class="col-lg-4">#}
+                        {#                                <div class="mb-3">#}
+                        {#                                    <label class="form-label">Окончание декрета</label><br>#}
+                        {#                                    {% render_field employee_form.decree_finish class+="form-control" %}#}
+                        {#                                </div>#}
+                        {#                            </div>#}
+                        {#                        </div>#}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -139,6 +187,18 @@
                             </div>
 
                             <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Персональный номер</label><br>
+                                        <input type="text"
+                                               class="form-control"
+                                               value="{{ employee.personal_number }}"
+                                               id="id_personal_number_{{ employee.id }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Тип записи</label><br>
@@ -158,7 +218,6 @@
                                                 <option value="3" selected>Гражданский</option>
                                             {% endif %}
                                         </select>
-
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -213,6 +272,23 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Группа</label><br>
+                                        <select id="id_group_{{ employee.id }}" class="form-select">
+                                            <option value="">----</option>
+                                            {% for group in group_list %}
+                                                {% if group.id == employee.group.id %}
+                                                    <option value="{{ group.id }}"
+                                                            selected>{{ group.group_name }}</option>
+                                                {% else %}
+                                                    <option value="{{ group.id }}">{{ group.group_name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Пол</label><br>
@@ -226,15 +302,34 @@
                                                 <option value="2" selected>Женский</option>
                                             {% endif %}
                                         </select>
-
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-lg-4">
                                     <div class="mb-3">
                                         <label class="form-label">Дата рождения</label><br>
                                         <input type="date"
                                                value="{{ employee.date_of_birth|date:"Y-m-d" }}"
                                                name="date_of_birth" id="id_date_of_birth_{{ employee.id }}"
+                                               class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата зачисления</label><br>
+                                        <input type="date"
+                                               value="{{ employee.enlisted|date:"Y-m-d" }}"
+                                               id="id_enlisted_{{ employee.id }}"
+                                               class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Дата исключения</label><br>
+                                        <input type="date"
+                                               value="{{ employee.excluded|date:"Y-m-d" }}"
+                                               id="id_enlisted_{{ employee.id }}"
                                                class="form-control">
                                     </div>
                                 </div>
@@ -296,8 +391,8 @@
 {% endblock %}
 
 {% block add_button %}
-   <a href="#employee_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
-           style="display: block; margin-left:auto; width: 270px;">Добавить сотрудника (курсанта)</a>
+    <a href="#employee_add_data_form" data-bs-toggle="modal" class="btn btn-secondary"
+       style="display: block; margin-left:auto; width: 270px;">Добавить сотрудника (курсанта)</a>
 {% endblock %}
 
 {% block list %}

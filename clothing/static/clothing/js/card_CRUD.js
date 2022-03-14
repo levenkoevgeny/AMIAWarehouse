@@ -76,15 +76,19 @@ $('#id_employee_update_form').submit(function (e) {
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     let id_employee = $("#id_employee").val();
     let obj = {
-        'last_name': $(`#id_last_name`).val() == "" ? null : $(`#id_last_name`).val(),
-        'first_name': $(`#id_first_name`).val() == "" ? null : $(`#id_first_name`).val(),
-        'patronymic': $(`#id_patronymic`).val() == "" ? null : $(`#id_patronymic`).val(),
-        'subdivision': $(`#id_subdivision`).val() == "" ? null : $(`#id_subdivision`).val(),
-        'sex': $(`#id_sex`).val() == "" ? null : $(`#id_sex`).val(),
-        'kind': $(`#id_kind`).val() == "" ? null : $(`#id_kind`).val(),
-        'rank': $(`#id_rank`).val() == "" ? null : $(`#id_rank`).val(),
-        'position': $(`#id_position`).val() == "" ? null : $(`#id_position`).val(),
-        'date_of_birth': $(`#id_date_of_birth`).val() == "" ? null : $(`#id_date_of_birth`).val(),
+        'last_name': $('#id_last_name').val() == "" ? null : $('#id_last_name').val(),
+        'first_name': $('#id_first_name').val() == "" ? null : $('#id_first_name').val(),
+        'patronymic': $('#id_patronymic').val() == "" ? null : $('#id_patronymic').val(),
+        'personal_number': $('#id_personal_number').val() == "" ? null : $('#id_personal_number').val(),
+        'kind': $('#id_kind').val() == "" ? null : $('#id_kind').val(),
+        'subdivision': $('#id_subdivision').val() == "" ? null : $('#id_subdivision').val(),
+        'rank': $('#id_rank').val() == "" ? null : $('#id_rank').val(),
+        'position': $('#id_position').val() == "" ? null : $('#id_position').val(),
+        'group': $('#id_group').val() == "" ? null : $('#id_group').val(),
+        'sex': $('#id_sex').val() == "" ? null : $('#id_sex').val(),
+        'date_of_birth': $('#id_date_of_birth').val() == "" ? null : $('#id_date_of_birth').val(),
+        'enlisted': $('#id_enlisted').val() == "" ? null : $('#id_enlisted').val(),
+        'excluded': $('#id_excluded').val() == "" ? null : $('#id_excluded').val(),
     }
 
     show_spinner();

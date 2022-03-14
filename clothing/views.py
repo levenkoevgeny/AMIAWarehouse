@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Card, Clothes, Norm, ClothesInCard, Employee, ClothesInNorm, Subdivision, Position, Rank, SEX, \
-    EMPLOYEE_KIND, Dimensions, ShoesDimensions, CapDimensions
+    EMPLOYEE_KIND, Dimensions, ShoesDimensions, CapDimensions, Group, Course
 from .forms import CardForm, ClothesForm, EmployeeForm, NormForm, ClothesInNormForm
 from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer, \
     ClothesInNormSerializer
@@ -35,30 +35,6 @@ def card_list(request):
     card_form = CardForm()
     return render(request, 'clothing/card/card_list.html',
                   {'list': cards_list, 'card_form': card_form, 'filter': f})
-
-
-def card_input(request):
-    if request.method == 'POST':
-        form = CardForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:card_list'))
-        else:
-            return render(request, 'clothing/card/card_input_form.html', {'form': form})
-    else:
-        form = CardForm()
-        return render(request, 'clothing/card/card_input_form.html', {'form': form})
-
-
-def card_update(request, card_id):
-    if request.method == 'POST':
-        obj = get_object_or_404(Card, pk=card_id)
-        form = CardForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:get_card', kwargs={'card_id': card_id}))
-    else:
-        pass
 
 
 def get_card(request, card_id):
@@ -139,10 +115,6 @@ def get_card_full(request, card_id):
                    'list_of_clothes_id': list_of_clothes_id})
 
 
-def card_delete(request):
-    pass
-
-
 def clothes_list(request):
     f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
     paginator = Paginator(f.qs, 30)
@@ -151,27 +123,6 @@ def clothes_list(request):
     clothes_form = ClothesForm()
     return render(request, 'clothing/clothes/clothes_list.html',
                   {'list': cl_list, 'clothes_form': clothes_form, 'filter': f})
-
-
-def clothes_input(request):
-    pass
-
-
-def clothes_update(request, clothes_id):
-    if request.method == 'POST':
-        obj = get_object_or_404(Clothes, pk=clothes_id)
-        form = ClothesForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:clothes_list'))
-        else:
-            raise Exception("Ошибка записи")
-    else:
-        pass
-
-
-def clothes_delete(request):
-    pass
 
 
 def employee_list(request):
@@ -188,24 +139,8 @@ def employee_list(request):
                    'position_list': Position.objects.all(),
                    'kind_list': EMPLOYEE_KIND,
                    'sex_list': SEX,
+                   'group_list': Group.objects.all(),
                    'filter': f})
-
-
-def employee_input(request):
-    pass
-
-
-def employee_update(request, employee_id, card_id):
-    if request.method == 'POST':
-        obj = get_object_or_404(Employee, pk=employee_id)
-        form = EmployeeForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('clothing:get_card', kwargs={'card_id': card_id}))
-        else:
-            raise Exception("Ошибка employee update data")
-    else:
-        pass
 
 
 def norm_list(request):
@@ -222,6 +157,8 @@ def norm_items(request, norm_id):
     norm = get_object_or_404(Norm, pk=norm_id)
     item_list = ClothesInNorm.objects.filter(norm_id=norm_id).order_by('clothes__clothes_title')
     clothes_in_norm_form = ClothesInNormForm()
+    clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
+        'clothes_title')
     return render(request, 'clothing/norms/norm_items.html', {
         'norm': norm,
         'clothes_in_norm_form': clothes_in_norm_form,
@@ -297,83 +234,90 @@ def get_random_data(request):
 
 # reports
 def get_sheet(request):
+    f = CardFilter(request.GET, queryset=Card.objects.all())
+    cards_list = f.qs
+    if request.META['QUERY_STRING']:
+        only_filter = False
+    else:
+        only_filter = True
+
     # все вещи
     clothes_list = Clothes.objects.all()
     # результат
     result_dict = {}
 
-    lll = 0
+    # for card in Card.objects.all():
+    #     # норма сотрудника
+    #     current_norm = card.norm.clothes_list.all()
+    #     t = card.norm.id
+    #     # вещи, которые положены сотруднику
+    #     employee_clothes_dict = {}
+    #
+    #     # дата начала диапазона
+    #     date_start = date(2022, 7, 1)
+    #     # дата окончания диапазона
+    #     date_end = date(2022, 12, 31)
+    #     # текущая дата
+    #     current_date = datetime.now()
+    #
+    #     for clothes in clothes_list:
+    #         if clothes in current_norm:
+    #             # список выдач этой вещи этому сотруднику
+    #             list_of_issues = ClothesInCard.objects.filter(card_id=card.id, clothes_id=clothes.id,
+    #                                                           has_replacement=False).order_by(
+    #                 'date_of_issue')
+    #             norm_count = ClothesInNorm.objects.filter(norm=card.norm, clothes=clothes).first().norm_count
+    #
+    #             if not list_of_issues:
+    #                 employee_clothes_dict[clothes.id] = norm_count
+    #             else:
+    #                 date_period_start = current_date.year - clothes.wear_time / 12
+    #                 id_need_to_delete_array = []
+    #
+    #                 i = 0
+    #                 while i < list_of_issues.count():
+    #                     item = list_of_issues[i]
+    #
+    #                     end_period_year = item.date_of_issue.year + clothes.wear_time / 12 - 1
+    #
+    #                     if item.date_of_issue.year <= date_period_start:
+    #                         need_to_delete_list = list_of_issues.filter(
+    #                             date_of_issue__year__gte=item.date_of_issue.year,
+    #                             date_of_issue__year__lte=end_period_year)
+    #                         for date_in_list in need_to_delete_list:
+    #                             id_need_to_delete_array.append(date_in_list.id)
+    #                         i += need_to_delete_list.count()
+    #                     else:
+    #                         break
+    #
+    #                 result_list_of_issues = list_of_issues.exclude(id__in=[*id_need_to_delete_array])
+    #
+    #                 if result_list_of_issues.count() == 0:
+    #                     employee_clothes_dict[clothes.id] = norm_count
+    #                 else:
+    #                     first_issue = result_list_of_issues.first()
+    #                     first_issue_date_of_end = first_issue.date_of_issue + relativedelta(months=clothes.wear_time)
+    #                     last_issue = result_list_of_issues.last()
+    #                     last_issue_date_of_end = last_issue.date_of_issue + relativedelta(
+    #                         months=clothes.wear_time / norm_count)
+    #                     if first_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
+    #                         employee_clothes_dict[clothes.id] = norm_count
+    #                     elif last_issue_date_of_end < date_start or last_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
+    #                         counter = 0
+    #                         for item in result_list_of_issues:
+    #                             counter = counter + item.count
+    #                         employee_clothes_dict[clothes.id] = norm_count - counter
+    #                     else:
+    #                         employee_clothes_dict[clothes.id] = ""
+    #
+    #         else:
+    #             employee_clothes_dict[clothes.id] = ""
+    #     result_dict[card.id] = employee_clothes_dict
 
-    for card in Card.objects.all():
-        # норма сотрудника
-        current_norm = card.norm.clothes_list.all()
-        t = card.norm.id
-        # вещи, которые положены сотруднику
-        employee_clothes_dict = {}
+    # return render(request, 'clothing/reports/sheet.html',
+    #               {'clothes_list': clothes_list, 'card_list': Card.objects.all(), 'result_dict': result_dict})
 
-        # дата начала диапазона
-        date_start = date(2022, 7, 1)
-        # дата окончания диапазона
-        date_end = date(2022, 12, 31)
-        # текущая дата
-        current_date = datetime.now()
-
-        for clothes in clothes_list:
-            if clothes in current_norm:
-                # список выдач этой вещи этому сотруднику
-                list_of_issues = ClothesInCard.objects.filter(card_id=card.id, clothes_id=clothes.id,
-                                                              has_replacement=False).order_by(
-                    'date_of_issue')
-                norm_count = ClothesInNorm.objects.filter(norm=card.norm, clothes=clothes).first().norm_count
-
-                if not list_of_issues:
-                    employee_clothes_dict[clothes.id] = norm_count
-                else:
-                    date_period_start = current_date.year - clothes.wear_time / 12
-                    id_need_to_delete_array = []
-
-                    i = 0
-                    while i < list_of_issues.count():
-                        item = list_of_issues[i]
-
-                        end_period_year = item.date_of_issue.year + clothes.wear_time / 12 - 1
-
-                        if item.date_of_issue.year <= date_period_start:
-                            need_to_delete_list = list_of_issues.filter(
-                                date_of_issue__year__gte=item.date_of_issue.year,
-                                date_of_issue__year__lte=end_period_year)
-                            for date_in_list in need_to_delete_list:
-                                id_need_to_delete_array.append(date_in_list.id)
-                            i += need_to_delete_list.count()
-                        else:
-                            break
-
-                    result_list_of_issues = list_of_issues.exclude(id__in=[*id_need_to_delete_array])
-
-                    if result_list_of_issues.count() == 0:
-                        employee_clothes_dict[clothes.id] = norm_count
-                    else:
-                        first_issue = result_list_of_issues.first()
-                        first_issue_date_of_end = first_issue.date_of_issue + relativedelta(months=clothes.wear_time)
-                        last_issue = result_list_of_issues.last()
-                        last_issue_date_of_end = last_issue.date_of_issue + relativedelta(
-                            months=clothes.wear_time / norm_count)
-                        if first_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
-                            employee_clothes_dict[clothes.id] = norm_count
-                        elif last_issue_date_of_end < date_start or last_issue_date_of_end >= date_start and first_issue_date_of_end <= date_end:
-                            counter = 0
-                            for item in result_list_of_issues:
-                                counter = counter + item.count
-                            employee_clothes_dict[clothes.id] = norm_count - counter
-                        else:
-                            employee_clothes_dict[clothes.id] = ""
-
-            else:
-                employee_clothes_dict[clothes.id] = ""
-        result_dict[card.id] = employee_clothes_dict
-
-    return render(request, 'clothing/reports/sheet.html',
-                  {'clothes_list': clothes_list, 'card_list': Card.objects.all(), 'result_dict': result_dict})
+    return render(request, 'clothing/reports/sheet.html', {'only_filter': only_filter, 'filter': f})
 
 
 # REST

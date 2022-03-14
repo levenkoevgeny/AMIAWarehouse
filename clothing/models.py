@@ -103,11 +103,11 @@ class Rank(models.Model):
 
 class Clothes(models.Model):
     clothes_title = models.CharField(verbose_name="Наименование", max_length=255)
-    # wear_time = models.IntegerField(verbose_name="Сроки носки, мес.", validators=[MinValueValidator(0)])
     nomenclature = models.CharField(verbose_name="Номенклатура", max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     price = models.FloatField(verbose_name="Цена", blank=True, null=True, validators=[MinValueValidator(0.0)])
     has_to_be_deposited = models.BooleanField(verbose_name="Подлежит сдаче", default=False)
+    # replacement_by_certificate = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name="")
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
@@ -139,11 +139,14 @@ class Norm(models.Model):
 class ClothesInNorm(models.Model):
     norm = models.ForeignKey(Norm, on_delete=models.CASCADE, verbose_name="Норма")
     clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Наименование")
+    interchange = models.ManyToManyField(Clothes, verbose_name="Считается совместно с ...",
+                                         related_name="interchange_cl", blank=True)
     norm_count = models.IntegerField(verbose_name="Количество по норме")
     wear_time = models.IntegerField(verbose_name="Сроки носки, мес.", validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return self.norm.norm_title + ' ' + self.clothes.clothes_title + ' ' + str(self.norm_count) + ' ' + str(self.wear_time)
+        return self.norm.norm_title + ' ' + self.clothes.clothes_title + ' ' + str(self.norm_count) + ' ' + str(
+            self.wear_time)
 
     class Meta:
         ordering = ('clothes__clothes_title',)

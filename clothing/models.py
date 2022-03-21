@@ -107,7 +107,6 @@ class Clothes(models.Model):
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     price = models.FloatField(verbose_name="Цена", blank=True, null=True, validators=[MinValueValidator(0.0)])
     has_to_be_deposited = models.BooleanField(verbose_name="Подлежит сдаче", default=False)
-    # replacement_by_certificate = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name="")
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
@@ -120,9 +119,25 @@ class Clothes(models.Model):
         verbose_name_plural = 'Наименования предметов'
 
 
+class NormItem(models.Model):
+    item_clothes = models.ManyToManyField(Clothes, verbose_name="Совокупность вещей", blank=True)
+
+    def __str__(self):
+        s = ""
+        for clothes in self.item_clothes.all():
+            s += clothes.clothes_title + "/ "
+        return s[0:len(s) - 2]
+
+    class Meta:
+        ordering = ('-id',)
+        verbose_name = 'Позиция для нормы'
+        verbose_name_plural = 'Позиции для нормы'
+
+
 class Norm(models.Model):
     norm_title = models.CharField(verbose_name="Название нормы", max_length=255)
-    clothes_list = models.ManyToManyField(Clothes, verbose_name="Наименования", through='ClothesInNorm', blank=True)
+    items_list = models.ManyToManyField(NormItem, verbose_name="Наименования", through='NormItemsInNorm',
+                                        blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
@@ -136,23 +151,20 @@ class Norm(models.Model):
         verbose_name_plural = 'Нормы'
 
 
-class ClothesInNorm(models.Model):
+class NormItemsInNorm(models.Model):
     norm = models.ForeignKey(Norm, on_delete=models.CASCADE, verbose_name="Норма")
-    clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Наименование")
-    interchange = models.ManyToManyField(Clothes, verbose_name="Считается совместно с ...",
-                                         related_name="interchange_cl", blank=True)
+    norm_item = models.ForeignKey(NormItem, on_delete=models.CASCADE, verbose_name="Наименования")
     norm_count = models.IntegerField(verbose_name="Количество по норме")
     wear_time = models.IntegerField(verbose_name="Сроки носки, мес.", validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return self.norm.norm_title + ' ' + self.clothes.clothes_title + ' ' + str(self.norm_count) + ' ' + str(
-            self.wear_time)
+        return self.norm.norm_title
 
     class Meta:
-        ordering = ('clothes__clothes_title',)
+        ordering = ('norm__norm_title',)
         verbose_name = 'Наименование в норме'
         verbose_name_plural = 'Наименования в норме'
-        unique_together = [['norm', 'clothes']]
+        # unique_together = [['norm', 'clothes']]
 
 
 class Course(models.Model):
@@ -232,7 +244,7 @@ class Card(models.Model):
     cap = models.ForeignKey(CapDimensions, on_delete=models.SET_NULL, verbose_name="Фуражка", blank=True, null=True)
     collar = models.ForeignKey(Dimensions, on_delete=models.SET_NULL, verbose_name="Воротничок", related_name="collar",
                                blank=True, null=True)
-    clothes = models.ManyToManyField(Clothes, verbose_name="Имущество", through='ClothesInCard', blank=True)
+    # clothes = models.ManyToManyField(Clothes, verbose_name="Имущество", through='ClothesInCard', blank=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
@@ -246,12 +258,13 @@ class Card(models.Model):
         verbose_name_plural = 'Арматурные карточки'
 
 
-class ClothesInCard(models.Model):
+class Movement(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE, verbose_name="Арматурная карточка")
-    clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Вещь")
-    count = models.IntegerField(verbose_name="Количество", default=1)
-    date_of_issue = models.DateField(verbose_name="Дата выдачи")
-    movement = models.IntegerField(choices=MOVEMENT, verbose_name="Движение (выдача / сдача)", default=1)
+    norm_item = models.ForeignKey(NormItem, on_delete=models.CASCADE, verbose_name="Позиция в норме")
+    movement_description = models.ManyToManyField(Clothes, verbose_name="Описание движения наименований",
+                                                  through='DescriptionItem', blank=True)
+    date_of_issue = models.DateField(verbose_name="Дата выдачи/сдачи")
+    movement_direction = models.IntegerField(choices=MOVEMENT, verbose_name="Движение (выдача / сдача)", default=1)
     has_replacement = models.BooleanField(verbose_name="Имеет замену", default=False)
     document_number = models.CharField(max_length=100, verbose_name="Номер документа", blank=True, null=True)
     has_certificate = models.BooleanField(verbose_name="Получено по сертификату", default=False)
@@ -261,7 +274,7 @@ class ClothesInCard(models.Model):
                                          null=True)
 
     def __str__(self):
-        return self.clothes.clothes_title + ' ' + str(self.count) + ' ' + str(self.date_of_issue)
+        return str(self.card) + ' ' + str(self.norm_item)
 
     @property
     def get_movement(self):
@@ -269,5 +282,12 @@ class ClothesInCard(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = 'Вещь в карточке'
-        verbose_name_plural = 'Вещи в карточке'
+        verbose_name = 'Движение в карточке'
+        verbose_name_plural = 'Движения в карточке'
+
+
+class DescriptionItem(models.Model):
+    movement = models.ForeignKey(Movement, on_delete=models.CASCADE,
+                                 verbose_name="Движение в карточке")
+    clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Наименование")
+    count = models.IntegerField(verbose_name="Количество", default=1)

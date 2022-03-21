@@ -18,21 +18,21 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from rest_framework import routers
-from clothing import views
+# from clothing import views
 
 
 router = routers.DefaultRouter()
-router.register(r'clothes-in-card', views.ClothesInCardViewSet)
-router.register(r'cards', views.CardViewSet)
-router.register(r'norms', views.NormViewSet)
-router.register(r'norms-items', views.ClothesInNormViewSet)
-router.register(r'clothes', views.ClothesViewSet)
-router.register(r'employees', views.EmployeeViewSet)
+# router.register(r'clothes-in-card', views.ClothesInCardViewSet)
+# router.register(r'cards', views.CardViewSet)
+# router.register(r'norms', views.NormViewSet)
+# router.register(r'norms-items', views.ClothesInNormViewSet)
+# router.register(r'clothes', views.ClothesViewSet)
+# router.register(r'employees', views.EmployeeViewSet)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url="/clothing/cards")),
     path('clothing/', include('clothing.urls')),
-    path('api/', include(router.urls)),
+    # path('api/', include(router.urls)),
 ]

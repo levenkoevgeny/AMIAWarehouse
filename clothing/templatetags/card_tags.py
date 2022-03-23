@@ -5,9 +5,6 @@ register = template.Library()
 
 @register.filter(name='get_movement_out')
 def get_movement_out(value, args):
-    print(args)
-    print(value)
-
     arg_list = [arg.strip() for arg in args.split(',')]
     return value.filter(date_of_issue__year=arg_list[0], norm_item=arg_list[1], movement_direction=1, has_certificate=False)
 
@@ -15,7 +12,19 @@ def get_movement_out(value, args):
 @register.filter(name='get_movement_in')
 def get_movement_in(value, args):
     arg_list = [arg.strip() for arg in args.split(',')]
-    return value.filter(date_of_issue__year=arg_list[0], clothes=arg_list[1], movement=2, has_certificate=False)
+    return value.filter(date_of_issue__year=arg_list[0], clothes=arg_list[1], movement_direction=2, has_certificate=False)
+
+
+@register.filter(name='get_descriptions_out')
+def get_descriptions_out(value, args):
+    arg_list = [arg.strip() for arg in args.split(',')]
+    return value.filter(movement__date_of_issue__year=arg_list[0], clothes=arg_list[1], movement__movement_direction=1, movement__has_certificate=False)
+
+
+@register.filter(name='get_descriptions_in')
+def get_descriptions_out(value, args):
+    arg_list = [arg.strip() for arg in args.split(',')]
+    return value.filter(movement__date_of_issue__year=arg_list[0], clothes=arg_list[1], movement__movement_direction=2, movement__has_certificate=False)
 
 
 @register.filter(name='get_certificate_item')

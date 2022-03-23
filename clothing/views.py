@@ -1,5 +1,5 @@
 import random
-#
+
 from django.shortcuts import render
 # from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -11,23 +11,22 @@ from django.core.paginator import Paginator
 from datetime import datetime, date
 # from dateutil.relativedelta import *
 from rest_framework import viewsets
-# from rest_framework import status
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-#
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from .models import Card, Clothes, Movement, NormItem, Norm, Subdivision, Position, Rank, NormItemsInNorm, Course, \
-    Group, Employee, DescriptionItem
-from .forms import CardForm, EmployeeForm
+    Group, Employee, DescriptionItem, EMPLOYEE_KIND, SEX
+from .forms import CardForm, EmployeeForm, ClothesForm, NormItemForm, NormForm, NormItemsInNormForm
 from .serializers import ClothesSerializer, NormItemSerializer, NormSerializer, NormItemsInNormSerializer, \
     EmployeeSerializer, CardSerializer, MovementSerializer, DescriptionItemSerializer
-from .filters import CardFilter
-
+from .filters import CardFilter, ClothesFilter, NormItemFilter, NormFilter, EmployeeFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
-#
+
+
 # from itertools import groupby
-#
-#
+
 def card_list(request):
     request.session['back_path_card_list'] = '/clothing/cards?' + request.META.get('QUERY_STRING')
     f = CardFilter(request.GET, queryset=Card.objects.all())
@@ -39,38 +38,10 @@ def card_list(request):
                   {'list': cards_list, 'card_form': card_form, 'filter': f})
 
 
-#
-#
 def get_card(request, card_id):
     if request.method == 'POST':
         pass
     else:
-        # card = get_object_or_404(Card, pk=card_id)
-        # card_form = CardForm(instance=card)
-        # employee = card.employee
-        # employee_form = EmployeeForm(instance=employee)
-        #
-        # # norm list
-        # norm_clothes_list = ClothesInNorm.objects.filter(norm_id=card.norm.id).order_by('clothes__clothes_title')
-        #
-        # year_list_ = [i for i in range(date.today().year - 7, date.today().year + 1)]
-        #
-        # clothes_in_card_list = ClothesInCard.objects.filter(card=card)
-        #
-        # if clothes_in_card_list.filter(has_certificate=True).order_by(
-        #         '-date_of_issue').first():
-        #     certificate_number = clothes_in_card_list.filter(has_certificate=True).order_by(
-        #         '-date_of_issue').first().certificate_number
-        # else:
-        #     certificate_number = None
-        #
-        # return render(request, 'clothing/card/card.html',
-        #               {'card_form': card_form, 'employee_form': employee_form, 'card': card, 'employee': employee,
-        #                'year_list': year_list_, 'year_list_count': len(year_list_),
-        #                'clothes_list': Clothes.objects.all(), 'norm_clothes_list': norm_clothes_list,
-        #                'clothes_in_card_list': clothes_in_card_list, 'certificate_number': certificate_number,
-        #                'back_path': request.session.get('back_path_card_list', '/clothing/cards')
-        #                })
         card = get_object_or_404(Card, pk=card_id)
         card_form = CardForm(instance=card)
         employee = card.employee
@@ -79,6 +50,7 @@ def get_card(request, card_id):
         items_in_norm = card.norm.items_list.all()
         clothes_list = Clothes.objects.all()
         movement_list = Movement.objects.filter(card=card)
+        description_list = DescriptionItem.objects.filter(movement__card=card)
         return render(request, 'clothing/card/card.html',
                       {
                           'year_list': year_list_,
@@ -90,6 +62,8 @@ def get_card(request, card_id):
                           'employee': employee,
                           'employee_form': employee_form,
                           'card_form': card_form,
+                          'description_list': description_list,
+                          'back_path': request.session.get('back_path_card_list', '/clothing/cards'),
                       })
 
 
@@ -105,123 +79,133 @@ def get_card(request, card_id):
 #                    'list_of_clothes_id': list_of_clothes_id})
 #
 #
-# def clothes_list(request):
-#     f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
-#     paginator = Paginator(f.qs, 30)
-#     page = request.GET.get('page')
-#     cl_list = paginator.get_page(page)
-#     clothes_form = ClothesForm()
-#     return render(request, 'clothing/clothes/clothes_list.html',
-#                   {'list': cl_list, 'clothes_form': clothes_form, 'filter': f})
-#
-#
-# def employee_list(request):
-#     f = EmployeeFilter(request.GET, queryset=Employee.objects.all())
-#     paginator = Paginator(f.qs, 30)
-#     page = request.GET.get('page')
-#     employees_list = paginator.get_page(page)
-#     employee_form = EmployeeForm()
-#     return render(request, 'clothing/employees/employee_list.html',
-#                   {'list': employees_list,
-#                    'employee_form': employee_form,
-#                    'subdivision_list': Subdivision.objects.all(),
-#                    'rank_list': Rank.objects.all(),
-#                    'position_list': Position.objects.all(),
-#                    'kind_list': EMPLOYEE_KIND,
-#                    'sex_list': SEX,
-#                    'group_list': Group.objects.all(),
-#                    'filter': f})
-#
-#
-# def norm_list(request):
-#     f = NormFilter(request.GET, queryset=Norm.objects.all())
-#     paginator = Paginator(f.qs, 30)
-#     page = request.GET.get('page')
-#     norms_list = paginator.get_page(page)
-#     norm_form = NormForm()
-#     return render(request, 'clothing/norms/norm_list.html',
-#                   {'list': norms_list, 'norm_form': norm_form, 'filter': f})
-#
-#
-# def norm_items(request, norm_id):
-#     norm = get_object_or_404(Norm, pk=norm_id)
-#     item_list = ClothesInNorm.objects.filter(norm_id=norm_id).order_by('clothes__clothes_title')
-#     clothes_in_norm_form = ClothesInNormForm()
-#     clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
-#         'clothes_title')
-#     return render(request, 'clothing/norms/norm_items.html', {
-#         'norm': norm,
-#         'clothes_in_norm_form': clothes_in_norm_form,
-#         'item_list': item_list,
-#         'clothes_list': Clothes.objects.all(),
-#     })
-#
-#
-# def init_dimensions(request):
-#     Rank.objects.all().delete()
-#     ranks = [
-#         'рядовой',
-#         'младший',
-#         'сержант',
-#         'старшина',
-#         'младший лейтенант милиции',
-#         'лейтенант милиции',
-#         'старший лейтенант милиции',
-#         'капитан милиции',
-#         'майор милиции',
-#         'подполковник милиции',
-#         'полковник милиции',
-#     ]
-#
-#     for rank in ranks:
-#         Rank.objects.create(rank=rank)
-#
-#     Dimensions.objects.all().delete()
-#     for i in range(34, 65):
-#         for j in range(1, 8):
-#             Dimensions.objects.create(dimension=str(i) + "/" + str(j))
-#
-#     ShoesDimensions.objects.all().delete()
-#     for i in range(36, 47):
-#         ShoesDimensions.objects.create(shoes_dimension=str(i))
-#
-#     CapDimensions.objects.all().delete()
-#     for i in range(52, 66):
-#         CapDimensions.objects.create(cap_dimension=str(i))
-#
-#     return HttpResponseRedirect(reverse('clothing:card_list'))
-#
-#
-# def get_random_data(request):
-#     Employee.objects.all().delete()
-#     for i in range(1, 1000):
-#         new_employee = Employee(
-#             last_name="LastName" + str(i),
-#             first_name="Firstname" + str(i),
-#             patronymic="Patronymic" + str(i),
-#             kind=1,
-#             sex=1,
-#             subdivision=get_object_or_404(Subdivision, pk=random.randint(1, 2)),
-#             position=get_object_or_404(Position, pk=random.randint(1, 2)),
-#             rank=get_object_or_404(Rank, pk=random.randint(1, 11))
-#         )
-#         new_employee.save()
-#
-#         new_card = Card(
-#             employee=new_employee,
-#             norm=get_object_or_404(Norm, pk=1),
-#             growth=random.randint(170, 190),
-#             bust=random.randint(90, 110),
-#             jacket=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
-#             shoes=get_object_or_404(ShoesDimensions, pk=random.randint(1, 8)),
-#             cap=get_object_or_404(CapDimensions, pk=random.randint(1, 5)),
-#             collar=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
-#         )
-#         new_card.save()
-#
-#     return HttpResponseRedirect(reverse('clothing:card_list'))
-#
-#
+def clothes_list(request):
+    f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    cl_list = paginator.get_page(page)
+    clothes_form = ClothesForm()
+    return render(request, 'clothing/clothes/clothes_list.html',
+                  {'list': cl_list, 'clothes_form': clothes_form, 'filter': f})
+
+
+def norm_items_list(request):
+    f = NormItemFilter(request.GET, queryset=NormItem.objects.all())
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    n_i_list = paginator.get_page(page)
+    norm_item_form = NormItemForm()
+    return render(request, 'clothing/norm_items/norm_items_list.html',
+                  {'list': n_i_list, 'norm_item_form': norm_item_form, 'filter': f,
+                   'clothes_list': Clothes.objects.all()})
+
+
+def employee_list(request):
+    f = EmployeeFilter(request.GET, queryset=Employee.objects.all())
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    employees_list = paginator.get_page(page)
+    employee_form = EmployeeForm()
+    return render(request, 'clothing/employees/employee_list.html',
+                  {'list': employees_list,
+                   'employee_form': employee_form,
+                   'subdivision_list': Subdivision.objects.all(),
+                   'rank_list': Rank.objects.all(),
+                   'position_list': Position.objects.all(),
+                   'kind_list': EMPLOYEE_KIND,
+                   'sex_list': SEX,
+                   'group_list': Group.objects.all(),
+                   'filter': f})
+
+
+def norm_list(request):
+    f = NormFilter(request.GET, queryset=Norm.objects.all())
+    paginator = Paginator(f.qs, 30)
+    page = request.GET.get('page')
+    norms_list = paginator.get_page(page)
+    norm_form = NormForm()
+    return render(request, 'clothing/norms/norm_list.html',
+                  {'list': norms_list, 'norm_form': norm_form, 'filter': f})
+
+
+def norm_items(request, norm_id):
+    norm = get_object_or_404(Norm, pk=norm_id)
+    item_list = NormItemsInNorm.objects.filter(norm_id=norm_id)
+    norm_items_in_norm_form = NormItemsInNormForm()
+    # clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
+    #     'clothes_title')
+    return render(request, 'clothing/norms/norm_items.html', {
+        'norm': norm,
+        'norm_items_in_norm_form': norm_items_in_norm_form,
+        'item_list': item_list,
+    })
+
+
+def init_dimensions(request):
+    Rank.objects.all().delete()
+    ranks = [
+        'рядовой',
+        'младший',
+        'сержант',
+        'старшина',
+        'младший лейтенант милиции',
+        'лейтенант милиции',
+        'старший лейтенант милиции',
+        'капитан милиции',
+        'майор милиции',
+        'подполковник милиции',
+        'полковник милиции',
+    ]
+
+    for rank in ranks:
+        Rank.objects.create(rank=rank)
+
+    Dimensions.objects.all().delete()
+    for i in range(34, 65):
+        for j in range(1, 8):
+            Dimensions.objects.create(dimension=str(i) + "/" + str(j))
+
+    ShoesDimensions.objects.all().delete()
+    for i in range(36, 47):
+        ShoesDimensions.objects.create(shoes_dimension=str(i))
+
+    CapDimensions.objects.all().delete()
+    for i in range(52, 66):
+        CapDimensions.objects.create(cap_dimension=str(i))
+
+    return HttpResponseRedirect(reverse('clothing:card_list'))
+
+
+def get_random_data(request):
+    Employee.objects.all().delete()
+    for i in range(1, 1000):
+        new_employee = Employee(
+            last_name="LastName" + str(i),
+            first_name="Firstname" + str(i),
+            patronymic="Patronymic" + str(i),
+            kind=1,
+            sex=1,
+            subdivision=get_object_or_404(Subdivision, pk=random.randint(1, 2)),
+            position=get_object_or_404(Position, pk=random.randint(1, 2)),
+            rank=get_object_or_404(Rank, pk=random.randint(1, 11))
+        )
+        new_employee.save()
+
+        new_card = Card(
+            employee=new_employee,
+            norm=get_object_or_404(Norm, pk=1),
+            growth=random.randint(170, 190),
+            bust=random.randint(90, 110),
+            jacket=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
+            shoes=get_object_or_404(ShoesDimensions, pk=random.randint(1, 8)),
+            cap=get_object_or_404(CapDimensions, pk=random.randint(1, 5)),
+            collar=get_object_or_404(Dimensions, pk=random.randint(1, 20)),
+        )
+        new_card.save()
+
+    return HttpResponseRedirect(reverse('clothing:card_list'))
+
+
 # # reports
 # def get_sheet(request):
 #     f = CardFilter(request.GET, queryset=Card.objects.all())
@@ -357,22 +341,18 @@ class DescriptionItemViewSet(viewsets.ModelViewSet):
     serializer_class = DescriptionItemSerializer
 
 
-
-
-#
-#
 # # rest api endpoint for making clones based on parent
-# @api_view(['POST'])
-# def make_cloned_norm(request):
-#     if 'parent_norm' in request.data:
-#         if request.method == 'POST':
-#             serializer = NormSerializer(data=request.data)
-#             if serializer.is_valid():
-#                 new_norm = serializer.save()
-#                 clothes_in_norm_list = ClothesInNorm.objects.filter(norm_id=request.data['parent_norm'])
-#                 for clothes_item in clothes_in_norm_list:
-#                     ClothesInNorm.objects.create(norm=new_norm, clothes=clothes_item.clothes,
-#                                                  norm_count=clothes_item.norm_count)
-#                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     else:
-#         return Response({'message': '400 bad request'}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def make_cloned_norm(request):
+    if 'parent_norm' in request.data:
+        if request.method == 'POST':
+            serializer = NormSerializer(data=request.data)
+            if serializer.is_valid():
+                new_norm = serializer.save()
+                norm_items_in_norm_list = NormItemsInNorm.objects.filter(norm_id=request.data['parent_norm'])
+                for norm_item in norm_items_in_norm_list:
+                    NormItemsInNorm.objects.create(norm=new_norm, norm_item=norm_item.norm_item,
+                                                   norm_count=norm_item.norm_count, wear_time=norm_item.wear_time)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'message': '400 bad request'}, status=status.HTTP_400_BAD_REQUEST)

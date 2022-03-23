@@ -7,101 +7,101 @@
 {% block title %}<title>{{ norm.norm_title }}</title>{% endblock %}
 {% block content %}
     <div class="container">
-        <div class="modal fade" id="norm_update_data_form" tabindex="-1"
-             aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <form class="norm_update_form">{% csrf_token %}
-                    <input type="hidden" name="norm_id" id="id_norm_id" value="{{ norm.id }}">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">Название</label><br>
-                                        <input type="text" class="form-control" name="norm_title"
-                                               id="id_norm_title" value="{{ norm.norm_title }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+{#        <div class="modal fade" id="norm_update_data_form" tabindex="-1"#}
+{#             aria-labelledby="exampleModalLabel"#}
+{#             aria-hidden="true">#}
+{#            <div class="modal-dialog modal-lg modal-dialog-centered">#}
+{#                <form class="norm_update_form">{% csrf_token %}#}
+{#                    <input type="hidden" name="norm_id" id="id_norm_id" value="{{ norm.id }}">#}
+{#                    <div class="modal-content">#}
+{#                        <div class="modal-header">#}
+{#                            <h5 class="modal-title" id="exampleModalLabel">{{ norm.norm_title }}</h5>#}
+{#                            <button type="button" class="btn-close" data-bs-dismiss="modal"#}
+{#                                    aria-label="Close"></button>#}
+{#                        </div>#}
+{#                        <div class="modal-body">#}
+{#                            <div class="row">#}
+{#                                <div class="col-md-12">#}
+{#                                    <div class="mb-3">#}
+{#                                        <label class="form-label">Название</label><br>#}
+{#                                        <input type="text" class="form-control" name="norm_title"#}
+{#                                               id="id_norm_title" value="{{ norm.norm_title }}" required>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="modal-footer">#}
+{#                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>#}
+{#                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
 
-        {% for item in item_list %}
-            <div class="modal fade" id="norm_item_update_data_form_{{ item.id }}" tabindex="-1"
-                 aria-labelledby="exampleModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <form id="{{ item.id }}" class="norm_item_update_form_class">{% csrf_token %}
-                        <input type="hidden" value="{{ norm.id }}" name="norm" id="id_norm">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">{{ item.clothes }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Наименование</label><br>
-                                            <select name="clothes" id="id_clothes_{{ item.id }}" class="form-select"
-                                                    required>
-                                                <option value="">----</option>
-                                                {% for clothes in clothes_list %}
-                                                    {% if clothes.id == item.clothes.id %}
-                                                        <option value="{{ clothes.id }}"
-                                                                selected>{{ clothes.clothes_title }}</option>
-                                                    {% else %}
-                                                        <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Количество по норме</label>
-                                            <input type="number" class="form-control" name="norm_count"
-                                                   id="id_norm_count_{{ item.id }}" value="{{ item.norm_count }}"
-                                                   required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Срок носки</label>
-                                            <input type="number" class="form-control" name="norm_count"
-                                                   id="id_wear_time_{{ item.id }}" value="{{ item.wear_time }}"
-                                                   required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        {% endfor %}
+{#        {% for item in item_list %}#}
+{#            <div class="modal fade" id="norm_item_update_data_form_{{ item.id }}" tabindex="-1"#}
+{#                 aria-labelledby="exampleModalLabel"#}
+{#                 aria-hidden="true">#}
+{#                <div class="modal-dialog modal-lg modal-dialog-centered">#}
+{#                    <form id="{{ item.id }}" class="norm_item_update_form_class">{% csrf_token %}#}
+{#                        <input type="hidden" value="{{ norm.id }}" name="norm" id="id_norm">#}
+{#                        <div class="modal-content">#}
+{#                            <div class="modal-header">#}
+{#                                <h5 class="modal-title" id="exampleModalLabel">{{ item.clothes }}</h5>#}
+{#                                <button type="button" class="btn-close" data-bs-dismiss="modal"#}
+{#                                        aria-label="Close"></button>#}
+{#                            </div>#}
+{#                            <div class="modal-body">#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-12">#}
+{#                                        <div class="mb-3">#}
+{#                                            <label class="form-label">Наименование</label><br>#}
+{#                                            <select name="clothes" id="id_clothes_{{ item.id }}" class="form-select"#}
+{#                                                    required>#}
+{#                                                <option value="">----</option>#}
+{#                                                {% for clothes in clothes_list %}#}
+{#                                                    {% if clothes.id == item.clothes.id %}#}
+{#                                                        <option value="{{ clothes.id }}"#}
+{#                                                                selected>{{ clothes.clothes_title }}</option>#}
+{#                                                    {% else %}#}
+{#                                                        <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>#}
+{#                                                    {% endif %}#}
+{#                                                {% endfor %}#}
+{#                                            </select>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-12">#}
+{#                                        <div class="mb-3">#}
+{#                                            <label class="form-label">Количество по норме</label>#}
+{#                                            <input type="number" class="form-control" name="norm_count"#}
+{#                                                   id="id_norm_count_{{ item.id }}" value="{{ item.norm_count }}"#}
+{#                                                   required>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-12">#}
+{#                                        <div class="mb-3">#}
+{#                                            <label class="form-label">Срок носки</label>#}
+{#                                            <input type="number" class="form-control" name="norm_count"#}
+{#                                                   id="id_wear_time_{{ item.id }}" value="{{ item.wear_time }}"#}
+{#                                                   required>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="modal-footer">#}
+{#                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>#}
+{#                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
 
         <br>
         <h2>{{ norm.norm_title }} <a href="#norm_update_data_form" data-bs-toggle="modal"
@@ -114,20 +114,20 @@
             <div class="row align-items-end">
                 <div class="col-lg-4">
                     <div class="mb-3">
-                        <label class="form-label">Наименование</label><br>
-                        {% render_field clothes_in_norm_form.clothes class+="form-control" style="width: 100%" %}
+                        <label class="form-label">Пункт нормы</label><br>
+                        {% render_field norm_items_in_norm_form.norm_item class+="form-control" %}
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Количество по норме</label><br>
-                        {% render_field clothes_in_norm_form.norm_count class+="form-control" %}
+                        {% render_field norm_items_in_norm_form.norm_count class+="form-control" %}
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="mb-3">
                         <label class="form-label">Срок носки</label><br>
-                        {% render_field clothes_in_norm_form.wear_time class+="form-control" %}
+                        {% render_field norm_items_in_norm_form.wear_time class+="form-control" %}
                     </div>
                 </div>
 
@@ -141,13 +141,12 @@
             </div>
         </form>
 
-        {% if norm.clothes_list %}
+        {% if norm.normitemsinnorm_set.all %}
             {% for item in item_list %}
                 <a class="link-secondary" href="#norm_item_update_data_form_{{ item.id }}"
-                   data-bs-toggle="modal">{{ item.clothes }} {{ item.norm_count }} шт. {{ item.wear_time }} мес.</a>
+                   data-bs-toggle="modal">{{ item.norm_item }} {{ item.norm_count }} шт. {{ item.wear_time }} мес.</a>
                 <a href="javascript:delete_item_in_norm({{ item.id }})">удалить</a><br>
             {% endfor %}
-
         {% else %}
             <p>Список пуст!</p>
         {% endif %}

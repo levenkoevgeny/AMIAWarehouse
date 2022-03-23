@@ -1,6 +1,6 @@
 import django_filters
 from .models import Card, Employee, Clothes, Subdivision, Rank, Norm, Position, Dimensions, CapDimensions, \
-    ShoesDimensions, Group, Course, EMPLOYEE_KIND
+    ShoesDimensions, Group, Course, NormItem, EMPLOYEE_KIND
 
 
 class CardFilter(django_filters.FilterSet):
@@ -55,6 +55,14 @@ class ClothesFilter(django_filters.FilterSet):
     class Meta:
         model = Clothes
         fields = ['nomenclature']
+
+
+class NormItemFilter(django_filters.FilterSet):
+    item_clothes_ = django_filters.ModelMultipleChoiceFilter(field_name='item_clothes', queryset=Clothes.objects.all())
+
+    class Meta:
+        model = NormItem
+        fields = ['item_clothes']
 
 
 class NormFilter(django_filters.FilterSet):

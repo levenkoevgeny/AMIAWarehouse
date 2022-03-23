@@ -150,8 +150,8 @@
                        class="link-secondary">{{ norm.norm_title|default_if_none:"Нет данных" }}</a>
                 </td>
                 <td>
-                    {% for clothes in norm.clothes_list.all|sort_by:'clothes_title' %}
-                        {{ clothes.clothes_title }} ({{ clothes.nomenclature }}) <br>
+                    {% for item in norm.normitemsinnorm_set.all|sort_by:"norm_item" %}
+                        {{ item.norm_item }} ({{ item.norm_count }} шт. - {{ item.wear_time }} мес.)<br>
                     {% endfor %}
                 </td>
             </tr>

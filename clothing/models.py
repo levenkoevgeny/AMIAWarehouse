@@ -113,6 +113,10 @@ class Clothes(models.Model):
     def __str__(self):
         return self.clothes_title
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        NormItem.objects.create().item_clothes.add(self)
+
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Наименование предмета'
@@ -120,7 +124,7 @@ class Clothes(models.Model):
 
 
 class NormItem(models.Model):
-    item_clothes = models.ManyToManyField(Clothes, verbose_name="Совокупность вещей", blank=True)
+    item_clothes = models.ManyToManyField(Clothes, verbose_name="Совокупность вещей")
 
     def __str__(self):
         s = ""
@@ -164,7 +168,7 @@ class NormItemsInNorm(models.Model):
         ordering = ('norm__norm_title',)
         verbose_name = 'Наименование в норме'
         verbose_name_plural = 'Наименования в норме'
-        # unique_together = [['norm', 'clothes']]
+        unique_together = [['norm', 'norm_item']]
 
 
 class Course(models.Model):

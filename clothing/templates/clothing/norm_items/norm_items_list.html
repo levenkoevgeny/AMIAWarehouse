@@ -1,0 +1,173 @@
+{% extends 'base_list.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block own_css %}{% endblock %}
+
+{% block title %}<title>Позиции для норм</title>{% endblock %}
+
+{% block modals %}
+    <div class="modal fade" id="norm_item_add_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form id="add_norm_item_form">{% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Новая позиция для нормы</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Наименования</label><br>
+                                    {% render_field norm_item_form.item_clothes class+="form-select" style="width:100%;" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% for item in list %}
+
+        <div class="modal fade modal-with-select2_{{ item.id }}" id="norm_item_update_form_{{ item.id }}" tabindex="-1"
+             aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <form id="{{ item.id }}" class="norm_item_update_form_class">{% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ item }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">Наименования</label><br>
+                                        <select id="id_item_clothes_{{ item.id }}" class="form-select my-select2-in-modal"
+                                                multiple style="width: 100%;">
+                                            {% for clothes in clothes_list %}
+                                                {% if clothes in item.item_clothes.all %}
+                                                    <option value="{{ clothes.id }}" selected>{{ clothes }}</option>
+                                                {% else %}
+                                                    <option value="{{ clothes.id }}">{{ clothes }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    {% endfor %}
+
+
+
+{% endblock %}
+
+{% block list_title %}Позиции для норм{% endblock %}
+
+{% block filters %}
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                    Фильтр
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <form action="{% url 'clothing:norm_items_list' %}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Наименования</label>
+                                    {% render_field filter.form.item_clothes_ class+="form-control my-select2" style="width:100%;" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary">Поиск</button>
+                        <a href="{% url 'clothing:norm_items_list' %}" class="btn btn-secondary">Сбросить фильтр</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block add_button %}
+    <br>
+    <a href="#norm_item_add_form" data-bs-toggle="modal" class="btn btn-secondary"
+       style="display: block; margin-left:auto; width: 200px;">Добавить позицию</a>
+{% endblock %}
+
+{% block list %}
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th scope="col">№ п.п.</th>
+            <th scope="col">Наименования в норме</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="#norm_item_update_form_{{ item.id }}" data-bs-toggle="modal"
+                       class="link-secondary">{{ item }}</a>
+                </td>
+                <td><a href="javascript:delete_norm_item({{ item.id }})">удалить</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block own_js %}
+    <script src="{% static 'clothing/js/norm_item_CRUD.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#id_item_clothes').select2({
+                dropdownParent: $('#norm_item_add_form')
+            });
+        });
+    </script>
+
+    {% for item in list %}
+        <script>
+            $(document).ready(function () {
+                $('#id_item_clothes_{{ item.id }}').select2({
+                    dropdownParent: $('#norm_item_update_form_{{ item.id }}')
+                });
+            });
+        </script>
+    {% endfor %}
+
+{% endblock %}

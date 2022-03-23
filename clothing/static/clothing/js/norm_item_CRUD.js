@@ -1,21 +1,19 @@
-$('#clothes_add_form').submit(function (e) {
+$('#add_norm_item_form').submit(function (e) {
     e.preventDefault();
-    let new_obj = {
-        'clothes_title': $(`#id_clothes_title`).val(),
-        'nomenclature': $(`#id_nomenclature`).val() == "" ? null : $('#id_nomenclature').val(),
-        'price': $(`#id_price`).val() == "" ? null : $('#id_price').val(),
-        'has_to_be_deposited': $(`#id_has_to_be_deposited`).is(':checked'),
-        'created_at': new Date(),
+    let new_item = {
+        'item_clothes': $(`#id_item_clothes`).val(),
     }
+
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
     show_spinner();
-    fetch('/api/clothes/', {
+    fetch('/api/norms-items/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify(new_obj)
+        body: JSON.stringify(new_item)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
         } else {
@@ -25,10 +23,10 @@ $('#clothes_add_form').submit(function (e) {
         .finally(() => window.location.href = window.location.href)
 });
 
-function delete_clothes(id) {
+function delete_norm_item(id) {
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     show_spinner();
-    fetch(`/api/clothes/${id}/`, {
+    fetch(`/api/norms-items/${id}/`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -43,24 +41,26 @@ function delete_clothes(id) {
     ).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 }
 
-$('.clothes_update_form_class').submit(function (e) {
+
+$('.norm_item_update_form_class').submit(function (e) {
     e.preventDefault();
     let form_id = e.target.id;
-    let obj = {
-        'clothes_title': $(`#id_clothes_title_${form_id}`).val(),
-        'nomenclature': $(`#id_nomenclature_${form_id}`).val() == "" ? null : $(`#id_nomenclature_${form_id}`).val(),
-        'price': $(`#id_price_${form_id}`).val() == "" ? null : $(`#id_price_${form_id}`).val(),
-        'has_to_be_deposited': $(`#id_has_to_be_deposited_${form_id}`).is(':checked'),
+    let new_item = {
+        'item_clothes': $(`#id_item_clothes_${form_id}`).val(),
     }
+
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
+    console.log(new_item);
+
     show_spinner();
-    fetch(`/api/clothes/${form_id}/`, {
+    fetch(`/api/norms-items/${form_id}/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify(obj)
+        body: JSON.stringify(new_item)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
         } else {

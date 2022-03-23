@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Card, Employee
+from .models import Card, Employee, Clothes, NormItem, Norm, NormItemsInNorm
 from django import forms
 
 myDateInput = forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
@@ -21,22 +21,27 @@ class CardForm(ModelForm):
     class Meta:
         model = Card
         fields = '__all__'
-#
-#
-# class ClothesForm(ModelForm):
-#     class Meta:
-#         model = Clothes
-#         fields = '__all__'
-#
-#
-# class NormForm(ModelForm):
-#     class Meta:
-#         model = Norm
-#         fields = ['norm_title']
-#
-#
-# class ClothesInNormForm(ModelForm):
-#
-#     class Meta:
-#         model = ClothesInNorm
-#         fields = '__all__'
+
+
+class ClothesForm(ModelForm):
+    class Meta:
+        model = Clothes
+        fields = '__all__'
+
+
+class NormItemForm(ModelForm):
+    class Meta:
+        model = NormItem
+        fields = '__all__'
+
+
+class NormForm(ModelForm):
+    class Meta:
+        model = Norm
+        fields = ['norm_title']
+
+
+class NormItemsInNormForm(ModelForm):
+    class Meta:
+        model = NormItemsInNorm
+        fields = '__all__'

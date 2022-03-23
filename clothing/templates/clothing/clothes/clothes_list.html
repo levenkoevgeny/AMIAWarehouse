@@ -90,7 +90,7 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Номенклатура</label><br>
-                                        <input type="text" class="form-control" value="{{ clothes.nomenclature }}"
+                                        <input type="text" class="form-control" value="{{ clothes.nomenclature|default_if_none:"" }}"
                                                name="nomenclature" id="id_nomenclature_{{ clothes.id }}">
                                     </div>
                                 </div>

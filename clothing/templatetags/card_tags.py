@@ -5,6 +5,9 @@ register = template.Library()
 
 @register.filter(name='get_movement_out')
 def get_movement_out(value, args):
+    print(args)
+    print(value)
+
     arg_list = [arg.strip() for arg in args.split(',')]
     return value.filter(date_of_issue__year=arg_list[0], norm_item=arg_list[1], movement_direction=1, has_certificate=False)
 

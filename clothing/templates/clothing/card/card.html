@@ -141,218 +141,218 @@
         {#            </div>#}
         {#        {% endfor %}#}
 
-        {#    модалки для редактирования личных данных #}
-        {#        <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"#}
-        {#             aria-hidden="true">#}
-        {#            <div class="modal-dialog modal-lg modal-dialog-centered">#}
-        {#                <form id="id_employee_update_form">{% csrf_token %}#}
-        {#                    <input type="hidden" value="{{ employee.id }}" id="id_employee">#}
-        {#                    <div class="modal-content">#}
-        {#                        <div class="modal-header">#}
-        {#                            <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>#}
-        {#                            <button type="button" class="btn-close" data-bs-dismiss="modal"#}
-        {#                                    aria-label="Close"></button>#}
-        {#                        </div>#}
-        {#                        <div class="modal-body">#}
-        {#                            <div class="row">#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Фамилия</label><br>#}
-        {#                                        {% render_field employee_form.last_name class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Имя</label><br>#}
-        {#                                        {% render_field employee_form.first_name class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Отчество</label><br>#}
-        {#                                        {% render_field employee_form.patronymic class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {##}
-        {#                            <div class="row">#}
-        {#                                <div class="col-lg-12">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Персональный номер</label><br>#}
-        {#                                        {% render_field employee_form.personal_number class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="row">#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Тип записи</label><br>#}
-        {#                                        {% render_field employee_form.kind class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Подразделение</label><br>#}
-        {#                                        {% render_field employee_form.subdivision class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Звание</label><br>#}
-        {#                                        {% render_field employee_form.rank class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {##}
-        {#                            <div class="row">#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Должность</label><br>#}
-        {#                                        {% render_field employee_form.position class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Группа (для курсантов)</label><br>#}
-        {#                                        {% render_field employee_form.group class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Пол</label><br>#}
-        {#                                        {% render_field employee_form.sex class+="form-select" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="row">#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Дата рождения</label><br>#}
-        {#                                        {% render_field employee_form.date_of_birth class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Дата зачисления</label><br>#}
-        {#                                        {% render_field employee_form.enlisted class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-lg-4">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Дата исключения</label><br>#}
-        {#                                        {% render_field employee_form.excluded class+="form-control" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                        <div class="row">#}
-        {#                             <div class="col-lg-4">#}
-        {#                                <div class="mb-3">#}
-        {#                                    {% render_field employee_form.is_on_decree class+="form-check-input" %}#}
-        {#                                    <label class="form-label">В декрете</label>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="col-lg-4">#}
-        {#                                <div class="mb-3">#}
-        {#                                    <label class="form-label">Начало декрета</label><br>#}
-        {#                                    {% render_field employee_form.decree_start class+="form-control" %}#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                            <div class="col-lg-4">#}
-        {#                                <div class="mb-3">#}
-        {#                                    <label class="form-label">Окончание декрета</label><br>#}
-        {#                                    {% render_field employee_form.decree_finish class+="form-control" %}#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                        </div>#}
-        {#                        </div>#}
-        {#                        <div class="modal-footer">#}
-        {#                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>#}
-        {#                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>#}
-        {#                        </div>#}
-        {#                    </div>#}
-        {#                </form>#}
-        {##}
-        {##}
-        {#            </div>#}
-        {#        </div>#}
-        {#        <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"#}
-        {#             aria-hidden="true">#}
-        {#            <div class="modal-dialog modal-lg modal-dialog-centered">#}
-        {#                <form id="id_card_data_update_form">{% csrf_token %}#}
-        {#                    <input type="hidden" value="{{ card.id }}" id="id_card">#}
-        {#                    <div class="modal-content">#}
-        {#                        <div class="modal-header">#}
-        {#                            <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>#}
-        {#                            <button type="button" class="btn-close" data-bs-dismiss="modal"#}
-        {#                                    aria-label="Close"></button>#}
-        {#                        </div>#}
-        {#                        <div class="modal-body">#}
-        {#                            <div class="row">#}
-        {#                                <input type="hidden" value="{{ card.employee.id }}" name="employee">#}
-        {#                                <div class="col-md-6">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Норма</label><br>#}
-        {#                                        {% render_field card_form.norm class+="form-select" style="width: 100%" %}#}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {##}
-        {#                            <div class="row">#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Рост</label>#}
-        {#                                        {% render_field card_form.growth class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Обхват груди</label>#}
-        {#                                        {% render_field card_form.bust class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Куртка</label>#}
-        {#                                        {% render_field card_form.jacket class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Обувь</label>#}
-        {#                                        {% render_field card_form.shoes class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {##}
-        {#                            <div class="row">#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Фуражка</label>#}
-        {#                                        {% render_field card_form.cap class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                                <div class="col-md-3">#}
-        {#                                    <div class="mb-3">#}
-        {#                                        <label class="form-label">Воторничек</label>#}
-        {#                                        {% render_field card_form.collar class+="form-control" %}#}
-        {##}
-        {#                                    </div>#}
-        {#                                </div>#}
-        {#                            </div>#}
-        {#                        </div>#}
-        {#                        <div class="modal-footer">#}
-        {#                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>#}
-        {#                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>#}
-        {#                        </div>#}
-        {#                    </div>#}
-        {#                </form>#}
-        {#            </div>#}
-        {#        </div>#}
+{#            модалки для редактирования личных данных#}
+                <div class="modal fade" id="employee_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <form id="id_employee_update_form">{% csrf_token %}
+                            <input type="hidden" value="{{ employee.id }}" id="id_employee">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ employee.get_full_name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Фамилия</label><br>
+                                                {% render_field employee_form.last_name class+="form-control" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Имя</label><br>
+                                                {% render_field employee_form.first_name class+="form-control" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Отчество</label><br>
+                                                {% render_field employee_form.patronymic class+="form-control" %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">Персональный номер</label><br>
+                                                {% render_field employee_form.personal_number class+="form-control" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Тип записи</label><br>
+                                                {% render_field employee_form.kind class+="form-select" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Подразделение</label><br>
+                                                {% render_field employee_form.subdivision class+="form-select" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Звание</label><br>
+                                                {% render_field employee_form.rank class+="form-select" %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Должность</label><br>
+                                                {% render_field employee_form.position class+="form-select" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Группа (для курсантов)</label><br>
+                                                {% render_field employee_form.group class+="form-select" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Пол</label><br>
+                                                {% render_field employee_form.sex class+="form-select" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Дата рождения</label><br>
+                                                {% render_field employee_form.date_of_birth class+="form-control" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Дата зачисления</label><br>
+                                                {% render_field employee_form.enlisted class+="form-control" %}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Дата исключения</label><br>
+                                                {% render_field employee_form.excluded class+="form-control" %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                     <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            {% render_field employee_form.is_on_decree class+="form-check-input" %}
+                                            <label class="form-label">В декрете</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Начало декрета</label><br>
+                                            {% render_field employee_form.decree_start class+="form-control" %}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Окончание декрета</label><br>
+                                            {% render_field employee_form.decree_finish class+="form-control" %}
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                </div>
+                <div class="modal fade" id="card_data_form" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <form id="id_card_data_update_form">{% csrf_token %}
+                            <input type="hidden" value="{{ card.id }}" id="id_card">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ card.employee.get_full_name }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <input type="hidden" value="{{ card.employee.id }}" name="employee">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Норма</label><br>
+                                                {% render_field card_form.norm class+="form-select" style="width: 100%" %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Рост</label>
+                                                {% render_field card_form.growth class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Обхват груди</label>
+                                                {% render_field card_form.bust class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Куртка</label>
+                                                {% render_field card_form.jacket class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Обувь</label>
+                                                {% render_field card_form.shoes class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Фуражка</label>
+                                                {% render_field card_form.cap class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Воторничек</label>
+                                                {% render_field card_form.collar class+="form-control" %}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
         <br>
         <div><h3><i class="fa-solid fa-arrow-left-long"></i></i><a href="{{ back_path }}" class="link-secondary">Вернуться
@@ -432,75 +432,77 @@
         <br>
         <div>
             <div class="shadow-lg px-4 py-3 mb-3 bg-body rounded">
-                {#                <form id="clothes_in_card_form">{% csrf_token %}#}
-                {#                    <input type="hidden" value="{{ card.id }}" id="id_card">#}
-                {#                    <div class="row align-items-start">#}
-                {#                        <div class="col-lg-12">#}
-                {#                            <div class="mb-1">#}
-                {#                                <label class="form-label">Наименование</label><br>#}
-                {#                                <select name="clothes" class="form-select my-select2" id="id_clothes" multiple#}
-                {#                                        required#}
-                {#                                        style="width: 100%">#}
-                {#                                    {% for clothes in card.norm.clothes_list.all|sort_by:"clothes_title" %}#}
-                {#                                        <option value="{{ clothes.id }}">{{ clothes.clothes_title }}</option>#}
-                {#                                    {% endfor %}#}
-                {#                                </select>#}
-                {#                            </div>#}
-                {#                            <div class="mb-3 form-check">#}
-                {#                                <input type="checkbox" class="form-check-input" id="id_all_position_checkbox">#}
-                {#                                <label class="form-check-label">Выбрать все позиции в норме</label>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {##}
-                {#                    <div class="row">#}
-                {#                        <div class="col-lg-4">#}
-                {#                            <div class="mb-3">#}
-                {#                                <label class="form-label">Движение</label>#}
-                {#                                <select class="form-select" name="movement" id="id_movement">#}
-                {#                                    <option value="1">Выдача</option>#}
-                {#                                    <option value="2">Сдача</option>#}
-                {#                                </select>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                        <div class="col-lg-4">#}
-                {#                            <div class="mb-3">#}
-                {#                                <label class="form-label">Количество</label>#}
-                {#                                <input type="number" class="form-control" id="id_count_of_issue" required>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                        <div class="col-lg-4">#}
-                {#                            <div class="mb-3">#}
-                {#                                <label class="form-label">Дата выдачи/сдачи</label>#}
-                {#                                <input type="date" class="form-control" id="id_date_of_issue" required>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {##}
-                {#                    <div class="row d-flex align-items-end">#}
-                {#                        <div class="col-lg-4">#}
-                {#                            <div class="mb-1 form-check">#}
-                {#                                <input type="checkbox" class="form-check-input" id="id_has_certificate_checkbox">#}
-                {#                                <label class="form-check-label">Получено по аттестату</label>#}
-                {#                            </div>#}
-                {#                            <div class="mb-3">#}
-                {#                                <label class="form-label">№ аттестата</label>#}
-                {#                                <input type="text" class="form-control" id="id_certificate_number" disabled>#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                        <div class="col-lg-4">#}
-                {#                            <div class="mb-3">#}
-                {#                                <label class="form-label">№ документа</label>#}
-                {#                                <input type="text" class="form-control" id="id_document_number">#}
-                {#                            </div>#}
-                {#                        </div>#}
-                {#                    </div>#}
-                {##}
-                {#                    <div class="mb-3">#}
-                {#                        <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить#}
-                {#                        </button>#}
-                {#                    </div>#}
-                {#                </form>#}
+                <form id="clothes_in_card_form" method="post">{% csrf_token %}
+                    <input type="hidden" value="{{ card.id }}" id="id_card">
+                    <div class="row align-items-start">
+                        <div class="col-lg-12">
+                            <div class="mb-1">
+                                <label class="form-label">Наименование</label><br>
+                                <select name="norm_items" class="form-select my-select2" id="id_norm_items" multiple
+                                        required
+                                        style="width: 100%">
+                                    {% for item in card.norm.items_list.all %}
+                                        <option value="{{ item.id }}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="id_all_position_checkbox">
+                                <label class="form-check-label">Выбрать все позиции в норме</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Движение</label>
+                                <select class="form-select" name="movement" id="id_movement">
+                                    <option value="1">Выдача</option>
+                                    <option value="2">Сдача</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Количество</label>
+                                <input type="number" class="form-control" id="id_count_of_issue" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">Дата выдачи/сдачи</label>
+                                <input type="date" class="form-control" id="id_date_of_issue" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-flex align-items-end">
+                        <div class="col-lg-4">
+                            <div class="mb-1 form-check">
+                                <input type="checkbox" class="form-check-input" id="id_has_certificate_checkbox">
+                                <label class="form-check-label">Получено по аттестату</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">№ аттестата</label>
+                                <input type="text" class="form-control" id="id_certificate_number" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label class="form-label">№ документа</label>
+                                <input type="text" class="form-control" id="id_document_number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="id_is_closed_loop">
+                        <label class="form-check-label">Замыкающая в цикле выдача</label>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-secondary" id="add_clothes_in_card_button">Добавить
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -678,7 +680,7 @@
             <tbody class="align-middle text-center">
 
 
-            {% for item in items_in_norm %}
+            {% for item in clothes_list %}
 
                 <tr>
                     <th class="border">{{ forloop.counter }}</th>
@@ -700,8 +702,6 @@
                                         <nobr>{{ description.clothes }} {{ description.count }}</nobr><br>
                                     {% endfor %}
                                 {% endfor %}
-
-
                             </td>
                             <td>
                                 <nobr></nobr>

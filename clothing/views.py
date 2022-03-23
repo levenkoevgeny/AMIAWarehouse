@@ -10,19 +10,20 @@ from django.core.paginator import Paginator
 #
 from datetime import datetime, date
 # from dateutil.relativedelta import *
-# from rest_framework import viewsets
+from rest_framework import viewsets
 # from rest_framework import status
 # from rest_framework.decorators import api_view
 # from rest_framework.response import Response
 #
-from .models import Card, Clothes, Movement
-from .forms import CardForm
-# from .serializers import ClothesInCardSerializer, CardSerializer, NormSerializer, ClothesSerializer, EmployeeSerializer, \
-#     ClothesInNormSerializer
+from .models import Card, Clothes, Movement, NormItem, Norm, Subdivision, Position, Rank, NormItemsInNorm, Course, \
+    Group, Employee, DescriptionItem
+from .forms import CardForm, EmployeeForm
+from .serializers import ClothesSerializer, NormItemSerializer, NormSerializer, NormItemsInNormSerializer, \
+    EmployeeSerializer, CardSerializer, MovementSerializer, DescriptionItemSerializer
 from .filters import CardFilter
 
 
-# from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 #
 # from itertools import groupby
 #
@@ -71,17 +72,26 @@ def get_card(request, card_id):
         #                'back_path': request.session.get('back_path_card_list', '/clothing/cards')
         #                })
         card = get_object_or_404(Card, pk=card_id)
-
+        card_form = CardForm(instance=card)
+        employee = card.employee
+        employee_form = EmployeeForm(instance=employee)
         year_list_ = [i for i in range(date.today().year - 7, date.today().year + 1)]
-
         items_in_norm = card.norm.items_list.all()
-
+        clothes_list = Clothes.objects.all()
         movement_list = Movement.objects.filter(card=card)
-
-
         return render(request, 'clothing/card/card.html',
-                      {'year_list': year_list_, 'year_list_count': len(year_list_),
-                       'items_in_norm': items_in_norm, 'movement_list': movement_list})
+                      {
+                          'year_list': year_list_,
+                          'year_list_count': len(year_list_),
+                          'items_in_norm': items_in_norm,
+                          'movement_list': movement_list,
+                          'clothes_list': clothes_list,
+                          'card': card,
+                          'employee': employee,
+                          'employee_form': employee_form,
+                          'card_form': card_form,
+                      })
+
 
 # def get_card_full(request, card_id):
 #     card = get_object_or_404(Card, pk=card_id)
@@ -300,37 +310,55 @@ def get_card(request, card_id):
 #     return render(request, 'clothing/reports/sheet.html', {'only_filter': only_filter, 'filter': f})
 #
 #
+
+
 # # REST
-# class ClothesInCardViewSet(viewsets.ModelViewSet):
-#     queryset = ClothesInCard.objects.all()
-#     serializer_class = ClothesInCardSerializer
-#
-#
-# class CardViewSet(viewsets.ModelViewSet):
-#     queryset = Card.objects.all()
-#     serializer_class = CardSerializer
-#
-#
-# class NormViewSet(viewsets.ModelViewSet):
-#     queryset = Norm.objects.all()
-#     serializer_class = NormSerializer
-#
-#
-# class ClothesViewSet(viewsets.ModelViewSet):
-#     queryset = Clothes.objects.all()
-#     serializer_class = ClothesSerializer
-#
-#
-# class EmployeeViewSet(viewsets.ModelViewSet):
-#     queryset = Employee.objects.all()
-#     serializer_class = EmployeeSerializer
-#
-#
-# class ClothesInNormViewSet(viewsets.ModelViewSet):
-#     queryset = ClothesInNorm.objects.all()
-#     serializer_class = ClothesInNormSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_fields = ['norm']
+
+
+class EmployeeViewSet(viewsets.ModelViewSet):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+
+class ClothesViewSet(viewsets.ModelViewSet):
+    queryset = Clothes.objects.all()
+    serializer_class = ClothesSerializer
+
+
+class NormItemViewSet(viewsets.ModelViewSet):
+    queryset = NormItem.objects.all()
+    serializer_class = NormItemSerializer
+
+
+class NormViewSet(viewsets.ModelViewSet):
+    queryset = Norm.objects.all()
+    serializer_class = NormSerializer
+
+
+class NormItemsInNormViewSet(viewsets.ModelViewSet):
+    queryset = NormItemsInNorm.objects.all()
+    serializer_class = NormItemsInNormSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['norm']
+
+
+class CardViewSet(viewsets.ModelViewSet):
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+
+
+class MovementViewSet(viewsets.ModelViewSet):
+    queryset = Movement.objects.all()
+    serializer_class = MovementSerializer
+
+
+class DescriptionItemViewSet(viewsets.ModelViewSet):
+    queryset = DescriptionItem.objects.all()
+    serializer_class = DescriptionItemSerializer
+
+
+
+
 #
 #
 # # rest api endpoint for making clones based on parent

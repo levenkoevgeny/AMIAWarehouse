@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from .models import ClothesInCard, Card, Norm, Clothes, Employee, ClothesInNorm
+from .models import Clothes, NormItem, Norm, NormItemsInNorm, Employee, Card, Movement, DescriptionItem
 
 
-class ClothesInCardSerializer(serializers.ModelSerializer):
+class ClothesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClothesInCard
+        model = Clothes
         fields = '__all__'
 
 
-class CardSerializer(serializers.ModelSerializer):
+class NormItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Card
+        model = NormItem
         fields = '__all__'
 
 
@@ -20,15 +20,9 @@ class NormSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ClothesInNormSerializer(serializers.ModelSerializer):
+class NormItemsInNormSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClothesInNorm
-        fields = '__all__'
-
-
-class ClothesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Clothes
+        model = NormItemsInNorm
         fields = '__all__'
 
 
@@ -37,3 +31,20 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = '__all__'
 
+
+class CardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        fields = '__all__'
+
+
+class MovementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movement
+        fields = '__all__'
+
+
+class DescriptionItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DescriptionItem
+        fields = '__all__'

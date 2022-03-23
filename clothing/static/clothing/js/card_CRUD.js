@@ -1,40 +1,64 @@
 $('#clothes_in_card_form').submit(function (e) {
     e.preventDefault();
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let norm_items_array = $('#id_norm_items').val();
 
-    let ids_array = $('#id_clothes').val();
+    let description_requests = [];
 
-    let requests = [];
-    ids_array.map(id => {
-        let new_obj = {
-            'card': $('#id_card').val(),
-            'clothes': id,
-            'count': $('#id_count_of_issue').val(),
-            'date_of_issue': $('#id_date_of_issue').val(),
-            'movement': $('#id_movement').val(),
-            'has_certificate': $('#id_has_certificate_checkbox').is(':checked'),
-            'certificate_number': $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
-            'document_number': $('#id_document_number').val() == "" ? null : $('#id_document_number').val(),
+    let count = $('#id_count_of_issue').val();
+
+    norm_items_array.map(id => {
+
+        let new_movement = {
+            "norm_item": id,
             'created_at': new Date(),
+            'date_of_issue': $('#id_date_of_issue').val(),
+            "movement_direction": $('#id_movement').val(),
+            "has_replacement": false,
+            "document_number": $('#id_document_number').val() == "" ? null : $('#id_document_number').val(),
+            "has_certificate": $('#id_has_certificate_checkbox').is(':checked'),
+            "certificate_number": $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
+            "is_closed_loop": $('#id_is_closed_loop').is(':checked'),
+            "card": $('#id_card').val(),
         }
 
-        requests.push(
-            fetch('/api/clothes-in-card/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify(new_obj)
-            })
-        )
+        show_spinner();
+
+        fetch('/api/movements/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                "X-CSRFToken": csrftoken,
+            },
+            body: JSON.stringify(new_movement)
+        }).then(response => response.json()
+            .then(movement => {
+                    fetch(`/api/norms-items/${id}/`).then(response => response.json())
+                        .then(norm_item => {
+                            norm_item.item_clothes.map(item_id => {
+                                let new_description = {
+                                    "count": count,
+                                    "movement": movement.id,
+                                    "clothes": item_id
+                                }
+
+                                description_requests.push(
+                                    fetch('/api/description-item/', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json;charset=utf-8',
+                                            "X-CSRFToken": csrftoken,
+                                        },
+                                        body: JSON.stringify(new_description)
+                                    })
+                                )
+                            })
+                            Promise.all(description_requests).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
+                        })
+                }
+            ))
     })
 
-    show_spinner();
-
-    Promise.all(requests).then(() => {
-        window.location.href = window.location.href
-    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
 });
 
 $('#add_card_form').submit(function (e) {

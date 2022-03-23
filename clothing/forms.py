@@ -1,20 +1,20 @@
 from django.forms import ModelForm
-from .models import Card
+from .models import Card, Employee
 from django import forms
 
 myDateInput = forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
 
 
-# class EmployeeForm(ModelForm):
-#     class Meta:
-#         model = Employee
-#         fields = '__all__'
-#         widgets = {'date_of_birth': myDateInput,
-#                    'decree_start': myDateInput,
-#                    'decree_finish': myDateInput,
-#                    'enlisted': myDateInput,
-#                    'excluded': myDateInput,
-#                    }
+class EmployeeForm(ModelForm):
+    class Meta:
+        model = Employee
+        fields = '__all__'
+        widgets = {'date_of_birth': myDateInput,
+                   'decree_start': myDateInput,
+                   'decree_finish': myDateInput,
+                   'enlisted': myDateInput,
+                   'excluded': myDateInput,
+                   }
 
 
 class CardForm(ModelForm):

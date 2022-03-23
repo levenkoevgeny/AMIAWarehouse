@@ -270,6 +270,7 @@ class Movement(models.Model):
     has_certificate = models.BooleanField(verbose_name="Получено по сертификату", default=False)
     certificate_number = models.CharField(max_length=100, verbose_name="Номер аттестата", blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
+    is_closed_loop = models.BooleanField(verbose_name="Закрывает цикл выдачи", default=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
@@ -291,3 +292,11 @@ class DescriptionItem(models.Model):
                                  verbose_name="Движение в карточке")
     clothes = models.ForeignKey(Clothes, on_delete=models.CASCADE, verbose_name="Наименование")
     count = models.IntegerField(verbose_name="Количество", default=1)
+
+    def __str__(self):
+        return '{0}'.format(str(self.movement))
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Описание движения в карточке'
+        verbose_name_plural = 'Описания движений в карточке'

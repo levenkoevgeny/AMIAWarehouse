@@ -360,14 +360,16 @@
         </div>
 
         <br>
-        <div><h3><i class="fa-solid fa-arrow-left-long"></i></i><a href="{{ back_path }}" class="link-secondary">Вернуться
+        <div><h3><i class="far fa-long-arrow-alt-left"></i><a href="{{ back_path }}" class="link-secondary"><i class="fas fa-arrow-left"></i>
+
+ Вернуться
             к списку карточек</a></h3></div>
         <br>
         <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.card_number }}</h2>
 
         <div class="row">
             <h4 class="card-title mb-3"><a href="#employee_data_form" data-bs-toggle="modal"
-                                           class="link-secondary">{{ card.employee.get_full_name }}</a></h4>
+                                           class="link-secondary"><i class="fas fa-user-circle"></i>&nbsp;{{ card.employee.get_full_name }}</a></h4>
             <div class="col-xl-6 my-2">
                 <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
                 <h6>должность - <span
@@ -378,7 +380,7 @@
                 <h6>личный номер - <span class="fst-italic">Нет данных</span></h6>
             </div>
             <div class="col-xl-6 my-2">
-                <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary">Сведения
+                <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary"><i class="fas fa-tshirt"></i>&nbsp;Сведения
                     о
                     ростовке</a></h5>
 
@@ -446,7 +448,7 @@
                                 <select name="norm_items" class="form-select my-select2" id="id_norm_items" multiple
                                         required
                                         style="width: 100%">
-                                    {% for item in card.norm.items_list.all %}
+                                    {% for item in items_in_norm_all %}
                                         <option value="{{ item.id }}">{{ item }}</option>
                                     {% endfor %}
                                 </select>

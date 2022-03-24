@@ -90,7 +90,8 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label class="form-label">Номенклатура</label><br>
-                                        <input type="text" class="form-control" value="{{ clothes.nomenclature|default_if_none:"" }}"
+                                        <input type="text" class="form-control"
+                                               value="{{ clothes.nomenclature|default_if_none:"" }}"
                                                name="nomenclature" id="id_nomenclature_{{ clothes.id }}">
                                     </div>
                                 </div>
@@ -144,7 +145,7 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne"
                         aria-expanded="true" aria-controls="collapseOne">
-                    Фильтр
+                    <i class="fas fa-filter"></i>&nbsp;&nbsp;Фильтр
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
@@ -211,17 +212,23 @@
             <th scope="col">id</th>
             <th scope="col">Название</th>
             <th scope="col">Номенклатура</th>
+            <th scope="col">Подлежит сдаче</th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for clothes in list %}
             <tr>
-                <td>{{ clothes.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td><a href="#card_add_data_form_{{ clothes.id }}" data-bs-toggle="modal"
                        class="link-secondary">{{ clothes.clothes_title|default_if_none:"Нет данных" }}</a></td>
                 <td>{{ clothes.nomenclature|default_if_none:"Нет данных" }}</td>
-                <td><a href="javascript:delete_clothes({{ clothes.id }})">удалить</a></td>
+                <td class="text-center">
+                    {% if clothes.has_to_be_deposited %}
+                      <i class="fas fa-check"></i>
+                    {% endif %}
+                </td>
+                <td><a href="javascript:delete_clothes({{ clothes.id }})" class="link-danger"><i class="fas fa-trash" title="удалить"></i></a></td>
             </tr>
         {% endfor %}
         </tbody>

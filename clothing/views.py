@@ -63,6 +63,7 @@ def get_card(request, card_id):
                           'employee_form': employee_form,
                           'card_form': card_form,
                           'description_list': description_list,
+                          'items_in_norm_all': NormItem.objects.all().order_by('item_clothes__clothes_title'),
                           'back_path': request.session.get('back_path_card_list', '/clothing/cards'),
                       })
 
@@ -80,7 +81,7 @@ def get_card(request, card_id):
 #
 #
 def clothes_list(request):
-    f = ClothesFilter(request.GET, queryset=Clothes.objects.all())
+    f = ClothesFilter(request.GET, queryset=Clothes.objects.all().order_by('clothes_title'))
     paginator = Paginator(f.qs, 30)
     page = request.GET.get('page')
     cl_list = paginator.get_page(page)
@@ -90,7 +91,7 @@ def clothes_list(request):
 
 
 def norm_items_list(request):
-    f = NormItemFilter(request.GET, queryset=NormItem.objects.all())
+    f = NormItemFilter(request.GET, queryset=NormItem.objects.all().order_by('item_clothes__clothes_title'))
     paginator = Paginator(f.qs, 30)
     page = request.GET.get('page')
     n_i_list = paginator.get_page(page)
@@ -119,7 +120,7 @@ def employee_list(request):
 
 
 def norm_list(request):
-    f = NormFilter(request.GET, queryset=Norm.objects.all())
+    f = NormFilter(request.GET, queryset=Norm.objects.all().order_by('norm_title'))
     paginator = Paginator(f.qs, 30)
     page = request.GET.get('page')
     norms_list = paginator.get_page(page)
@@ -130,7 +131,7 @@ def norm_list(request):
 
 def norm_items(request, norm_id):
     norm = get_object_or_404(Norm, pk=norm_id)
-    item_list = NormItemsInNorm.objects.filter(norm_id=norm_id)
+    item_list = NormItemsInNorm.objects.filter(norm_id=norm_id).order_by('norm_item__item_clothes__clothes_title')
     norm_items_in_norm_form = NormItemsInNormForm()
     # clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
     #     'clothes_title')

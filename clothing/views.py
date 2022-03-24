@@ -134,10 +134,12 @@ def norm_items(request, norm_id):
     norm_items_in_norm_form = NormItemsInNormForm()
     # clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
     #     'clothes_title')
+    norm_items_all = NormItem.objects.all()
     return render(request, 'clothing/norms/norm_items.html', {
         'norm': norm,
         'norm_items_in_norm_form': norm_items_in_norm_form,
         'item_list': item_list,
+        'norm_items_all': norm_items_all,
     })
 
 

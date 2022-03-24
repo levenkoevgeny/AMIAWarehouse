@@ -71,6 +71,7 @@ function delete_item_in_norm(id) {
     ).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 }
 
+
 $('.norm_update_form').submit(function (e) {
     e.preventDefault();
     let norm_id = $(`#id_norm_id`).val()
@@ -93,6 +94,7 @@ $('.norm_update_form').submit(function (e) {
         }
     }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
+
 
 $('#add_norm_form').submit(function (e) {
     e.preventDefault();

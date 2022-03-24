@@ -298,7 +298,7 @@ class DescriptionItem(models.Model):
     count = models.IntegerField(verbose_name="Количество", default=1)
 
     def __str__(self):
-        return '{0}'.format(str(self.movement))
+        return '{0} {1}'.format(str(self.clothes), str(self.count))
 
     class Meta:
         ordering = ('id',)

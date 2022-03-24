@@ -1,7 +1,7 @@
 import random
 
 from django.shortcuts import render
-# from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 # from django.db import transaction
 from django.urls import reverse
@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Card, Clothes, Movement, NormItem, Norm, Subdivision, Position, Rank, NormItemsInNorm, Course, \
-    Group, Employee, DescriptionItem, EMPLOYEE_KIND, SEX
+    Group, Employee, DescriptionItem, EMPLOYEE_KIND, SEX, Dimensions, CapDimensions, ShoesDimensions
 from .forms import CardForm, EmployeeForm, ClothesForm, NormItemForm, NormForm, NormItemsInNormForm
 from .serializers import ClothesSerializer, NormItemSerializer, NormSerializer, NormItemsInNormSerializer, \
     EmployeeSerializer, CardSerializer, MovementSerializer, DescriptionItemSerializer
@@ -339,6 +339,8 @@ class MovementViewSet(viewsets.ModelViewSet):
 class DescriptionItemViewSet(viewsets.ModelViewSet):
     queryset = DescriptionItem.objects.all()
     serializer_class = DescriptionItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['movement']
 
 
 # # rest api endpoint for making clones based on parent

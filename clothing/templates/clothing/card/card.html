@@ -17,7 +17,6 @@
     <div class="container">
 
         {#    модалки для редактирования выдачи #}
-
         {% for movement in movement_list %}
             <div class="modal fade" id="movements_in_card_update_form_{{ movement.id }}" tabindex="-1"
                  aria-labelledby="exampleModalLabel"
@@ -36,7 +35,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Движение</label>
                                             {{ movement.movement_direction }}
-                                            <select class="form-select" id="id_movement_">
+                                            <select class="form-select" id="id_movement_{{ movement.id }}">
                                                 {% if movement.movement_direction == 1 %}
                                                     <option value="1" selected>Выдача</option>
                                                     <option value="2">Сдача</option>
@@ -52,21 +51,20 @@
                                             <label class="form-label">Дата движения</label>
                                             <input type="date" value="{{ movement.date_of_issue|date:"Y-m-d" }}"
                                                    class="form-control"
-                                                   id="id_date_of_issue_">
+                                                   id="id_date_of_issue_{{ movement.id }}">
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             {% if movement.has_certificate %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_has_certificate_checkbox_"
+                                                       id="id_has_certificate_checkbox_{{ movement.id }}"
                                                        checked>
                                             {% else %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_has_certificate_checkbox_">
+                                                       id="id_has_certificate_checkbox_{{ movement.id }}">
                                             {% endif %}
                                             <label class="form-check-label">
                                                 Получено по аттестату
@@ -74,7 +72,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -82,7 +79,7 @@
                                             <input type="text"
                                                    value="{{ movement.certificate_number|default_if_none:"" }}"
                                                    class="form-control"
-                                                   id="id_certificate_number_">
+                                                   id="id_certificate_number_{{ movement.id }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -90,21 +87,20 @@
                                             <label class="form-label">№ документа</label>
                                             <input type="text" value="{{ movement.document_number|default_if_none:"" }}"
                                                    class="form-control"
-                                                   id="id_document_number_">
+                                                   id="id_document_number_{{ movement.id }}">
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-check">
                                             {% if movement.is_closed_loop %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_is_closed_loop_"
+                                                       id="id_is_closed_loop_{{ movement.id }}"
                                                        checked>
                                             {% else %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_is_closed_loop_">
+                                                       id="id_is_closed_loop_{{ movement.id }}">
                                             {% endif %}
                                             <label class="form-check-label" for="flexCheckDefault">
                                                 Замыкающая в цикле выдача
@@ -115,11 +111,11 @@
                                         <div class="form-check">
                                             {% if movement.has_replacement %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_has_replacement_"
+                                                       id="id_has_replacement_{{ movement.id }}"
                                                        checked>
                                             {% else %}
                                                 <input class="form-check-input" type="checkbox" value=""
-                                                       id="id_has_replacement_">
+                                                       id="id_has_replacement_{{ movement.id }}">
                                             {% endif %}
                                             <label class="form-check-label" for="flexCheckDefault">
                                                 Замена
@@ -129,22 +125,19 @@
                                 </div>
 
                                 <h5 class="my-3">Наименования в выдаче</h5>
-
                                 {% for item in movement.descriptionitem_set.all %}
                                     <div class="mb-3">
                                         <label class="form-label">{{ item.clothes }}</label>
                                         <input type="number" value="{{ item.count }}" class="form-control"
+                                               id="{{ movement.id }}_count_{{ item.id }}"
                                                style="width: 200px;">
                                     </div>
                                 {% endfor %}
-
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена
                                 </button>
-                                <button type="button" class="btn btn-danger">Удалить
-                                </button>
+                                <a class="btn btn-danger" href="javascript:delete_movement({{ movement.id }})">Удалить</a>
                                 <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                             </div>
                         </div>
@@ -699,7 +692,11 @@
                         <nobr>{{ item }}</nobr>
                     </th>
                     <td></td>
-                    <td></td>
+                    <td>
+                        {% with args=card.id|str_concat:item.id %}
+                             {{ movement_list|get_next_date_and_count:args }}
+                        {% endwith %}
+                    </td>
                     {% for year in year_list %}
                         {% with args=year|str_concat:item.id %}
                             <td>

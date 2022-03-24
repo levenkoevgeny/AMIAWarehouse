@@ -1,3 +1,39 @@
+// добавление арматурной карточки
+$('#add_card_form').submit(function (e) {
+    e.preventDefault();
+    let new_obj = {
+        'card_number': $('#id_card_number').val() == "" ? null : $('#id_card_number').val(),
+        'employee': $('#id_employee').val() == "" ? null : $('#id_employee').val(),
+        'norm': $('#id_norm').val() == "" ? null : $('#id_norm').val(),
+        'growth': $('#id_growth').val() == "" ? null : $('#id_growth').val(),
+        'bust': $('#id_bust').val() == "" ? null : $('#id_bust').val(),
+        'jacket': $('#id_jacket').val() == "" ? null : $('#id_jacket').val(),
+        'shoes': $('#id_shoes').val() == "" ? null : $('#id_shoes').val(),
+        'cap': $('#id_cap').val() == "" ? null : $('#id_cap').val(),
+        'collar': $('#id_collar').val() == "" ? null : $('#id_collar').val(),
+    }
+
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
+    show_spinner();
+
+    fetch('/api/cards/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify(new_obj)
+    }).then(response => {
+        if (response.status >= 200 && response.status < 300) {
+        } else {
+            throw new Error("Ошибка записи!")
+        }
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
+});
+
+
+// добавление движения в арматурной карточке
 $('#clothes_in_card_form').submit(function (e) {
     e.preventDefault();
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -61,40 +97,73 @@ $('#clothes_in_card_form').submit(function (e) {
 
 });
 
-$('#add_card_form').submit(function (e) {
+
+// редактирование движения в арматурной карточке
+$('.movements_in_card_update_form').submit(function (e) {
     e.preventDefault();
-    let new_obj = {
-        'card_number': $('#id_card_number').val() == "" ? null : $('#id_card_number').val(),
-        'employee': $('#id_employee').val() == "" ? null : $('#id_employee').val(),
-        'norm': $('#id_norm').val() == "" ? null : $('#id_norm').val(),
-        'growth': $('#id_growth').val() == "" ? null : $('#id_growth').val(),
-        'bust': $('#id_bust').val() == "" ? null : $('#id_bust').val(),
-        'jacket': $('#id_jacket').val() == "" ? null : $('#id_jacket').val(),
-        'shoes': $('#id_shoes').val() == "" ? null : $('#id_shoes').val(),
-        'cap': $('#id_cap').val() == "" ? null : $('#id_cap').val(),
-        'collar': $('#id_collar').val() == "" ? null : $('#id_collar').val(),
+    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    let movement_id = e.target.id;
+
+    let desc_requests = [];
+
+    let obj = {
+        "movement_direction": $(`#id_movement_${movement_id}`).val(),
+        'date_of_issue': $(`#id_date_of_issue_${movement_id}`).val(),
+        "has_certificate": $(`#id_has_certificate_checkbox_${movement_id}`).is(':checked'),
+        "certificate_number": $(`#id_certificate_number_${movement_id}`).val() == "" ? null : $(`#id_certificate_number_${movement_id}`).val(),
+        "document_number": $(`#id_document_number_${movement_id}`).val() == "" ? null : $(`#id_document_number_${movement_id}`).val(),
+        "is_closed_loop": $(`#id_is_closed_loop_${movement_id}`).is(':checked'),
+        "has_replacement": $(`#id_has_replacement_${movement_id}`).is(':checked'),
     }
 
-    let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+    if (obj.has_certificate) {
+        obj.document_number = null
+    } else {
+        obj.certificate_number = null
+    }
 
-    show_spinner();
-
-    fetch('/api/cards/', {
-        method: 'POST',
+    fetch(`/api/movements/${movement_id}/`, {
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify(new_obj)
+        body: JSON.stringify(obj)
     }).then(response => {
         if (response.status >= 200 && response.status < 300) {
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
+    }).catch((e) => alert(e.message))
+
+    fetch(`/api/description-item/?movement=${movement_id}`).then(response => response.json()).then(descriptions => {
+        descriptions.map(desc => {
+            let new_desc = {
+                "count": $(`#${movement_id}_count_${desc.id}`).val(),
+            }
+
+            desc_requests.push(
+                fetch(`/api/description-item/${desc.id}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8',
+                        "X-CSRFToken": csrftoken,
+                    },
+                    body: JSON.stringify(new_desc)
+                })
+            )
+        });
+
+        Promise.all(desc_requests).then(()=> show_spinner()).catch((e) => alert(e.message)).finally(() => {
+                window.location.href = window.location.href;
+            }
+        );
+    });
+
 });
 
 
+// редактирование личных данных сотрудника
 $('#id_employee_update_form').submit(function (e) {
     e.preventDefault();
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -133,6 +202,7 @@ $('#id_employee_update_form').submit(function (e) {
 });
 
 
+// редактирование данных арматурной карточки
 $('#id_card_data_update_form').submit(function (e) {
     e.preventDefault();
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -165,40 +235,21 @@ $('#id_card_data_update_form').submit(function (e) {
 });
 
 
-$('.clothes_in_card_update_form').submit(function (e) {
-    e.preventDefault();
+// удаление движения в арматурной карточке
+function delete_movement(id) {
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
-    let form_id = e.target.id;
-
-    let obj = {
-        'movement': $(`#id_movement_modal_${form_id}`).val(),
-        'count': $(`#id_count_modal_${form_id}`).val(),
-        'date_of_issue': $(`#id_date_of_issue_modal_${form_id}`).val(),
-        'has_replacement': $(`#id_has_replacement_modal_${form_id}`).is(':checked'),
-        'has_certificate': $(`#id_has_certificate_checkbox_modal_${form_id}`).is(':checked'),
-        'certificate_number': $(`#id_certificate_number_modal_${form_id}`).val() == "" ? null : $(`#id_certificate_number_modal_${form_id}`).val(),
-        'document_number': $(`#id_document_number_modal_${form_id}`).val() == "" ? null : $(`#id_document_number_modal_${form_id}`).val(),
-    }
-
-    if (obj.has_certificate) {
-        obj.document_number = null
-    } else {
-        obj.certificate_number = null
-    }
-
     show_spinner();
-
-    fetch(`/api/clothes-in-card/${form_id}/`, {
-        method: 'PATCH',
+    fetch(`/api/movements/${id}/`, {
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             "X-CSRFToken": csrftoken,
         },
-        body: JSON.stringify(obj)
     }).then(response => {
-        if (response.status >= 200 && response.status < 300) {
-        } else {
-            throw new Error("Ошибка записи!")
+            if (response.status >= 200 && response.status < 300) {
+            } else {
+                throw new Error("Ошибка удаления!")
+            }
         }
-    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
-});
+    ).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
+}

@@ -162,10 +162,10 @@ class NormItemsInNorm(models.Model):
     wear_time = models.IntegerField(verbose_name="Сроки носки, мес.", validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return self.norm.norm_title
+        return self.norm.norm_title + ' ' + str(self.norm_item)
 
     class Meta:
-        ordering = ('norm__norm_title',)
+        ordering = ('id',)
         verbose_name = 'Наименование в норме'
         verbose_name_plural = 'Наименования в норме'
         unique_together = [['norm', 'norm_item']]
@@ -275,11 +275,12 @@ class Movement(models.Model):
     certificate_number = models.CharField(max_length=100, verbose_name="Номер аттестата", blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     is_closed_loop = models.BooleanField(verbose_name="Закрывает цикл выдачи", default=True)
+    replacing_what = models.ForeignKey('self', on_delete=models.CASCADE, verbose_name="Замена позиции из аттестата", blank=True, null=True)
     last_modified = models.DateTimeField(verbose_name="Дата и время последнего изменения", auto_now=True, blank=True,
                                          null=True)
 
     def __str__(self):
-        return str(self.card) + ' ' + str(self.norm_item)
+        return '{0} {1} {2}'.format(str(self.card), str(self.norm_item), str(self.date_of_issue))
 
     @property
     def get_movement(self):

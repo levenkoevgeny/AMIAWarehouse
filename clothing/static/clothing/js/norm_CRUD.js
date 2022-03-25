@@ -1,4 +1,4 @@
-$('#add_norm_item_form').submit(function (e) {
+$('#add_norm_item_in_norm_form').submit(function (e) {
     e.preventDefault();
     let new_obj = {
         'norm': $('#id_norm').val(),
@@ -8,7 +8,6 @@ $('#add_norm_item_form').submit(function (e) {
     }
 
     console.log(new_obj);
-
 
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
 

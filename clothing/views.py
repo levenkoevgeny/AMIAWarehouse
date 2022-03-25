@@ -50,6 +50,7 @@ def get_card(request, card_id):
         items_in_norm = card.norm.items_list.all()
         clothes_list = Clothes.objects.all()
         movement_list = Movement.objects.filter(card=card)
+        movement_list_from_certificate = movement_list.filter(has_certificate=True)
         description_list = DescriptionItem.objects.filter(movement__card=card)
         return render(request, 'clothing/card/card.html',
                       {
@@ -57,13 +58,14 @@ def get_card(request, card_id):
                           'year_list_count': len(year_list_),
                           'items_in_norm': items_in_norm,
                           'movement_list': movement_list,
+                          'movement_list_from_certificate': movement_list_from_certificate,
                           'clothes_list': clothes_list,
                           'card': card,
                           'employee': employee,
                           'employee_form': employee_form,
                           'card_form': card_form,
                           'description_list': description_list,
-                          'items_in_norm_all': NormItem.objects.all().order_by('item_clothes__clothes_title'),
+                          'items_in_norm_all': NormItem.objects.all(),
                           'back_path': request.session.get('back_path_card_list', '/clothing/cards'),
                       })
 
@@ -131,7 +133,8 @@ def norm_list(request):
 
 def norm_items(request, norm_id):
     norm = get_object_or_404(Norm, pk=norm_id)
-    item_list = NormItemsInNorm.objects.filter(norm_id=norm_id).order_by('norm_item__item_clothes__clothes_title')
+
+    item_list = NormItemsInNorm.objects.filter(norm_id=norm_id)
     norm_items_in_norm_form = NormItemsInNormForm()
     # clothes_in_norm_form.fields['clothes'].queryset = clothes_in_norm_form.fields['clothes'].queryset.order_by(
     #     'clothes_title')

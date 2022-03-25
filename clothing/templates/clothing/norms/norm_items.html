@@ -109,7 +109,7 @@
         <br>
 
 
-        <form id="add_norm_item_form">{% csrf_token %}
+        <form id="add_norm_item_in_norm_form">{% csrf_token %}
             <input type="hidden" value="{{ norm.id }}" name="norm" id="id_norm">
             <div class="row align-items-end">
                 <div class="col-lg-4">
@@ -137,7 +137,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
         </form>
 
@@ -145,7 +144,9 @@
             {% for item in item_list %}
                 <a class="link-secondary" href="#norm_item_update_data_form_{{ item.id }}"
                    data-bs-toggle="modal">{{ item.norm_item }} {{ item.norm_count }} шт. {{ item.wear_time }} мес.</a>
-                <a href="javascript:delete_item_in_norm({{ item.id }})" class="link-danger"><i class="fas fa-trash" title="удалить"></i></a><br>
+                <a href="javascript:delete_item_in_norm({{ item.id }})" class="link-danger"><i class="fas fa-trash"
+                                                                                               title="удалить"></i></a>
+                <br>
             {% endfor %}
         {% else %}
             <p>Список пуст!</p>

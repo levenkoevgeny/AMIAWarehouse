@@ -34,7 +34,6 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Движение</label>
-                                            {{ movement.movement_direction }}
                                             <select class="form-select" id="id_movement_{{ movement.id }}">
                                                 {% if movement.movement_direction == 1 %}
                                                     <option value="1" selected>Выдача</option>
@@ -133,11 +132,39 @@
                                                style="width: 200px;">
                                     </div>
                                 {% endfor %}
+                                <div class="mb-3">
+                                    <label class="form-label">Выдано вместо позиции из аттестата</label>
+                                    {% if movement.replacing_what %}
+                                        <select name="" id="id_replacing_what_{{ movement.id }}" class="form-select"
+                                                style="width: 100%;">
+                                            {% for movement_from_certificate in movement_list_from_certificate %}
+
+                                                {% if movement_from_certificate.id == movement.replacing_what.id %}
+                                                    <option value="{{ movement_from_certificate.id }}" selected>{{ movement_from_certificate }}</option>
+                                                {% else %}
+                                                    <option value="{{ movement_from_certificate.id }}">{{ movement_from_certificate }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        <select name="" id="id_replacing_what_{{ movement.id }}" class="form-select"
+                                                style="width: 100%;">
+                                            <option value="" selected>----</option>
+                                            {% for movement_from_certificate in movement_list_from_certificate %}
+                                                <option value="{{ movement_from_certificate.id }}">{{ movement_from_certificate }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </div>
+
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена
                                 </button>
-                                <a class="btn btn-danger" href="javascript:delete_movement({{ movement.id }})">Удалить</a>
+                                <a class="btn btn-danger"
+                                   href="javascript:delete_movement({{ movement.id }})">Удалить</a>
                                 <button type="submit" class="btn btn-primary">Сохранить изменения</button>
                             </div>
                         </div>
@@ -360,16 +387,18 @@
         </div>
 
         <br>
-        <div><h3><i class="far fa-long-arrow-alt-left"></i><a href="{{ back_path }}" class="link-secondary"><i class="fas fa-arrow-left"></i>
+        <div><h3><i class="far fa-long-arrow-alt-left"></i><a href="{{ back_path }}" class="link-secondary"><i
+                class="fas fa-arrow-left"></i>
 
- Вернуться
+            Вернуться
             к списку карточек</a></h3></div>
         <br>
         <h2 class="mb-3 fw-bold">Арматурная карточка № {{ card.card_number }}</h2>
 
         <div class="row">
             <h4 class="card-title mb-3"><a href="#employee_data_form" data-bs-toggle="modal"
-                                           class="link-secondary"><i class="fas fa-user-circle"></i>&nbsp;{{ card.employee.get_full_name }}</a></h4>
+                                           class="link-secondary"><i
+                    class="fas fa-user-circle"></i>&nbsp;{{ card.employee.get_full_name }}</a></h4>
             <div class="col-xl-6 my-2">
                 <h6>звание - <span class="fst-italic">{{ card.employee.rank }}</span></h6>
                 <h6>должность - <span
@@ -380,7 +409,8 @@
                 <h6>личный номер - <span class="fst-italic">Нет данных</span></h6>
             </div>
             <div class="col-xl-6 my-2">
-                <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary"><i class="fas fa-tshirt"></i>&nbsp;Сведения
+                <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary"><i
+                        class="fas fa-tshirt"></i>&nbsp;Сведения
                     о
                     ростовке</a></h5>
 
@@ -696,18 +726,25 @@
                     <td></td>
                     <td>
                         {% with args=card.id|str_concat:item.id %}
-                             {{ movement_list|get_next_date_and_count:args }}
+                            {{ movement_list|get_next_date_and_count:args }}
                         {% endwith %}
                     </td>
                     {% for year in year_list %}
                         {% with args=year|str_concat:item.id %}
                             <td>
                                 {% for description in description_list|get_descriptions_out:args %}
-                                    <a href="#movements_in_card_update_form_{{ description.movement.id }}"
-                                       data-bs-toggle="modal"
-                                       class="link-secondary">{{ description.movement.date_of_issue|date:"d.m.y" }}</a>
+                                    {% if description.movement.is_closed_loop %}
+                                        <a href="#movements_in_card_update_form_{{ description.movement.id }}"
+                                           data-bs-toggle="modal"
+                                           class="link-success">{{ description.movement.date_of_issue|date:"m.y" }}</a>
+                                    {% else %}
+                                        <a href="#movements_in_card_update_form_{{ description.movement.id }}"
+                                           data-bs-toggle="modal"
+                                           class="link-secondary">{{ description.movement.date_of_issue|date:"m.y" }}</a>
+                                    {% endif %}
                                 {% endfor %}
                             </td>
+
                             <td>
                                 {% for description in description_list|get_descriptions_out:args %}
                                     {{ description.count }}<br>
@@ -715,7 +752,7 @@
                             </td>
                             <td>
                                 {% for description in description_list|get_descriptions_out:args %}
-                                    {{ description.movement.document_number }}<br>
+                                    {{ description.movement.document_number|default_if_none:"" }}<br>
                                 {% endfor %}
                             </td>
                         {% endwith %}

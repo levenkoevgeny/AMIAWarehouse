@@ -114,7 +114,10 @@ $('.movements_in_card_update_form').submit(function (e) {
         "document_number": $(`#id_document_number_${movement_id}`).val() == "" ? null : $(`#id_document_number_${movement_id}`).val(),
         "is_closed_loop": $(`#id_is_closed_loop_${movement_id}`).is(':checked'),
         "has_replacement": $(`#id_has_replacement_${movement_id}`).is(':checked'),
+        "replacing_what": $(`#id_replacing_what_${movement_id}`).val() == "" ? null : $(`#id_replacing_what_${movement_id}`).val(),
     }
+
+    console.log(obj);
 
     if (obj.has_certificate) {
         obj.document_number = null
@@ -139,7 +142,7 @@ $('.movements_in_card_update_form').submit(function (e) {
     fetch(`/api/description-item/?movement=${movement_id}`).then(response => response.json()).then(descriptions => {
         descriptions.map(desc => {
             let new_desc = {
-                "count": $(`#${movement_id}_count_${desc.id}`).val(),
+                "count": $(`#${movement_id}_count_${desc.id}`).val() == "" ? 0 : $(`#${movement_id}_count_${desc.id}`).val(),
             }
 
             desc_requests.push(

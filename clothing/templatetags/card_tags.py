@@ -86,7 +86,7 @@ def get_next_date_and_count(value, args):
                 result_count = norm_value_norm_count
             # случай, если позиция нормы состоит более чем из одной вещи
             else:
-                # получает норму на единицу
+                # получаем норму на единицу
                 norm_value_wear_time_per_item = norm_value_wear_time / norm_value_norm_count
                 # проверяем есть ли замыкающие выдачи
                 # если есть то

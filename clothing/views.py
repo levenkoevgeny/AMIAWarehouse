@@ -93,7 +93,7 @@ def clothes_list(request):
 
 
 def norm_items_list(request):
-    f = NormItemFilter(request.GET, queryset=NormItem.objects.all().order_by('item_clothes__clothes_title'))
+    f = NormItemFilter(request.GET, queryset=NormItem.objects.all())
     paginator = Paginator(f.qs, 30)
     page = request.GET.get('page')
     n_i_list = paginator.get_page(page)

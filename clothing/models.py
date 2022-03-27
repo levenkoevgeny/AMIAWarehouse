@@ -117,6 +117,10 @@ class Clothes(models.Model):
         super().save(*args, **kwargs)
         NormItem.objects.create().item_clothes.add(self)
 
+    # def delete(self, using=None, keep_parents=False):
+    #     NormItem.objects.filter(item_clothes=self).delete()
+    #     super().delete(using=None, keep_parents=False)
+
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Наименование предмета'

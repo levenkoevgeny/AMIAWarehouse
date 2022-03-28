@@ -193,7 +193,7 @@ def get_random_data(request):
             sex=1,
             subdivision=get_object_or_404(Subdivision, pk=random.randint(1, 2)),
             position=get_object_or_404(Position, pk=random.randint(1, 2)),
-            rank=get_object_or_404(Rank, pk=random.randint(1, 11))
+            rank=get_object_or_404(Rank, pk=random.randint(2, 12))
         )
         new_employee.save()
 
@@ -364,3 +364,19 @@ def make_cloned_norm(request):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response({'message': '400 bad request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def movement_several_add(request):
+    if request.method == 'POST':
+        serializer = MovementSerializer(data=request.data)
+        if serializer.is_valid():
+            movement = serializer.save()
+            norm_item = get_object_or_404(NormItem, pk=request.data['norm_item'])
+            for clothes in norm_item.item_clothes.all():
+                new_description = DescriptionItem(movement=movement, clothes=clothes, count=request.data['count'])
+                new_description.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Here'}, status=status.HTTP_400_BAD_REQUEST)
+

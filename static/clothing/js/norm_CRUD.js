@@ -1,13 +1,18 @@
-$('#add_norm_item_form').submit(function (e) {
+$('#add_norm_item_in_norm_form').submit(function (e) {
     e.preventDefault();
     let new_obj = {
         'norm': $('#id_norm').val(),
-        'clothes': $('#id_clothes').val() == "" ? null : $('#id_clothes').val(),
+        'norm_item': $('#id_norm_item').val() == "" ? null : $('#id_norm_item').val(),
         'norm_count': $('#id_norm_count').val() == "" ? null : $('#id_norm_count').val(),
+        'wear_time': $('#id_wear_time').val() == "" ? null : $('#id_wear_time').val(),
     }
+
+    console.log(new_obj);
+
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
+
     show_spinner();
-    fetch('/api/norms-items/', {
+    fetch('/api/norms-items-in-norm/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -19,7 +24,7 @@ $('#add_norm_item_form').submit(function (e) {
         } else {
             throw new Error("Ошибка записи!")
         }
-    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
+    }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
 });
 
 
@@ -28,12 +33,13 @@ $('.norm_item_update_form_class').submit(function (e) {
     let form_id = e.target.id;
     let obj = {
         'norm': $(`#id_norm`).val(),
-        'clothes': $(`#id_clothes_${form_id}`).val() == "" ? null : $(`#id_clothes_${form_id}`).val(),
+        'norm_item': $(`#id_norm_item_${form_id}`).val() == "" ? null : $(`#id_norm_item_${form_id}`).val(),
         'norm_count': $(`#id_norm_count_${form_id}`).val() == "" ? null : $(`#id_norm_count_${form_id}`).val(),
+        'wear_time': $(`#id_wear_time_${form_id}`).val() == "" ? null : $(`#id_wear_time_${form_id}`).val(),
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     show_spinner();
-    fetch(`/api/norms-items/${form_id}/`, {
+    fetch(`/api/norms-items-in-norm/${form_id}/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -52,7 +58,7 @@ $('.norm_item_update_form_class').submit(function (e) {
 function delete_item_in_norm(id) {
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     show_spinner();
-    fetch(`/api/norms-items/${id}/`, {
+    fetch(`/api/norms-items-in-norm/${id}/`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -66,6 +72,7 @@ function delete_item_in_norm(id) {
         }
     ).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 }
+
 
 $('.norm_update_form').submit(function (e) {
     e.preventDefault();
@@ -89,6 +96,7 @@ $('.norm_update_form').submit(function (e) {
         }
     }).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href)
 });
+
 
 $('#add_norm_form').submit(function (e) {
     e.preventDefault();

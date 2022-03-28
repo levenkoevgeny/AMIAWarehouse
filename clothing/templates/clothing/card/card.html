@@ -750,6 +750,12 @@
                                         <a href="#movements_in_card_update_form_{{ description.movement.id }}"
                                            data-bs-toggle="modal"
                                            class="link-success">{{ description.movement.date_of_issue|date:"m.y" }}</a>
+                                        {% if description.movement.has_replacement %}
+                                            Замена
+                                        {% endif %}
+                                        {% if description.movement.replacing_what %}
+                                            Вместо позици в аттестате
+                                        {% endif %}
                                     {% else %}
                                         <a href="#movements_in_card_update_form_{{ description.movement.id }}"
                                            data-bs-toggle="modal"

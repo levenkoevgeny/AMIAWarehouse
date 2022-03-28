@@ -39,7 +39,7 @@ $('#clothes_in_card_form').submit(function (e) {
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     let norm_items_array = $('#id_norm_items').val();
 
-    let description_requests = [];
+    let movements_requests = [];
 
     let count = $('#id_count_of_issue').val();
 
@@ -56,44 +56,79 @@ $('#clothes_in_card_form').submit(function (e) {
             "certificate_number": $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
             "is_closed_loop": $('#id_is_closed_loop').is(':checked'),
             "card": $('#id_card').val(),
+            "count": count,
         }
 
-        show_spinner();
-
-        fetch('/api/movements/', {
+        movements_requests.push(fetch('/clothing/movement_several_add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
                 "X-CSRFToken": csrftoken,
             },
             body: JSON.stringify(new_movement)
-        }).then(response => response.json()
-            .then(movement => {
-                    fetch(`/api/norms-items/${id}/`).then(response => response.json())
-                        .then(norm_item => {
-                            norm_item.item_clothes.map(item_id => {
-                                let new_description = {
-                                    "count": count,
-                                    "movement": movement.id,
-                                    "clothes": item_id
-                                }
-
-                                description_requests.push(
-                                    fetch('/api/description-item/', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json;charset=utf-8',
-                                            "X-CSRFToken": csrftoken,
-                                        },
-                                        body: JSON.stringify(new_description)
-                                    })
-                                )
-                            })
-                            Promise.all(description_requests).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
-                        })
-                }
-            ))
+        }))
     })
+
+    Promise.all(movements_requests).catch((e) => alert(e.message)).finally(() => {
+        show_spinner();
+        window.location.href = window.location.href
+    });
+
+    // show_spinner();
+
+    //     fetch('/clothing/movement_several_add',
+    //         {
+    //             method: 'POST',
+    //             headers
+    // :
+    //     {
+    //         'Content-Type'
+    //     :
+    //         'application/json;charset=utf-8',
+    //             "X-CSRFToken"
+    //     :
+    //         csrftoken,
+    //     }
+    // ,
+    //     body: JSON.stringify(new_movement)
+    // }
+    // ).
+    //     then(() => window.location.href = window.location.href);
+
+    // fetch('/api/movements/', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json;charset=utf-8',
+    //         "X-CSRFToken": csrftoken,
+    //     },
+    //     body: JSON.stringify(new_movement)
+    // }).then(response => response.json()
+    //     .then(movement => {
+    //             fetch(`/api/norms-items/${id}/`).then(response => response.json())
+    //                 .then(norm_item => {
+    //                     norm_item.item_clothes.map(item_id => {
+    //                         let new_description = {
+    //                             "count": count,
+    //                             "movement": movement.id,
+    //                             "clothes": item_id
+    //                         }
+    //
+    //                         description_requests.push(
+    //                             fetch('/api/description-item/', {
+    //                                 method: 'POST',
+    //                                 headers: {
+    //                                     'Content-Type': 'application/json;charset=utf-8',
+    //                                     "X-CSRFToken": csrftoken,
+    //                                 },
+    //                                 body: JSON.stringify(new_description)
+    //                             })
+    //                         )
+    //                     })
+    //                     Promise.all(description_requests).catch((e) => alert(e.message)).finally(() => window.location.href = window.location.href);
+    //                 })
+    //         }
+    //     ))
+    // })
 
 });
 
@@ -157,7 +192,7 @@ $('.movements_in_card_update_form').submit(function (e) {
             )
         });
 
-        Promise.all(desc_requests).then(()=> show_spinner()).catch((e) => alert(e.message)).finally(() => {
+        Promise.all(desc_requests).then(() => show_spinner()).catch((e) => alert(e.message)).finally(() => {
                 window.location.href = window.location.href;
             }
         );

@@ -3,7 +3,6 @@ $('#clothes_add_form').submit(function (e) {
     let new_obj = {
         'clothes_title': $(`#id_clothes_title`).val(),
         'nomenclature': $(`#id_nomenclature`).val() == "" ? null : $('#id_nomenclature').val(),
-        'wear_time': $(`#id_wear_time`).val(),
         'price': $(`#id_price`).val() == "" ? null : $('#id_price').val(),
         'has_to_be_deposited': $(`#id_has_to_be_deposited`).is(':checked'),
         'created_at': new Date(),
@@ -50,9 +49,8 @@ $('.clothes_update_form_class').submit(function (e) {
     let obj = {
         'clothes_title': $(`#id_clothes_title_${form_id}`).val(),
         'nomenclature': $(`#id_nomenclature_${form_id}`).val() == "" ? null : $(`#id_nomenclature_${form_id}`).val(),
-        'wear_time': $(`#id_wear_time_${form_id}`).val(),
         'price': $(`#id_price_${form_id}`).val() == "" ? null : $(`#id_price_${form_id}`).val(),
-        'has_to_be_deposited': $(`#id_has_to_be_deposited`).is(':checked'),
+        'has_to_be_deposited': $(`#id_has_to_be_deposited_${form_id}`).is(':checked'),
     }
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     show_spinner();

@@ -1,4 +1,5 @@
 $("#id_all_position_checkbox").change(function () {
+
     let norm_id = $('#id_norm').val();
 
     let norm;

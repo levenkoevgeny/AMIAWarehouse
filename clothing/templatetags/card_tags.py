@@ -43,7 +43,7 @@ def get_certificate_item(value, clothes):
 
 
 @register.filter(name='get_next_date_and_count')
-def get_next_date_and_count(value, args):
+def get_next_date_and_count(movement_list, args):
     result_date = ""
     result_count = ""
     arg_list = [arg.strip() for arg in args.split(',')]
@@ -51,6 +51,9 @@ def get_next_date_and_count(value, args):
     card = get_object_or_404(Card, pk=arg_list[0])
     # получаем норму в арматурной карте
     norm = card.norm
+
+    current_half_year_start_date = get_current_half_year_start_date()
+    current_half_year_end_date = get_current_half_year_end_date()
 
     # получаем текущее наименование из списка в карте
     clothes = get_object_or_404(Clothes, pk=arg_list[1])
@@ -67,7 +70,7 @@ def get_next_date_and_count(value, args):
                                                         has_replacement=False)
         # если выдачи этого наименования не было то выдача в текущем году в количестве по норме
         if clothes_movement_list.count() == 0:
-            result_date = datetime.datetime.now().year
+            result_date = current_half_year_start_date
             result_count = norm_value_norm_count
         else:
             # если позиция нормы состоит из одной вещи
@@ -80,9 +83,7 @@ def get_next_date_and_count(value, args):
                     result_date = last_issue.replacing_what.date_of_issue + relativedelta(months=norm_value_wear_time)
                 else:
                     result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
-
-                if result_date.year < datetime.datetime.now().year:
-                    result_date = datetime.datetime.now().year
+                result_date = next_date_of_issue_normalize(result_date)
                 result_count = norm_value_norm_count
             # случай, если позиция нормы состоит более чем из одной вещи
             else:
@@ -119,10 +120,11 @@ def get_next_date_and_count(value, args):
                         # список не пуст (т.е. были выдачи после последней замыкающей)
                         # получаем последнюю выдачу
                         last_issue = clothes_movement_list_without_closing_loop.last()
-                        last_issue_next_date = last_issue.date_of_issue + relativedelta(months=wear_time_normalize(norm_value_wear_time_per_item))
+                        last_issue_next_date = last_issue.date_of_issue + relativedelta(
+                            months=wear_time_normalize(norm_value_wear_time_per_item))
                         # если дата следующей выдачи уже прошла
-                        if last_issue_next_date.year < datetime.datetime.now().year:
-                            result_date = datetime.datetime.now().year
+                        if last_issue_next_date < current_half_year_start_date:
+                            result_date = current_half_year_start_date
                             result_count = norm_value_norm_count
                         # если дата следующей выдачи еще не прошла
                         else:
@@ -143,8 +145,8 @@ def get_next_date_and_count(value, args):
                     last_issue_next_date = last_issue.date_of_issue + relativedelta(
                         months=wear_time_normalize(norm_value_wear_time_per_item))
                     # если дата следующей выдачи уже прошла
-                    if last_issue_next_date.year < datetime.datetime.now().year:
-                        result_date = datetime.datetime.now().year
+                    if last_issue_next_date < current_half_year_start_date:
+                        result_date = current_half_year_start_date
                         result_count = norm_value_norm_count
                     # если дата следующей выдачи еще не прошла
                     else:
@@ -159,16 +161,15 @@ def get_next_date_and_count(value, args):
                         else:
                             result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
                             result_count = norm_value_norm_count
-
     else:
         pass
 
-    if result_count:
-        unit = "шт."
-    else:
-        unit = ""
+    month = result_date.strftime("%m") if result_date else ""
+    separator = "." if result_date else ""
+    year = result_date.strftime("%y") if result_date else ""
+    unit = "шт." if result_date else ""
 
-    return '{0} {1} {2}'.format(str(result_date), str(result_count), unit)
+    return '{0}{1}{2} {3} {4}'.format(month, separator, year, str(result_count), unit)
 
 
 def wear_time_normalize(wear_time):
@@ -179,7 +180,27 @@ def wear_time_normalize(wear_time):
 
 
 def next_date_of_issue_normalize(next_date_of_issue):
+    current_half_year_start_date = get_current_half_year_start_date()
+    if next_date_of_issue < current_half_year_start_date:
+        return current_half_year_start_date
     return next_date_of_issue
+
 
 def count_normalize(norm_count, issued_count):
     pass
+
+
+def get_current_half_year_start_date():
+    current_date = datetime.datetime.now()
+    if 1 < current_date.month <= 6:
+        return datetime.date(current_date.year, 1, 1)
+    if 6 < current_date.month <= 12:
+        return datetime.date(current_date.year, 7, 1)
+
+
+def get_current_half_year_end_date():
+    current_date = datetime.datetime.now()
+    if 1 < current_date.month <= 6:
+        return datetime.date(current_date.year, 6, 30)
+    if 6 < current_date.month <= 12:
+        return datetime.date(current_date.year, 12, 31)

@@ -16,9 +16,10 @@ urlpatterns = [
 
     path('norms', views.norm_list, name='norm_list'),
     path('norms/<norm_id>/items', views.norm_items, name='norm_items'),
-#     # rest-api for making clones based on parent norm
+    # rest-api for making clones based on parent norm
     path('norms/make-clone/', views.make_cloned_norm, name='norm_make_clone'),
-    path('movement_several_add', views.movement_several_add, name='movement_several_add'),
+    # rest-api for making several requests to add movements
+    path('movement_several_add/', views.movement_several_add, name='movement_several_add'),
 
     path('random', views.get_random_data, name='random'),
     path('init-dimensions', views.init_dimensions, name='init-dimensions'),

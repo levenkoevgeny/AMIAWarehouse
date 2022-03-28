@@ -378,5 +378,8 @@ def movement_several_add(request):
                 new_description.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({'message': 'Here'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': ''}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'message': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 

@@ -59,7 +59,7 @@ $('#clothes_in_card_form').submit(function (e) {
             "count": count,
         }
 
-        movements_requests.push(fetch('/clothing/movement_several_add', {
+        movements_requests.push(fetch('/clothing/movement_several_add/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',

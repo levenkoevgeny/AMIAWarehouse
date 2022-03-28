@@ -249,7 +249,7 @@
     <table class="table table-striped table-hover">
         <thead>
         <tr>
-            <th scope="col">id</th>
+            <th scope="col" class="text-center">Номер карты</th>
             <th scope="col">Фамилия</th>
             <th scope="col">Звание</th>
             <th scope="col">Должность</th>
@@ -264,9 +264,9 @@
         <tbody>
         {% for card in list %}
             <tr>
-                <td>{{ card.id }}</td>
+                <td class="text-center">{{ card.card_number }}</td>
                 <td><a href="{% url 'clothing:get_card' card.id %}"
-                       class="link-secondary">{{ card.employee.last_name|default_if_none:"Нет данных" }}</a>
+                       class="link-secondary"><nobr>{{ card.employee.get_short_name }}</nobr></a>
                 </td>
                 <td>{{ card.employee.rank|default_if_none:"" }}</td>
                 <td>{{ card.employee.position|default_if_none:"" }}</td>

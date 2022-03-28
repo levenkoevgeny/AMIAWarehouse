@@ -229,6 +229,10 @@ class Employee(models.Model):
         return self.last_name + ' ' + self.first_name + ' ' + self.patronymic
 
     @property
+    def get_short_name(self):
+        return "{0} {1}. {2}.".format(self.last_name, self.first_name[0], self.patronymic[0])
+
+    @property
     def get_sex(self):
         if self.sex:
             return SEX[self.sex - 1][1]

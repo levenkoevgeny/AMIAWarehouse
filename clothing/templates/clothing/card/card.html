@@ -325,6 +325,12 @@
                                 <input type="hidden" value="{{ card.employee.id }}" name="employee">
                                 <div class="col-md-6">
                                     <div class="mb-3">
+                                        <label class="form-label">Номер карты</label><br>
+                                        {% render_field card_form.card_number class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
                                         <label class="form-label">Норма</label><br>
                                         {% render_field card_form.norm class+="form-select" style="width: 100%" %}
                                     </div>
@@ -414,7 +420,7 @@
                 <h5 class="card-title"><a href="#card_data_form" data-bs-toggle="modal" class="link-secondary"><i
                         class="fas fa-tshirt"></i>&nbsp;Сведения
                     о
-                    ростовке</a></h5>
+                    ростовке (редактирование карты)</a></h5>
 
                 <h6 style="display: inline !important;">рост - <span
                         class="fst-italic">{{ card.growth|default_if_none:"Нет данных" }}</span></h6>,

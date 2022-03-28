@@ -247,6 +247,7 @@ $('#id_card_data_update_form').submit(function (e) {
     let id_card = $("#id_card").val();
     let obj = {
         'norm': $(`#id_norm`).val(),
+        'card_number': $(`#id_card_number`).val() == "" ? null : $(`#id_card_number`).val(),
         'growth': $(`#id_growth`).val() == "" ? null : $(`#id_growth`).val(),
         'bust': $(`#id_bust`).val() == "" ? null : $(`#id_bust`).val(),
         'jacket': $(`#id_jacket`).val() == "" ? null : $(`#id_jacket`).val(),

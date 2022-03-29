@@ -58,11 +58,13 @@
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             {% if movement.has_certificate %}
-                                                <input class="form-check-input" type="checkbox" value=""
+                                                <input class="form-check-input has_certificate_checkbox_modal"
+                                                       type="checkbox" value=""
                                                        id="id_has_certificate_checkbox_{{ movement.id }}"
                                                        checked>
                                             {% else %}
-                                                <input class="form-check-input" type="checkbox" value=""
+                                                <input class="form-check-input has_certificate_checkbox_modal"
+                                                       type="checkbox" value=""
                                                        id="id_has_certificate_checkbox_{{ movement.id }}">
                                             {% endif %}
                                             <label class="form-check-label">
@@ -75,21 +77,57 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">№ аттестата</label>
-                                            <input type="text"
-                                                   value="{{ movement.certificate_number|default_if_none:"" }}"
-                                                   class="form-control"
-                                                   id="id_certificate_number_{{ movement.id }}">
+                                            {% if movement.has_certificate %}
+                                                <input type="text"
+                                                       value="{{ movement.certificate_number|default_if_none:"" }}"
+                                                       class="form-control"
+                                                       id="id_certificate_number_{{ movement.id }}" required>
+                                            {% else %}
+                                                <input type="text"
+                                                       value="{{ movement.certificate_number|default_if_none:"" }}"
+                                                       class="form-control"
+                                                       id="id_certificate_number_{{ movement.id }}" disabled>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">№ документа</label>
-                                            <input type="text" value="{{ movement.document_number|default_if_none:"" }}"
-                                                   class="form-control"
-                                                   id="id_document_number_{{ movement.id }}">
+                                            {% if not movement.has_certificate %}
+                                                <input type="text"
+                                                       value="{{ movement.document_number|default_if_none:"" }}"
+                                                       class="form-control"
+                                                       id="id_document_number_{{ movement.id }}" required>
+                                            {% else %}
+                                                <input type="text"
+                                                       value="{{ movement.document_number|default_if_none:"" }}"
+                                                       class="form-control"
+                                                       id="id_document_number_{{ movement.id }}" disabled>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Срок носки по аттестату</label>
+                                            {% if movement.has_certificate %}
+                                                <input type="number"
+                                                       value="{{ movement.certificate_wear_time }}"
+                                                       class="form-control"
+                                                       id="id_certificate_wear_time_{{ movement.id }}" required>
+                                            {% else %}
+                                                <input type="number"
+                                                       value="{{ movement.certificate_wear_time }}"
+                                                       class="form-control"
+                                                       id="id_certificate_wear_time_{{ movement.id }}" disabled>
+                                            {% endif %}
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-check">
@@ -534,6 +572,12 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
+                                <label class="form-label">Срок носки по аттестату</label>
+                                <input type="number" class="form-control" id="id_certificate_wear_time" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mb-3">
                                 <label class="form-label">№ документа</label>
                                 <input type="text" class="form-control" id="id_document_number">
                             </div>
@@ -687,14 +731,16 @@
         {##}
         {##}
 
+        {#        <div class="table-responsive">#}
+
         <table class="table table-bordered table-sm">
             <thead class="align-middle text-center">
             <tr>
                 <th rowspan="3" class="border border-3 border-secondary">№ п.п</th>
                 <th rowspan="3" class="border border-3 border-secondary">Наименование предметов</th>
                 <th rowspan="3" class="border border-3 border-secondary">Состоит согласно вещевому
-                    аттестату <br><span
-                            class="fst-italic text-decoration-underline">{{ certificate_number|default_if_none:"____" }}</span>
+                    аттестату <span
+                            class="fst-italic text-decoration-underline">{{ certificate_number|default_if_none:"_____" }}</span><br>
                 </th>
                 <th rowspan="3" class="border border-3 border-secondary">Дата и количество следующей выдачи</th>
                 <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Выдано
@@ -737,7 +783,7 @@
                                 {% with certificate_item=description_list|get_certificate_item:item.id %}
                                     <a href="#movements_in_card_update_form_{{ certificate_item.movement.id }}"
                                        data-bs-toggle="modal"
-                                       class="link-secondary">{{ certificate_item.movement.certificate_number }}
+                                       class="link-secondary">{{ certificate_item.movement.date_of_issue|date:"m.y" }}
                                         - {{ certificate_item.count }} шт.</a>
                                 {% endwith %}
                             {% endif %}
@@ -901,7 +947,7 @@
 
             </tbody>
         </table>
-
+        {#        </div>#}
 
         {#        {% else %}#}
         {#            Список пуст!<br>#}

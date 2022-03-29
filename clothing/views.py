@@ -52,6 +52,10 @@ def get_card(request, card_id):
         movement_list = Movement.objects.filter(card=card)
         movement_list_from_certificate = movement_list.filter(has_certificate=True)
         description_list = DescriptionItem.objects.filter(movement__card=card)
+        if movement_list.filter(has_certificate=True).first():
+            certificate_number = movement_list.filter(has_certificate=True).first().certificate_number
+        else:
+            certificate_number = None
         return render(request, 'clothing/card/card.html',
                       {
                           'year_list': year_list_,
@@ -67,6 +71,7 @@ def get_card(request, card_id):
                           'description_list': description_list,
                           'items_in_norm_all': NormItem.objects.all(),
                           'back_path': request.session.get('back_path_card_list', '/clothing/cards'),
+                          'certificate_number': certificate_number,
                       })
 
 

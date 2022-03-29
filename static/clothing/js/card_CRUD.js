@@ -36,6 +36,7 @@ $('#add_card_form').submit(function (e) {
 // добавление движения в арматурной карточке
 $('#clothes_in_card_form').submit(function (e) {
     e.preventDefault();
+    $("#add_clothes_in_card_button").prop("disabled", true);
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     let norm_items_array = $('#id_norm_items').val();
 
@@ -54,12 +55,13 @@ $('#clothes_in_card_form').submit(function (e) {
             "document_number": $('#id_document_number').val() == "" ? null : $('#id_document_number').val(),
             "has_certificate": $('#id_has_certificate_checkbox').is(':checked'),
             "certificate_number": $('#id_certificate_number').val() == "" ? null : $('#id_certificate_number').val(),
+            "certificate_wear_time": $('#id_certificate_wear_time').val() == "" ? null : $('#id_certificate_wear_time').val(),
             "is_closed_loop": $('#id_is_closed_loop').is(':checked'),
             "card": $('#id_card').val(),
             "count": count,
         }
 
-        movements_requests.push(fetch('/clothing/movement_several_add', {
+        movements_requests.push(fetch('/clothing/movement_several_add/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
@@ -71,7 +73,7 @@ $('#clothes_in_card_form').submit(function (e) {
 
     Promise.all(movements_requests).catch((e) => alert(e.message)).finally(() => {
         show_spinner();
-        window.location.href = window.location.href
+        window.location.href = window.location.href;
     });
 
     // show_spinner();
@@ -146,18 +148,18 @@ $('.movements_in_card_update_form').submit(function (e) {
         'date_of_issue': $(`#id_date_of_issue_${movement_id}`).val(),
         "has_certificate": $(`#id_has_certificate_checkbox_${movement_id}`).is(':checked'),
         "certificate_number": $(`#id_certificate_number_${movement_id}`).val() == "" ? null : $(`#id_certificate_number_${movement_id}`).val(),
+        "certificate_wear_time": $(`#id_certificate_wear_time_${movement_id}`).val() == "" ? null : $(`#id_certificate_wear_time_${movement_id}`).val(),
         "document_number": $(`#id_document_number_${movement_id}`).val() == "" ? null : $(`#id_document_number_${movement_id}`).val(),
         "is_closed_loop": $(`#id_is_closed_loop_${movement_id}`).is(':checked'),
         "has_replacement": $(`#id_has_replacement_${movement_id}`).is(':checked'),
         "replacing_what": $(`#id_replacing_what_${movement_id}`).val() == "" ? null : $(`#id_replacing_what_${movement_id}`).val(),
     }
 
-    console.log(obj);
-
     if (obj.has_certificate) {
         obj.document_number = null
     } else {
         obj.certificate_number = null
+        obj.certificate_wear_time = null
     }
 
     fetch(`/api/movements/${movement_id}/`, {
@@ -247,6 +249,7 @@ $('#id_card_data_update_form').submit(function (e) {
     let id_card = $("#id_card").val();
     let obj = {
         'norm': $(`#id_norm`).val(),
+        'card_number': $(`#id_card_number`).val() == "" ? null : $(`#id_card_number`).val(),
         'growth': $(`#id_growth`).val() == "" ? null : $(`#id_growth`).val(),
         'bust': $(`#id_bust`).val() == "" ? null : $(`#id_bust`).val(),
         'jacket': $(`#id_jacket`).val() == "" ? null : $(`#id_jacket`).val(),

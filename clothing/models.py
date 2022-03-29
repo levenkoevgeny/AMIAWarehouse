@@ -280,6 +280,7 @@ class Movement(models.Model):
     has_replacement = models.BooleanField(verbose_name="Имеет замену", default=False)
     document_number = models.CharField(max_length=100, verbose_name="Номер документа", blank=True, null=True)
     has_certificate = models.BooleanField(verbose_name="Получено по сертификату", default=False)
+    certificate_wear_time = models.IntegerField(verbose_name="Срок носки по сертификату (мес.)", blank=True, null=True)
     certificate_number = models.CharField(max_length=100, verbose_name="Номер аттестата", blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Дата и время создания", auto_created=True, blank=True, null=True)
     is_closed_loop = models.BooleanField(verbose_name="Закрывает цикл выдачи", default=True)

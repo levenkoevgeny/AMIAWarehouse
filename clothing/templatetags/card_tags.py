@@ -78,9 +78,20 @@ def get_next_date_and_count(movement_list, args):
                 last_issue = clothes_movement_list.order_by('-date_of_issue').first()
 
                 # Проверить была ли эта выдача заменой позиции из аттестата
-                # если да, то дату выдачи берем из аттестата
+                # если да, то ...
+
                 if last_issue.replacing_what:
-                    result_date = last_issue.replacing_what.date_of_issue + relativedelta(months=norm_value_wear_time)
+                    # считаем оставшийся срок носки вещи
+                    remaining_term = get_remaining_time(last_issue)
+                    # если срок носки вещи из аттестата закончился
+                    if remaining_term == 0:
+                        result_date = last_issue.date_of_issue + relativedelta(
+                            months=norm_value_wear_time)
+                    # если срок носки вещи из аттестата не закончился
+                    else:
+                        result_date = last_issue.replacing_what.date_of_issue + relativedelta(
+                            months=norm_value_wear_time + remaining_term)
+
                 else:
                     result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
                 result_date = next_date_of_issue_normalize(result_date)
@@ -91,9 +102,9 @@ def get_next_date_and_count(movement_list, args):
                 norm_value_wear_time_per_item = norm_value_wear_time / norm_value_norm_count
                 # проверяем есть ли замыкающие выдачи
                 # если есть то
-                if clothes_movement_list.filter(is_closed_loop=True).count() > 0:
+                if clothes_movement_list.filter(is_closed_loop=True, has_certificate=False).count() > 0:
                     # получаем последнюю замыкающую выдачу
-                    last_closing_loop = clothes_movement_list.filter(is_closed_loop=True).order_by(
+                    last_closing_loop = clothes_movement_list.filter(is_closed_loop=True, has_certificate=False).order_by(
                         '-date_of_issue').first()
                     # получаем остальные выдачи (после последней замыкающей)
                     clothes_movement_list_without_closing_loop = clothes_movement_list.filter(
@@ -104,41 +115,90 @@ def get_next_date_and_count(movement_list, args):
                         issued_count = 0
                         for desc in last_closing_loop.descriptionitem_set.all():
                             issued_count += desc.count
-
-                        # проверяем выдана ли вся норма
-                        if issued_count < norm_value_norm_count:
-                            result_date = next_date_of_issue_normalize(last_closing_loop.date_of_issue + relativedelta(
-                                months=wear_time_normalize(norm_value_wear_time_per_item) * issued_count))
-                            result_count = norm_value_norm_count
-                        # выдана не вся норма
+                        if last_closing_loop.replacing_what:
+                            # считаем оставшийся срок носки вещи
+                            remaining_term = get_remaining_time(last_closing_loop)
+                            if remaining_term == 0:
+                                if issued_count < norm_value_norm_count:
+                                    result_date = next_date_of_issue_normalize(
+                                        last_closing_loop.date_of_issue + relativedelta(
+                                            months=wear_time_normalize(norm_value_wear_time_per_item * issued_count)))
+                                    result_count = norm_value_norm_count
+                            else:
+                                result_date = next_date_of_issue_normalize(
+                                    last_closing_loop.replacing_what.date_of_issue + relativedelta(
+                                        months=norm_value_wear_time + remaining_term))
+                                result_count = norm_value_norm_count
                         else:
-                            # вычисляем дату следующей выдачи и нормализуем ее (т.е. проверяем не меньше ли она текущего года)
-                            result_date = next_date_of_issue_normalize(last_closing_loop.date_of_issue + relativedelta(
-                                months=norm_value_wear_time))
-                            result_count = norm_value_norm_count
+                            # проверяем выдана ли вся норма
+                            if issued_count < norm_value_norm_count:
+                                result_date = next_date_of_issue_normalize(last_closing_loop.date_of_issue + relativedelta(
+                                    months=wear_time_normalize(norm_value_wear_time_per_item * issued_count)))
+                                result_count = norm_value_norm_count
+                            # выдана не вся норма
+                            else:
+                                # вычисляем дату следующей выдачи и нормализуем ее (т.е. проверяем не меньше ли она текущего года)
+                                result_date = next_date_of_issue_normalize(last_closing_loop.date_of_issue + relativedelta(
+                                    months=norm_value_wear_time))
+                                result_count = norm_value_norm_count
                     else:
                         # список не пуст (т.е. были выдачи после последней замыкающей)
                         # получаем последнюю выдачу
                         last_issue = clothes_movement_list_without_closing_loop.last()
-                        last_issue_next_date = last_issue.date_of_issue + relativedelta(
-                            months=wear_time_normalize(norm_value_wear_time_per_item))
-                        # если дата следующей выдачи уже прошла
-                        if last_issue_next_date < current_half_year_start_date:
-                            result_date = current_half_year_start_date
-                            result_count = norm_value_norm_count
-                        # если дата следующей выдачи еще не прошла
-                        else:
-                            issued_count = 0
-                            for cl in clothes_movement_list_without_closing_loop:
-                                for desc in cl.descriptionitem_set.all():
-                                    issued_count += desc.count
-                            if issued_count < norm_value_norm_count:
-                                result_date = last_issue.date_of_issue + relativedelta(
-                                    months=wear_time_normalize(norm_value_wear_time_per_item) * issued_count)
-                                result_count = norm_value_norm_count - issued_count
+
+                        # вычисляем сколько вещей было выдано в последней не замыкающей выдаче, чтобы узнать дату следующей выдачи
+                        issued_count_ = 0
+                        for desc in last_issue.descriptionitem_set.all():
+                            issued_count_ += desc.count
+
+                        if last_issue.replacing_what:
+                            # считаем оставшийся срок носки вещи
+                            remaining_term = get_remaining_time(last_issue)
+
+
+                            # !!!!!Дописать
+
+
+
+
+                            if remaining_term == 0:
+                                pass
+
                             else:
-                                result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
+
+                                pass
+
+
+
+
+
+
+
+
+
+
+
+
+                        else:
+                            last_issue_next_date = last_issue.date_of_issue + relativedelta(
+                                months=wear_time_normalize(norm_value_wear_time_per_item * issued_count_))
+                            # если дата следующей выдачи уже прошла
+                            if last_issue_next_date < current_half_year_start_date:
+                                result_date = current_half_year_start_date
                                 result_count = norm_value_norm_count
+                            # если дата следующей выдачи еще не прошла
+                            else:
+                                issued_count = 0
+                                for cl in clothes_movement_list_without_closing_loop:
+                                    for desc in cl.descriptionitem_set.all():
+                                        issued_count += desc.count
+                                if issued_count < norm_value_norm_count:
+                                    result_date = last_issue.date_of_issue + relativedelta(
+                                        months=wear_time_normalize(norm_value_wear_time_per_item * issued_count))
+                                    result_count = norm_value_norm_count - issued_count
+                                else:
+                                    result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
+                                    result_count = norm_value_norm_count
                 # если нету то
                 else:
                     last_issue = clothes_movement_list.last()
@@ -156,7 +216,7 @@ def get_next_date_and_count(movement_list, args):
                                 issued_count += desc.count
                         if issued_count < norm_value_norm_count:
                             result_date = last_issue.date_of_issue + relativedelta(
-                                months=wear_time_normalize(norm_value_wear_time_per_item) * issued_count)
+                                months=wear_time_normalize(norm_value_wear_time_per_item * issued_count))
                             result_count = norm_value_norm_count - issued_count
                         else:
                             result_date = last_issue.date_of_issue + relativedelta(months=norm_value_wear_time)
@@ -204,3 +264,18 @@ def get_current_half_year_end_date():
         return datetime.date(current_date.year, 6, 30)
     if 6 < current_date.month <= 12:
         return datetime.date(current_date.year, 12, 31)
+
+
+def get_remaining_time(issue):
+    # считаем сколько времени эта вещь носилась
+    elapsed_time = relativedelta(issue.date_of_issue, issue.replacing_what.date_of_issue)
+
+    years = elapsed_time.years if elapsed_time.years else 0
+    months = elapsed_time.months if elapsed_time.months else 0
+
+    # переводим это число в количество месяцев
+    elapsed_time_month = years * 12 + months
+
+    # проверяем не закончился ли срок носки вещи из аттестата
+    remaining_term = 0 if (issue.replacing_what.certificate_wear_time - elapsed_time_month) <= 0 else elapsed_time_month
+    return remaining_term

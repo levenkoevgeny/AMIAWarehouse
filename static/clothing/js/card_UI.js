@@ -28,23 +28,28 @@ $("#id_all_position_checkbox").change(function () {
 
 $("#id_has_certificate_checkbox").change(function () {
     if (this.checked) {
-        $('#id_certificate_number').prop("disabled", false);
+        $('#id_certificate_number').prop("disabled", false).prop("required", true);
+        $('#id_certificate_wear_time').prop("disabled", false).prop("required", true);
         $('#id_document_number').prop("disabled", true);
 
     } else {
-        $('#id_certificate_number').prop("disabled", true);
+        $('#id_certificate_number').prop("disabled", true).prop("required", false);
+        $('#id_certificate_wear_time').prop("disabled", true).prop("required", false);
         $('#id_document_number').prop("disabled", false);
     }
 });
 
+
 $(".has_certificate_checkbox_modal").change(function () {
     let form_id = $(this).closest('form').attr('id')
     if (this.checked) {
-        $(`#id_certificate_number_modal_${form_id}`).prop("disabled", false);
-        $(`#id_document_number_modal_${form_id}`).prop("disabled", true);
+        $(`#id_certificate_number_${form_id}`).prop("disabled", false).prop("required", true);
+        $(`#id_certificate_wear_time_${form_id}`).prop("disabled", false).prop("required", true);
+        $(`#id_document_number_${form_id}`).prop("disabled", true);
 
     } else {
-        $(`#id_certificate_number_modal_${form_id}`).prop("disabled", true);
-        $(`#id_document_number_modal_${form_id}`).prop("disabled", false);
+        $(`#id_certificate_number_${form_id}`).prop("disabled", true).prop("required", false);
+        $(`#id_certificate_wear_time_${form_id}`).prop("disabled", true).prop("required", false);
+        $(`#id_document_number_${form_id}`).prop("disabled", false);
     }
 });

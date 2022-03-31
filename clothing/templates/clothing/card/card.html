@@ -205,7 +205,9 @@
                                 </button>
                                 <a class="btn btn-danger"
                                    href="javascript:delete_movement({{ movement.id }})">Удалить</a>
-                                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                                <button type="submit" class="btn btn-primary"
+                                        id="update_clothes_in_card_button_{{ movement.id }}">Сохранить изменения
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -246,7 +248,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="mb-3">
@@ -316,26 +317,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        {% render_field employee_form.is_on_decree class+="form-check-input" %}
-                                        <label class="form-label">В декрете</label>
+                            {% if employee.decree_set.all %}
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <h5>Декреты</h5>
+                                        {% for decree in employee.decree_set.all %}
+                                            {{ decree }}<br>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Начало декрета</label><br>
-                                        {% render_field employee_form.decree_start class+="form-control" %}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Окончание декрета</label><br>
-                                        {% render_field employee_form.decree_finish class+="form-control" %}
-                                    </div>
-                                </div>
-                            </div>
+                            {% endif %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
@@ -433,7 +424,8 @@
         </div>
 
         <br>
-        <div><h3><i class="far fa-long-arrow-alt-left"></i><a href="{{ back_path }}" class="link-secondary"><i
+        <div><h3><i class="far fa-long-arrow-alt-left"></i><a href="{{ back_path }}"
+                                                              class="link-secondary needs-spinner"><i
                 class="fas fa-arrow-left"></i>
 
             Вернуться
@@ -597,142 +589,6 @@
     </div>
     <div class="container-fluid">
         <br>
-        {#        {% if clothes_in_card_list %}#}
-        {#            <h5 class="px-3 mb-3"><a href="{% url 'clothing:get_card_full' card.id %}" class="link-secondary">Таблица#}
-        {#                выдачи</a></h5>#}
-        {#            <table class="table table-bordered table-sm">#}
-        {#                <thead class="align-middle text-center">#}
-        {#                <tr>#}
-        {#                    <th rowspan="3" class="border border-3 border-secondary">№ п.п</th>#}
-        {#                    <th rowspan="3" class="border border-3 border-secondary">Наименование предметов</th>#}
-        {#                    <th rowspan="3" class="border border-3 border-secondary">Состоит согласно вещевому#}
-        {#                        аттестату <br> <span#}
-        {#                                class="fst-italic text-decoration-underline">{{ certificate_number|default_if_none:"____" }}</span>#}
-        {#                    </th>#}
-        {#                    <th rowspan="3" class="border border-3 border-secondary">Дата и количество следующей выдачи</th>#}
-        {#                    <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Выдано#}
-        {#                    </th>#}
-        {#                    <th colspan="{{ year_list_count|mult:"3" }}" class="border border-3 border-secondary">Сдано</th>#}
-        {#                </tr>#}
-        {##}
-        {#                <tr>#}
-        {#                    {% for year in year_list %}#}
-        {#                        <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>#}
-        {#                    {% endfor %}#}
-        {#                    {% for year in year_list %}#}
-        {#                        <th colspan="3" class="border border-3 border-secondary">{{ year }}</th>#}
-        {#                    {% endfor %}#}
-        {#                </tr>#}
-        {#                <tr>#}
-        {#                    {% for year in year_list %}#}
-        {#                        <th class="border border-3 border-secondary">Дата</th>#}
-        {#                        <th class="border border-3 border-secondary">Кол.</th>#}
-        {#                        <th class="border border-3 border-secondary">№ док.</th>#}
-        {#                    {% endfor %}#}
-        {#                    {% for year in year_list %}#}
-        {#                        <th class="border border-3 border-secondary">Дата</th>#}
-        {#                        <th class="border border-3 border-secondary">Кол.</th>#}
-        {#                        <th class="border border-3 border-secondary">№ док.</th>#}
-        {#                    {% endfor %}#}
-        {#                </tr>#}
-        {#                </thead>#}
-        {#                <tbody class="align-middle text-center">#}
-        {#                {% for cl_in_n in norm_clothes_list %}#}
-        {#                    <tr>#}
-        {#                        <th class="border">{{ forloop.counter }}</th>#}
-        {#                        <th class="border text-start">#}
-        {#                            <nobr>{{ cl_in_n.clothes.clothes_title }} ({{ cl_in_n.clothes.wear_time }} мес.)</nobr>#}
-        {#                        </th>#}
-        {#                        <td class="border">#}
-        {#                            {% if clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}#}
-        {#                                {% with cert_item=clothes_in_card_list|get_certificate_item:cl_in_n.clothes.id %}#}
-        {#                                    <nobr>#}
-        {#                                        <a href="#clothes_in_card_update_form_{{ cert_item.id }}"#}
-        {#                                           data-bs-toggle="modal"#}
-        {#                                           class="link-secondary">{{ cert_item.count }}#}
-        {#                                            шт. {{ cert_item.date_of_issue|date:"m.y" }}</a>#}
-        {#                                    </nobr>#}
-        {#                                {% endwith %}#}
-        {#                            {% endif %}#}
-        {#                        </td>#}
-        {#                        <td></td>#}
-        {#                        {% for year in year_list %}#}
-        {#                            {% with args=year|str_concat:cl_in_n.clothes.id %}#}
-        {#                                {% if clothes_in_card_list|get_movement_out:args %}#}
-        {#                                    <td class="border border-2 border-secondary">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_out:args %}#}
-        {#                                            {% if item.has_replacement %}#}
-        {#                                                <a href="#clothes_in_card_update_form_{{ item.id }}"#}
-        {#                                                   data-bs-toggle="modal"#}
-        {#                                                   title="{{ item.clothes }}"#}
-        {#                                                   class="link-secondary text-danger">{{ item.date_of_issue|date:"m.y" }}</a>#}
-        {#                                            {% else %}#}
-        {#                                                <a href="#clothes_in_card_update_form_{{ item.id }}"#}
-        {#                                                   data-bs-toggle="modal"#}
-        {#                                                   title="{{ item.clothes }}"#}
-        {#                                                   class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>#}
-        {#                                            {% endif %}#}
-        {#                                            <br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                    <td class="border border-2 border-secondary">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_out:args %}#}
-        {#                                            {{ item.count }}<br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                    <td class="border border-2 border-secondary">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_out:args %}#}
-        {#                                            <nobr>{{ item.document_number|default_if_none:"" }}</nobr><br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                {% else %}#}
-        {#                                    <td class="border"></td>#}
-        {#                                    <td class="border"></td>#}
-        {#                                    <td class="border"></td>#}
-        {#                                {% endif %}#}
-        {#                            {% endwith %}#}
-        {#                        {% endfor %}#}
-        {#                        {% for year in year_list %}#}
-        {#                            {% with args=year|str_concat:cl_in_n.clothes.id %}#}
-        {#                                {% if clothes_in_card_list|get_movement_in:args %}#}
-        {#                                    <td class="border">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_in:args %}#}
-        {#                                            <a href="#clothes_in_card_update_form_{{ item.id }}"#}
-        {#                                               data-bs-toggle="modal"#}
-        {#                                               title="{{ item.clothes }}"#}
-        {#                                               class="link-secondary">{{ item.date_of_issue|date:"m.y" }}</a>#}
-        {#                                            <br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                    <td class="border">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_in:args %}#}
-        {#                                            {{ item.count }}<br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                    <td class="border">#}
-        {#                                        {% for item in clothes_in_card_list|get_movement_in:args %}#}
-        {#                                            {{ item.document_number|default_if_none:"" }}<br>#}
-        {#                                        {% endfor %}#}
-        {#                                    </td>#}
-        {#                                {% else %}#}
-        {#                                    <td class="border"></td>#}
-        {#                                    <td class="border"></td>#}
-        {#                                    <td class="border"></td>#}
-        {#                                {% endif %}#}
-        {#                            {% endwith %}#}
-        {#                        {% endfor %}#}
-        {#                    </tr>#}
-        {#                {% endfor %}#}
-        {#                </tbody>#}
-        {#            </table>#}
-        {##}
-        {#            <br>#}
-        {#            <br><br>#}
-        {##}
-        {##}
-
-        {#        <div class="table-responsive">#}
-
         <table class="table table-bordered table-sm">
             <thead class="align-middle text-center">
             <tr>
@@ -774,9 +630,18 @@
             {% for item in clothes_list %}
                 <tr>
                     <th class="border">{{ forloop.counter }}</th>
-                    <th class="border text-start">
-                        <nobr>{{ item }}</nobr>
-                    </th>
+                    {% if item in clothes_in_norm_list %}
+                        <th class="border text-start table-success">
+                            <nobr>{{ item }}</nobr>
+                        </th>
+                    {% else %}
+                        <th class="border text-start">
+                            <nobr>{{ item }}</nobr>
+                        </th>
+
+                    {% endif %}
+
+
                     <td>
                         <nobr>
                             {% if description_list|get_certificate_item:item.id %}
@@ -806,7 +671,7 @@
                                             Замена
                                         {% endif %}
                                         {% if description.movement.replacing_what %}
-                                            Вместо позици в аттестате
+                                            Вместо <b>{{ description.movement.replacing_what.get_replacing_what }}</b>
                                         {% endif %}
                                     {% else %}
                                         <a href="#movements_in_card_update_form_{{ description.movement.id }}"

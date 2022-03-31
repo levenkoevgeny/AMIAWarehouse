@@ -69,7 +69,7 @@ def get_next_date_and_count(movement_list, args):
         norm_value_wear_time_per_item = norm_value_wear_time / norm_value_norm_count
         # print('norm_value_wear_time_per_item', norm_value_wear_time_per_item)
         clothes_movement_list = movement_list.filter(card=card, movement_description=clothes, movement_direction=1,
-                                                     has_replacement=False, has_certificate=False)
+                                                     has_replacement=False)
 
         # если выдачи не было, то выдаем все в этом полугодии
         if clothes_movement_list.count() == 0:

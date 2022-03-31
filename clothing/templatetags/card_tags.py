@@ -68,7 +68,9 @@ def get_next_date_and_count(movement_list, args):
         norm_value = NormItemsInNorm.objects.filter(norm=norm, norm_item__item_clothes=arg_list[1]).first()
         norm_value_wear_time = norm_value.wear_time
         norm_value_norm_count = norm_value.norm_count
+        # print(clothes, norm_value_wear_time, norm_value_norm_count)
         norm_value_wear_time_per_item = norm_value_wear_time / norm_value_norm_count
+        # print('norm_value_wear_time_per_item', norm_value_wear_time_per_item)
         clothes_movement_list = movement_list.filter(card=card, movement_description=clothes, movement_direction=1,
                                                      has_replacement=False, has_certificate=False)
 
@@ -80,21 +82,24 @@ def get_next_date_and_count(movement_list, args):
         else:
             # получаем последнюю выдачу
             last_issue = clothes_movement_list.order_by('-date_of_issue').first()
-
+            # print('last_issue', last_issue)
             # рассчитываем полную поправку на увеличение срока (когда была замена позиции из аттестата, декрет и т.д.)
             term_extension_sum = get_sum_term_extension(last_issue)
-
+            # print('term_extension_sum', term_extension_sum)
             # рассчитываем дату от которой считаем начало выдачи
             # (передаем последнюю выдачу и посчитанный оставшийся срок от сертификата)
             start_calculating_date = get_start_calculating_date(last_issue,
                                                                 get_remaining_time_from_certificate(last_issue))
-
+            # print('start_calculating_date', start_calculating_date)
             issued_count = 0
             for desc in last_issue.descriptionitem_set.all():
                 issued_count += desc.count
 
+            # print('issued_count', issued_count)
+            # print('months', wear_time_normalize(norm_value_wear_time_per_item * issued_count) + term_extension_sum)
             result_date = start_calculating_date + relativedelta(
                 months=wear_time_normalize(norm_value_wear_time_per_item * issued_count) + term_extension_sum)
+            # print('result_date', result_date)
 
             if result_date < current_half_year_start_date:
                 result_date = current_half_year_start_date
@@ -131,7 +136,7 @@ def get_next_date_and_count(movement_list, args):
 def wear_time_normalize(wear_time):
     if 6 < wear_time <= 12:
         return 12
-    if 12 < wear_time <= 24:
+    if 12 < wear_time < 24:
         return 12
     return wear_time
 

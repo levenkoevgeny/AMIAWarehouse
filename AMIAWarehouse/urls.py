@@ -16,6 +16,7 @@ router.register(r'cards', views.CardViewSet)
 router.register(r'movements', views.MovementViewSet)
 router.register(r'description-item', views.DescriptionItemViewSet)
 router.register(r'employees', views.EmployeeViewSet)
+router.register(r'employees-decrees', views.DecreeViewSet)
 
 
 urlpatterns = [

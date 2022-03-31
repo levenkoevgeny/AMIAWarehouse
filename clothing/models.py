@@ -124,7 +124,7 @@ class Clothes(models.Model):
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Наименование предмета'
-        verbose_name_plural = 'Наименования предметов'
+        verbose_name_plural = '1.5 Наименования предметов'
 
 
 class NormItem(models.Model):
@@ -139,7 +139,7 @@ class NormItem(models.Model):
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Позиция для нормы'
-        verbose_name_plural = 'Позиции для нормы'
+        verbose_name_plural = '1.6 Позиции для нормы'
 
 
 class Norm(models.Model):
@@ -156,7 +156,7 @@ class Norm(models.Model):
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Норма'
-        verbose_name_plural = 'Нормы'
+        verbose_name_plural = '1.4 Нормы'
 
 
 class NormItemsInNorm(models.Model):
@@ -171,7 +171,7 @@ class NormItemsInNorm(models.Model):
     class Meta:
         ordering = ('id',)
         verbose_name = 'Наименование в норме'
-        verbose_name_plural = 'Наименования в норме'
+        verbose_name_plural = '1.7 Наименования в норме'
         unique_together = [['norm', 'norm_item']]
 
 
@@ -212,9 +212,9 @@ class Employee(models.Model):
     kind = models.IntegerField(choices=EMPLOYEE_KIND, verbose_name="Тип сотрудника")
     rank = models.ForeignKey(Rank, on_delete=models.CASCADE, verbose_name="Звание", blank=True, null=True)
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, verbose_name="Должность", blank=True, null=True)
-    is_on_decree = models.BooleanField(verbose_name="В декрете", default=False)
-    decree_start = models.DateField(verbose_name="Начало декрета", blank=True, null=True)
-    decree_finish = models.DateField(verbose_name="Окончание декрета", blank=True, null=True)
+    # is_on_decree = models.BooleanField(verbose_name="В декрете", default=False)
+    # decree_start = models.DateField(verbose_name="Начало декрета", blank=True, null=True)
+    # decree_finish = models.DateField(verbose_name="Окончание декрета", blank=True, null=True)
     date_of_birth = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
     enlisted = models.DateField(verbose_name="Зачислен", blank=True, null=True)
     excluded = models.DateField(verbose_name="Исключен", blank=True, null=True)
@@ -242,7 +242,22 @@ class Employee(models.Model):
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Сотрудник'
-        verbose_name_plural = 'Сотрудники'
+        verbose_name_plural = '1.1 Сотрудники'
+
+
+class Decree(models.Model):
+    employee = models.ForeignKey(Employee, verbose_name="Сотрудник", on_delete=models.CASCADE)
+    decree_start = models.DateField(verbose_name="Начало декрета")
+    decree_finish = models.DateField(verbose_name="Окончание декрета", blank=True, null=True)
+
+    def __str__(self):
+        decree_start = self.decree_finish if self.decree_finish else "не закончен"
+        return 'С {0} по {1}'.format(str(self.decree_start), decree_start)
+
+    class Meta:
+        ordering = ('-id',)
+        verbose_name = 'Декрет сотрудника'
+        verbose_name_plural = '1.2 Декреты сотрудников'
 
 
 class Card(models.Model):
@@ -267,7 +282,7 @@ class Card(models.Model):
     class Meta:
         ordering = ('-id',)
         verbose_name = 'Арматурная карточка'
-        verbose_name_plural = 'Арматурные карточки'
+        verbose_name_plural = '1.3 Арматурные карточки'
 
 
 class Movement(models.Model):
@@ -295,10 +310,14 @@ class Movement(models.Model):
     def get_movement(self):
         return MOVEMENT[self.movement - 1][1]
 
+    @property
+    def get_replacing_what(self):
+        return '{0}'.format(str(self.norm_item))
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Движение в карточке'
-        verbose_name_plural = 'Движения в карточке'
+        verbose_name_plural = '1.8 Движения в карточке'
 
 
 class DescriptionItem(models.Model):
@@ -313,4 +332,4 @@ class DescriptionItem(models.Model):
     class Meta:
         ordering = ('id',)
         verbose_name = 'Описание движения в карточке'
-        verbose_name_plural = 'Описания движений в карточке'
+        verbose_name_plural = '1.9 Описания движений в карточке'

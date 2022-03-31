@@ -16,10 +16,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Card, Clothes, Movement, NormItem, Norm, Subdivision, Position, Rank, NormItemsInNorm, Course, \
-    Group, Employee, DescriptionItem, EMPLOYEE_KIND, SEX, Dimensions, CapDimensions, ShoesDimensions
-from .forms import CardForm, EmployeeForm, ClothesForm, NormItemForm, NormForm, NormItemsInNormForm
+    Group, Employee, Decree, DescriptionItem, EMPLOYEE_KIND, SEX, Dimensions, CapDimensions, ShoesDimensions
+from .forms import CardForm, EmployeeForm, DecreeForm, ClothesForm, NormItemForm, NormForm, NormItemsInNormForm
 from .serializers import ClothesSerializer, NormItemSerializer, NormSerializer, NormItemsInNormSerializer, \
-    EmployeeSerializer, CardSerializer, MovementSerializer, DescriptionItemSerializer
+    EmployeeSerializer, DecreeSerializer, CardSerializer, MovementSerializer, DescriptionItemSerializer
 from .filters import CardFilter, ClothesFilter, NormItemFilter, NormFilter, EmployeeFilter
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -49,6 +49,7 @@ def get_card(request, card_id):
         year_list_ = [i for i in range(date.today().year - 7, date.today().year + 1)]
         items_in_norm = card.norm.items_list.all()
         clothes_list = Clothes.objects.all()
+        clothes_in_norm = clothes_list.filter(normitem__norm=card.norm)
         movement_list = Movement.objects.filter(card=card)
         movement_list_from_certificate = movement_list.filter(has_certificate=True)
         description_list = DescriptionItem.objects.filter(movement__card=card)
@@ -64,6 +65,7 @@ def get_card(request, card_id):
                           'movement_list': movement_list,
                           'movement_list_from_certificate': movement_list_from_certificate,
                           'clothes_list': clothes_list,
+                          'clothes_in_norm_list': clothes_in_norm,
                           'card': card,
                           'employee': employee,
                           'employee_form': employee_form,
@@ -124,6 +126,23 @@ def employee_list(request):
                    'sex_list': SEX,
                    'group_list': Group.objects.all(),
                    'filter': f})
+
+
+def employee_update(request, employee_id):
+    if request.method == "POST":
+        employee = get_object_or_404(Employee, pk=employee_id)
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('clothing:employee_list'))
+        else:
+            return render(request, 'clothing/employees/employee_update_form.html',
+                          {'employee': employee, 'employee_form': form})
+    else:
+        employee = get_object_or_404(Employee, pk=employee_id)
+        employee_form = EmployeeForm(instance=employee)
+        return render(request, 'clothing/employees/employee_update_form.html',
+                      {'employee': employee, 'employee_form': employee_form})
 
 
 def norm_list(request):
@@ -354,6 +373,11 @@ class DescriptionItemViewSet(viewsets.ModelViewSet):
     filterset_fields = ['movement']
 
 
+class DecreeViewSet(viewsets.ModelViewSet):
+    queryset = Decree.objects.all()
+    serializer_class = DecreeSerializer
+
+
 # # rest api endpoint for making clones based on parent
 @api_view(['POST'])
 def make_cloned_norm(request):
@@ -386,5 +410,3 @@ def movement_several_add(request):
             return Response({'message': ''}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'message': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-

@@ -266,7 +266,7 @@
             <tr>
                 <td class="text-center">{{ card.card_number }}</td>
                 <td><a href="{% url 'clothing:get_card' card.id %}"
-                       class="link-secondary"><nobr>{{ card.employee.get_short_name }}</nobr></a>
+                       class="link-secondary needs-spinner"><nobr>{{ card.employee.get_short_name }}</nobr></a>
                 </td>
                 <td>{{ card.employee.rank|default_if_none:"" }}</td>
                 <td>{{ card.employee.position|default_if_none:"" }}</td>

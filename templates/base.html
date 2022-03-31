@@ -35,6 +35,13 @@
 <script>
     $(document).ready(function () {
         $('.my-select2').select2();
+
+        $('a.needs-spinner').click(function () {
+            $('.main-div').addClass('d-flex justify-content-center align-items-center');
+            $('.main-div').css('height', '94vh');
+            $('.main-div').html('<div><div class="spinner-border text-secondary" role="status" style="width: 4rem;height: 4rem;"><span class="sr-only">Loading...</span></div></div>');
+        });
+
     });
 </script>
 

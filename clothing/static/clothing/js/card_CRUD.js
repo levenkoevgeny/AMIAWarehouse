@@ -138,8 +138,12 @@ $('#clothes_in_card_form').submit(function (e) {
 // редактирование движения в арматурной карточке
 $('.movements_in_card_update_form').submit(function (e) {
     e.preventDefault();
+
+
     let csrftoken = $("input[name='csrfmiddlewaretoken']").val();
     let movement_id = e.target.id;
+
+    $(`#update_clothes_in_card_button_${movement_id}`).prop("disabled", true);
 
     let desc_requests = [];
 
